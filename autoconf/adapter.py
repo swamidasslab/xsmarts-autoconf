@@ -1,0 +1,156 @@
+"""Adapter base: the thin per-library surface autoconf and the fuzzer drive.
+
+A library adapter overrides a handful of methods that return *native* results:
+
+- ``parse(smarts)``                      -> None, raise on rejection
+- ``match(smarts, smiles, explicit_h)``  -> number of unique (atom-set) matches
+- ``apply(smirks, smiles, explicit_h)``  -> list of product-set SMILES, one per outcome
+- ``sanitize(smiles)``                   -> lib-native sanitized SMILES or None (reject)
+
+Everything else (error capture, unsupported ops, SMILES normalization, the
+observation string) is centralized in :meth:`Adapter.observe`, so adapters stay
+a few lines each. Raise :class:`Unsupported` for an op the library lacks.
+"""
+
+from __future__ import annotations
+
+import sys
+from dataclasses import dataclass, field
+from pathlib import Path
+
+PARENT = Path(__file__).resolve().parents[2]
+if str(PARENT / "scripts") not in sys.path:
+    sys.path.insert(0, str(PARENT / "scripts"))
+
+
+class Unsupported(Exception):
+    """The adapter has no way to run this op."""
+
+
+@dataclass(frozen=True)
+class Case:
+    """One executable example. ``op`` is parse | match | apply."""
+
+    id: str
+    op: str
+    query: str
+    mol: str | None = None
+    explicit_h: bool = False
+    view: str = "products"
+    """apply only: ``products`` (raw edit set), ``sanitized`` (lib-native
+    sanitize, rejects dropped) or ``count`` (number of outcomes, with dups)."""
+    note: str = ""
+
+
+@dataclass
+class Observation:
+    case: Case
+    text: str
+    """Normalized, comparable outcome: ``ok`` | ``error`` | ``unsupported`` |
+    ``match:N`` | ``products:A|B`` | ``outcomes:N``."""
+    detail: str = ""
+    """Native output or error message (evidence only, never compared)."""
+
+
+def canon(smiles: str) -> str:
+    """Strip SMILES-dialect noise (atom order, ``C(C)O`` vs ``CCO``) without
+    changing chemistry: RDKit parse with sanitize off, then canonical write.
+    Bracket labels such as CDK's ``[C]`` (zero H) are kept: they are chemistry."""
+    from rdkit import Chem, RDLogger
+
+    RDLogger.DisableLog("rdApp.*")
+    m = Chem.MolFromSmiles(smiles, sanitize=False)
+    if m is None:
+        return f"?{smiles}"
+    try:
+        m.UpdatePropertyCache(strict=False)
+        out = Chem.MolToSmiles(m)
+        # The unsanitized writer can drop brackets that pin H counts ([C] -> C);
+        # spell every H explicitly when the short form would change chemistry.
+        if _h_signature(out) != _h_signature_mol(m):
+            out = Chem.MolToSmiles(m, allHsExplicit=True)
+        return out
+    except Exception:  # noqa: BLE001
+        return f"?{smiles}"
+
+
+def _h_signature_mol(m) -> list:
+    return sorted((a.GetAtomicNum(), a.GetFormalCharge(), a.GetTotalNumHs()) for a in m.GetAtoms())
+
+
+def _h_signature(smiles: str) -> list | None:
+    from rdkit import Chem
+
+    m = Chem.MolFromSmiles(smiles, sanitize=False)
+    if m is None:
+        return None
+    m.UpdatePropertyCache(strict=False)
+    return _h_signature_mol(m)
+
+
+def canon_set(smiles: str) -> str:
+    """Canonicalize a ``.``-joined product set, component order independent."""
+    return ".".join(sorted(canon(p) for p in smiles.split(".") if p))
+
+
+@dataclass
+class Adapter:
+    """Base adapter. Subclasses set ``name`` and override the native methods."""
+
+    name: str = "base"
+    options: dict = field(default_factory=dict)
+
+    # ----- override these -----
+
+    def version(self) -> str:
+        return "unknown"
+
+    def parse(self, smarts: str) -> None:
+        raise Unsupported
+
+    def match(self, smarts: str, smiles: str, explicit_h: bool) -> int:
+        raise Unsupported
+
+    def apply(self, smirks: str, smiles: str, explicit_h: bool) -> list[str]:
+        raise Unsupported
+
+    def sanitize(self, smiles: str) -> str | None:
+        raise Unsupported
+
+    # ----- centralized logic -----
+
+    def label(self) -> str:
+        if not self.options:
+            return self.name
+        opts = ",".join(f"{k}={v}" for k, v in sorted(self.options.items()))
+        return f"{self.name}[{opts}]"
+
+    def observe(self, case: Case) -> Observation:
+        try:
+            text, detail = self._run(case)
+        except Unsupported as e:
+            return Observation(case, "unsupported", str(e))
+        except Exception as e:  # noqa: BLE001
+            return Observation(case, "error", f"{type(e).__name__}: {e}"[:300])
+        return Observation(case, text, detail)
+
+    def _run(self, case: Case) -> tuple[str, str]:
+        if case.op == "parse":
+            self.parse(case.query)
+            return "ok", ""
+        if case.op == "match":
+            n = self.match(case.query, case.mol, case.explicit_h)
+            return f"match:{n}", ""
+        if case.op == "apply":
+            outs = self.apply(case.query, case.mol, case.explicit_h)
+            if case.view == "count":
+                return f"outcomes:{len(outs)}", " | ".join(outs)
+            if case.view == "sanitized":
+                kept = [s for s in (self._sanitize_set(o) for o in outs) if s is not None]
+                return "products:" + "|".join(sorted({canon_set(s) for s in kept})), " | ".join(outs)
+            return "products:" + "|".join(sorted({canon_set(o) for o in outs})), " | ".join(outs)
+        raise ValueError(f"unknown op {case.op!r}")
+
+    def _sanitize_set(self, smiles: str) -> str | None:
+        parts = [self.sanitize(p) for p in smiles.split(".") if p]
+        return None if any(p is None for p in parts) else ".".join(parts)
