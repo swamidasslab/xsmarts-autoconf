@@ -1,0 +1,41 @@
+ok     match.aromatic_valence                        2.1s  [c;v4] on c1ccccc1
+MASKED match.bond_stereo                             5.5s  None
+MASKED match.directional_bond                        5.3s  None
+ok     match.h_atom_query                            1.8s  [H] on [H+]
+ok     match.implicit_h_lowercase_h                  1.0s  [Ch] on CC
+ok     match.proton                                  0.3s  [H+] on [H+]
+ok     match.ring_count_basis                        0.8s  [R3] on C12C3C4C1C5C2C3C45
+ok     match.unspecified_isotope                     0.1s  [13C] on [13CH3]C
+ok     products.grouped_product_component            0.3s  [C:1][c:2]>>([C:1].[c:2]) on Cc1ccccc1
+UNREACHED smirks.add_atom_with_explicit_h               4.8s  None
+ok     smirks.charge_hcount                          1.0s  [CH3:1]>>[C+:1] on Cc1ccccc1
+ok     smirks.charge_plus2_hcount                    0.3s  [C:1]>>[C+2:1] on Cc1ccccc1
+UNREACHED smirks.colon_product_bond                     5.1s  None
+UNREACHED smirks.edits_with_explicit_h                  4.9s  None
+ok     smirks.element_change                         2.9s  [C:1]>>[N:1] on Cc1ccccc1
+UNREACHED smirks.explicit_h_apply                       5.9s  None
+ok     smirks.fragmented_reactant                    1.1s  [O:1].[N:2]>>[O:1][N:2] on OCCN
+MASKED smirks.hcount_query_explicit_h                5.4s  None
+UNREACHED smirks.mapped_aromatic_nh                     4.8s  None
+UNREACHED smirks.nested_recursive                       4.8s  None
+UNREACHED smirks.neutralize_written_charge              5.0s  None
+UNREACHED smirks.outcome_multiplicity                   4.7s  None
+UNREACHED smirks.product_h_atom_added                   5.3s  None
+MASKED smirks.product_h_pin                          5.3s  None
+ok     smirks.reactant_aromaticity                   0.1s  [O:1]>>[O:1] on O=C1C=COC=C1
+ok     smirks.reactant_query_syntax                  0.2s  [N;#7:1]>>[N:1] on N#CC
+UNREACHED smirks.recursive_in_reactant                  4.7s  None
+UNREACHED smirks.sanitize_policy                        5.0s  None
+ok     smirks.site_choice_order_dependence           0.4s  [c:1]>>[*:1]C on c1ccccc1
+ok     smirks.star_on_explicit_h                     0.2s  [*:1][O:2]>>[*:1].[O:2] on Oc1ccccc1
+ok     smirks.stereo_carried                         0.8s  [CH3:1]>>[C:1] on C[C@H](N)O
+MASKED smirks.undefined_order_both_sides             4.6s  None
+MASKED smirks.undefined_product_bond                 4.8s  None
+ok     smirks.unwritten_charge                       0.9s  [C:1][O:2]>>[C:1].[O:2] on CC(=O)[O-]
+ok     smirks.valence_invalid_raw                    0.2s  [C:1][C:2]=[O:3]>>[C:1]=[C:2]=[O:3] on CC(=O)O
+MASKED syntax.aliphatic_hetero_neighbors_Z           2.3s  [N:1]>>[N+:1]~C on CN(C)C
+ok     syntax.dative_bond                            0.4s  C->C on CC
+MASKED syntax.hetero_neighbors_z                     4.7s  None
+UNREACHED syntax.hybridization                          4.9s  None
+ok     syntax.insaturation_i                         0.3s  [Ci1] on CC
+ok     syntax.range_counts                           0.6s  [CD{1-2}] on CC

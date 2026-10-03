@@ -1,0 +1,17 @@
+{
+ "flag": "smirks.aromatic_output_form",
+ "summary": "How an untouched aromatic ring is written in products",
+ "values": {
+  "aromatic": "aromatic SMILES kept (RDKit, chematic)",
+  "kekule": "Kekule SMILES (BioTransformer, xenosmarts)",
+  "kekule_labels": "Kekule with Ambit implicit-H labels",
+  "dearomatized": "ring saturated (pyref)",
+  "rejected": "identity template rejected (Open Babel)"
+ },
+ "cases": [
+  {"id": "toluene_methyl_identity", "op": "apply", "query": "[CH3:1]>>[C:1]", "mol": "Cc1ccccc1",
+   "expect": {"aromatic": "products:Cc1ccccc1", "kekule": "products:CC1=CC=CC=C1", "kekule_labels": "re:products:.*\\[C\\].*=.*", "dearomatized": "products:CC1CCCCC1", "rejected": "error"}}
+ ],
+ "provenance": {"discovered": "sweep rdkit vs xenosmarts 2026-10-03", "refs": ["docs/xenosmarts/AMBIT.md A21"]},
+ "fuzz": {"avoid": [["mol.aromatic", "op.apply"]]}
+}

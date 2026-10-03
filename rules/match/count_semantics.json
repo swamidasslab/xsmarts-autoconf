@@ -1,0 +1,16 @@
+{
+ "flag": "match.count_semantics",
+ "summary": "What a match count counts when one atom set matches in several orders",
+ "values": {
+  "unique_atom_sets": "one per atom set (RDKit uniquify, chematic, Open Babel GetUMapList, CDK uniqueAtoms)",
+  "ordered_mappings": "one per ordered mapping: CC on ethane = 2 (xenosmarts Matcher.count)"
+ },
+ "cases": [
+  {"id": "ethane_CC", "op": "match", "query": "CC", "mol": "CC", "expect": {"unique_atom_sets": "match:1", "ordered_mappings": "match:2"}},
+  {"id": "benzene_ring6", "op": "match", "query": "c1ccccc1", "mol": "c1ccccc1", "expect": {"unique_atom_sets": "match:1", "ordered_mappings": "match:12"}},
+  {"id": "asymmetric_control", "op": "match", "query": "CO", "mol": "CCO", "expect": {"unique_atom_sets": "match:1", "ordered_mappings": "match:1"}}
+ ],
+ "provenance": {"discovered": "sweep rdkit vs xenosmarts 2026-10-03", "refs": []},
+ "processing": "Adapter contract is unique atom sets; xenosmarts exposes only an ordered count, so this flag records the API semantics.",
+ "fuzz": {"avoid": [["sites.ordered_multiple", "op.match"]]}
+}

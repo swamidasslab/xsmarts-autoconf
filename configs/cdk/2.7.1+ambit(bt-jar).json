@@ -4,7 +4,7 @@
  "version": "2.7.1+ambit(bt-jar)",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "e1a0afabb93e00a9",
+ "rules_digest": "54a7809fa0504708",
  "flags": {
   "match.aromatic_valence": {
    "value": "kekule_total",
@@ -46,6 +46,14 @@
     "single_and_ring_benzene": "match:0",
     "double_and_ring_benzene": "match:0",
     "ring_bond_control": "match:6"
+   }
+  },
+  "match.count_semantics": {
+   "value": "unique_atom_sets",
+   "observed": {
+    "ethane_CC": "match:1",
+    "benzene_ring6": "match:1",
+    "asymmetric_control": "match:1"
    }
   },
   "match.degree_with_explicit_h": {
@@ -201,6 +209,12 @@
    "value": "untyped",
    "observed": {
     "methylate_O": "products:[C][*][C][C]"
+   }
+  },
+  "smirks.aromatic_output_form": {
+   "value": "kekule_labels",
+   "observed": {
+    "toluene_methyl_identity": "products:[C][C]1=[C][C]=[C][C]=[C]1"
    }
   },
   "smirks.aromatic_product": {

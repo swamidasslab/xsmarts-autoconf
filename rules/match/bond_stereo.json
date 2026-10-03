@@ -14,7 +14,7 @@
    "fixed_spelling": true,
    "mol": "F/C=C\\F",
    "expect": {
-    "ignored": "match:1",
+    "ignored": "match:+",
     "enforced": "match:0",
     "branch_direction_inverted": "match:0"
    }
@@ -25,7 +25,7 @@
    "query": "F/C=C/F",
    "mol": "FC=CF",
    "expect": {
-    "ignored": "match:1",
+    "ignored": "match:+",
     "enforced": "match:0",
     "branch_direction_inverted": "match:0"
    }
@@ -38,9 +38,9 @@
    "mol": "C(/F)=C/F",
    "note": "same molecule as F/C=C\\F",
    "expect": {
-    "ignored": "match:1",
+    "ignored": "match:+",
     "enforced": "match:0",
-    "branch_direction_inverted": "match:1"
+    "branch_direction_inverted": "match:+"
    }
   },
   {
@@ -55,9 +55,9 @@
    "mol": "F/C=C\\F",
    "note": "order-dependence surfaced explicitly: all four spell the cis isomer",
    "expect": {
-    "ignored": "match:1",
+    "ignored": "match:+",
     "enforced": "match:0",
-    "branch_direction_inverted": "match:0 / match:1"
+    "branch_direction_inverted": "re:match:0 / match:[1-9][0-9]*"
    }
   },
   {
@@ -68,8 +68,8 @@
    "mol": "C(/F)=C\\F",
    "note": "same molecule as F/C=C/F",
    "expect": {
-    "ignored": "match:1",
-    "enforced": "match:1",
+    "ignored": "match:+",
+    "enforced": "match:+",
     "branch_direction_inverted": "match:0"
    }
   }

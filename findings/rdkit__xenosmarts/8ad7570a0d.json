@@ -1,0 +1,27 @@
+{
+ "found": "2026-10-03",
+ "versions": {
+  "rdkit": "2026.03.6",
+  "xenosmarts": "xenosmarts(local build)"
+ },
+ "case": {
+  "op": "match",
+  "query": "CC",
+  "mol": "CC",
+  "explicit_h": false,
+  "view": "products"
+ },
+ "observed": {
+  "rdkit": "match:1",
+  "xenosmarts": "match:2"
+ },
+ "detail": {
+  "rdkit": "",
+  "xenosmarts": ""
+ },
+ "features": [
+  "op.match"
+ ],
+ "explained_by": [],
+ "status": "NEW: add a rule or extend one"
+}

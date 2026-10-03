@@ -91,6 +91,9 @@ fuzzer (finding JSON under `findings/`).
 | `smirks.equivalent_h_mappings` (A11) | The cdk adapter (SMIRKSManager without `FlagFilterEquivalentMappings`) gives one outcome per H atom (4 on methane), like RDKit and Chematic. BT and xenosmarts collapse them to 1. | catalog gap probe |
 | `products.validity_filter` (B5a) | BT drops hydroperoxide, ketene and carbon-free fragments (H₂S, HBr), but **keeps the gem-diol `CC(O)O`**, contrary to DISCOVERED_BEHAVIORS B5a (that InValidSMARTS pattern needs explicit `[H]`). | catalog gap probe |
 | `smirks.bond_order_decrease_retyping` | C=O → C–O: pyref and **xenosmarts raw apply produce dummies** (`[*H][*H2]C`), while real Ambit raw output (cdk adapter) gives `[C][C][O]` with no dummies. Likely an emulation difference in xenosmarts' A25b rule (dummies on bond-order *decrease*). | fuzz rdkit↔pyref |
+| `smirks.mapped_aromatic_nh` | **Chematic drops the H of a mapped aromatic `[nH]`**: identity `[n:1]>>[n:1]` on pyrrole gives `c1ccnc1` (invalid). An unmapped ring N–H is kept. | flipcheck rdkit↔chematic |
+| `smirks.aromatic_output_form` | Untouched aromatic rings come out Kekulé from BioTransformer and xenosmarts (`CC1=CC=CC=C1`), aromatic from RDKit and Chematic. | sweep rdkit↔xenosmarts |
+| `match.count_semantics` | xenosmarts `Matcher.count()` counts ordered mappings (`CC` on ethane = 2, benzene ring = 12); all libraries count unique atom sets. | sweep rdkit↔xenosmarts |
 | `match.substituted_aromatic_perception` | pyref errors on every non-benzene aromatic (toluene, pyridine, anisole). | fuzz rdkit↔pyref |
 
 ## For the xenosmarts agent

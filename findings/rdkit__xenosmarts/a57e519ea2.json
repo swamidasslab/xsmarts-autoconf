@@ -1,0 +1,31 @@
+{
+ "found": "2026-10-03",
+ "versions": {
+  "rdkit": "2026.03.6",
+  "xenosmarts": "xenosmarts(local build)"
+ },
+ "case": {
+  "op": "apply",
+  "query": "[C:1]>>[C:1]",
+  "mol": "Cc1ccccc1",
+  "explicit_h": false,
+  "view": "products"
+ },
+ "observed": {
+  "rdkit": "products:Cc1ccccc1",
+  "xenosmarts": "products:CC1=CC=CC=C1"
+ },
+ "detail": {
+  "rdkit": "Cc1ccccc1",
+  "xenosmarts": "CC1=CC=CC=C1"
+ },
+ "features": [
+  "edit.identity",
+  "mol.aromatic",
+  "mol.aromatic_nonbenzene",
+  "op.apply",
+  "op.apply_implicit_h"
+ ],
+ "explained_by": [],
+ "status": "NEW: add a rule or extend one"
+}

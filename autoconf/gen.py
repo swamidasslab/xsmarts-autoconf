@@ -200,6 +200,23 @@ def _pick_mol(mols, smarts: str, explicit_h: bool, focus):
 
 
 @lru_cache(maxsize=100_000)
+def match_site_features(smarts: str, smiles: str, explicit_h: bool) -> frozenset[str]:
+    """Derived features for a match query (RDKit reference): the same atom set
+    matched in several orders (count semantics differ: atom sets vs mappings)."""
+    from rdkit import Chem, RDLogger
+
+    RDLogger.DisableLog("rdApp.*")
+    q, m = Chem.MolFromSmarts(smarts), Chem.MolFromSmiles(smiles)
+    if q is None or m is None:
+        return frozenset()
+    if explicit_h:
+        m = Chem.AddHs(m)
+    uniq = len(m.GetSubstructMatches(q, uniquify=True, maxMatches=1000))
+    ordered = len(m.GetSubstructMatches(q, uniquify=False, maxMatches=1000))
+    return frozenset({"sites.ordered_multiple"} if ordered > uniq else set())
+
+
+@lru_cache(maxsize=100_000)
 def site_features(smirks: str, smiles: str, explicit_h: bool) -> frozenset[str]:
     """Derived (not recipe) features: how the reactant template hits the
     molecule, computed once with RDKit as a neutral reference.
@@ -281,6 +298,7 @@ def match_case(draw, avoid: frozenset, conj=(), focus=frozenset()):
     xh = "cond.explicit_h" not in avoid and draw(st.booleans())
     mol, mf = draw(_pick_mol(mols, query, xh, focus))
     feats |= mf | ({"cond.explicit_h"} if xh else set()) | {"op.match"}
+    feats |= match_site_features(query, mol, xh)
     if _blocked(feats, conj):
         draw(st.nothing())
     return Case("fuzz", "match", query, mol, xh), frozenset(feats)
@@ -337,7 +355,9 @@ def _atom_primitives(atom) -> list[tuple[str, frozenset]]:
     if atom.GetIsotope():
         out.append((str(atom.GetIsotope()), F({"prim.isotope"})))
     if atom.GetAtomicNum() == 1:
-        return [(elem, F({"prim.h_atom", "prim.proton"} if atom.GetFormalCharge() else {"prim.h_atom"}))] + out
+        # every primitive on an H atom is an H-atom query: tag them all
+        tag = F({"prim.h_atom", "prim.proton"} if atom.GetFormalCharge() else {"prim.h_atom"})
+        return [(p, f | tag) for p, f in [(elem, F())] + out]
     return [(elem, F())] + out
 
 
@@ -398,6 +418,7 @@ def mol_first_case(draw, avoid: frozenset, conj=(), focus=frozenset()):
         query = bond.join(f"[{e}]" for e, _ in specs)
         xh = "cond.explicit_h" not in avoid and draw(st.booleans())
         feats |= {"cond.explicit_h"} if xh else set()
+        feats |= match_site_features(query, mol, xh)
         if _blocked(feats, conj):
             draw(st.nothing())
         return Case("fuzz", "match", query, mol, xh), frozenset(feats)

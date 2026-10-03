@@ -2,12 +2,12 @@
 
 | adapter | version | options | rules digest |
 |---|---|---|---|
-| rdkit | 2026.03.6 |  | 3c57d23bca41d486 |
-| chematic | 1.0.30 |  | 3c57d23bca41d486 |
-| openbabel | 3.2.1 |  | 3c57d23bca41d486 |
-| cdk | 2.7.1+ambit(bt-jar) |  | 3c57d23bca41d486 |
-| biotransformer | 2.7.1+biotransformer(fat-jar) |  | 3c57d23bca41d486 |
-| xenosmarts | xenosmarts(local build) |  | 3c57d23bca41d486 |
+| rdkit | 2026.03.6 |  | 54a7809fa0504708 |
+| chematic | 1.0.30 |  | 54a7809fa0504708 |
+| openbabel | 3.2.1 |  | 54a7809fa0504708 |
+| cdk | 2.7.1+ambit(bt-jar) |  | 54a7809fa0504708 |
+| biotransformer | 2.7.1+biotransformer(fat-jar) |  | 54a7809fa0504708 |
+| xenosmarts | xenosmarts(local build) |  | 54a7809fa0504708 |
 
 ## Flag values
 
@@ -16,8 +16,9 @@
 | `match.aromatic_valence` **≠** | kekule_total | aromatic_bond_as_one | kekule_total | kekule_total | kekule_total | kekule_total |
 | `match.aromaticity_exocyclic_carbonyl` | daylight_like | daylight_like | daylight_like | daylight_like | daylight_like | daylight_like |
 | `match.atom_chirality` **≠** | ignored | ignored | enforced | enforced | enforced | ignored |
-| `match.bond_stereo` **≠** | ignored | branch_direction_inverted | ignored | enforced | enforced | UNKNOWN |
+| `match.bond_stereo` **≠** | ignored | branch_direction_inverted | ignored | enforced | enforced | ignored |
 | `match.compound_bond_kekule` | aromatic_aware | aromatic_aware | aromatic_aware | aromatic_aware | aromatic_aware | aromatic_aware |
+| `match.count_semantics` **≠** | unique_atom_sets | unique_atom_sets | unique_atom_sets | unique_atom_sets | unique_atom_sets | ordered_mappings |
 | `match.degree_with_explicit_h` | counts_h_atoms | counts_h_atoms | counts_h_atoms | counts_h_atoms | counts_h_atoms | counts_h_atoms |
 | `match.directional_bond` **≠** | single_or_aromatic | never_without_stereo | single_only | single_or_aromatic | single_or_aromatic | single_only |
 | `match.double_bond_vs_aromatic` | excludes_aromatic | excludes_aromatic | excludes_aromatic | excludes_aromatic | excludes_aromatic | excludes_aromatic |
@@ -39,6 +40,7 @@
 | `products.validity_filter` **≠** | kept | kept | kept | kept | bt_invalid_dropped | kept |
 | `smirks.add_atom_with_explicit_h` **≠** | h_aware | empty | rejected | untyped | h_not_adjusted | h_not_adjusted |
 | `smirks.add_unmapped_atom` **≠** | added | added | rejected | untyped | h_kept_overvalent | added |
+| `smirks.aromatic_output_form` **≠** | aromatic | aromatic | rejected | kekule_labels | kekule | kekule |
 | `smirks.aromatic_product` **≠** | aromatic_preserved | aromatic_preserved | rejected | kekule_labels | kekule_h_kept | kekule_output |
 | `smirks.bond_order_decrease_retyping` **≠** | retyped | retyped | retyped | labels | retyped | dummies |
 | `smirks.charge_hcount` **≠** | valence_rule | cation_adds_h | all_sites_in_place | untyped | h_count_kept | valence_rule |
@@ -54,6 +56,7 @@
 | `smirks.h_atom_in_template` **≠** | explicit_only | explicit_only | implicit_matchable | explicit_only_no_refill | implicit_matchable | explicit_only |
 | `smirks.hcount_query_explicit_h` **≠** | pin_adds_h | empty | rejected | preserved | preserved | preserved |
 | `smirks.identity_labels` **≠** | organic | organic | rejected | labels_need_explicit_h | organic | organic |
+| `smirks.mapped_aromatic_nh` **≠** | preserved | h_lost_when_mapped | rejected | labels | kekule | kekule |
 | `smirks.multi_site_application` **≠** | per_site | per_site | all_sites_in_place | per_site | flattened_h_kept | per_site |
 | `smirks.nested_recursive` **≠** | evaluated | rejected | rejected | always_true | always_true | always_true |
 | `smirks.neutralize_written_charge` **≠** | inherited | neutralized | neutralized | untyped | neutralized_h_kept | neutralized |
@@ -99,7 +102,7 @@
 
 Total valence `v` on aromatic atoms
 
-- **aromatic_bond_as_one** (chematic): aromatic bonds count 1: benzene C is v3 (chematic?)
+- **aromatic_bond_as_one** (chematic): aromatic bonds count 1: benzene C is v3 (chematic)
 - **kekule_total** (rdkit, openbabel, cdk, biotransformer, xenosmarts): aromatic C in benzene has v4 (RDKit/Daylight)
 
 Minimal example: `[c;v4]` on `c1ccccc1` [match]: `aromatic_bond_as_one` → `match:0`, `kekule_total` → `match:6`
@@ -125,11 +128,24 @@ Directional bonds `/` `\` in queries
 
 - **branch_direction_inverted** (chematic): enforced, but a `/` `\` inside a branch on the first stereo atom is read inverted (chematic 1.0.30): C(/F)=C/F (cis) matches trans
 - **enforced** (cdk, biotransformer): must agree; unspecified mol fails
-- **ignored** (rdkit, openbabel): cis/trans ignored
+- **ignored** (rdkit, openbabel, xenosmarts): cis/trans ignored
 
-Minimal example: `F/C=C/F` on `C(/F)=C/F` [match]: `branch_direction_inverted` → `match:1`, `enforced` → `match:0`
+Minimal example: `F/C=C/F` on `C(/F)=C/F` [match]: `branch_direction_inverted` → `match:+`, `enforced` → `match:0`
 
 Discovered: autoconf stability check 2026-10-03: chematic result changed under reordered SMILES
+
+### `match.count_semantics`
+
+What a match count counts when one atom set matches in several orders
+
+- **ordered_mappings** (xenosmarts): one per ordered mapping: CC on ethane = 2 (xenosmarts Matcher.count)
+- **unique_atom_sets** (rdkit, chematic, openbabel, cdk, biotransformer): one per atom set (RDKit uniquify, chematic, Open Babel GetUMapList, CDK uniqueAtoms)
+
+Minimal example: `CC` on `CC` [match]: `ordered_mappings` → `match:2`, `unique_atom_sets` → `match:1`
+
+Processing: Adapter contract is unique atom sets; xenosmarts exposes only an ordered count, so this flag records the API semantics.
+
+Discovered: sweep rdkit vs xenosmarts 2026-10-03
 
 ### `match.directional_bond`
 
@@ -314,6 +330,19 @@ Add unmapped product atom `[O:1]>>[O:1]C`
 Minimal example: `[O:1]>>[O:1]C` on `CCO` [apply]: `added` → `products:CCOC`, `h_kept_overvalent` → `products:CC[OH]C`
 
 Discovered: 2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)
+
+### `smirks.aromatic_output_form`
+
+How an untouched aromatic ring is written in products
+
+- **aromatic** (rdkit, chematic): aromatic SMILES kept (RDKit, chematic)
+- **kekule** (biotransformer, xenosmarts): Kekule SMILES (BioTransformer, xenosmarts)
+- **kekule_labels** (cdk): Kekule with Ambit implicit-H labels
+- **rejected** (openbabel): identity template rejected (Open Babel)
+
+Minimal example: `[CH3:1]>>[C:1]` on `Cc1ccccc1` [apply]: `aromatic` → `products:Cc1ccccc1`, `kekule` → `products:CC1=CC=CC=C1`
+
+Discovered: sweep rdkit vs xenosmarts 2026-10-03
 
 ### `smirks.aromatic_product`
 
@@ -511,6 +540,20 @@ Minimal example: `[C:1]>>[C:1]` on `CC` [apply]: `labels_need_explicit_h` → `p
 Processing: CDK: run with explicit_h=True for readable products (convertImplicitToExplicitHydrogens before apply).
 
 Discovered: 2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)
+
+### `smirks.mapped_aromatic_nh`
+
+H on an aromatic N-H when that atom is mapped in the SMIRKS
+
+- **h_lost_when_mapped** (chematic): mapped [nH] loses its H: identity on pyrrole gives c1ccnc1 (chematic 1.0.30); unmapped ring N-H is fine
+- **kekule** (biotransformer, xenosmarts): kept, output Kekule (BioTransformer, xenosmarts)
+- **labels** (cdk): Ambit implicit-H labels
+- **preserved** (rdkit): pyrrole N-H kept (RDKit)
+- **rejected** (openbabel): identity template rejected (Open Babel)
+
+Minimal example: `[n:1]>>[n:1]` on `c1cc[nH]c1` [apply]: `h_lost_when_mapped` → `products:c1ccnc1`, `kekule` → `products:C1=CNC=C1`
+
+Discovered: flipcheck rdkit vs chematic 2026-10-03 (fuzzer, flips of h_atom_query / reactant_aromaticity)
 
 ### `smirks.multi_site_application`
 

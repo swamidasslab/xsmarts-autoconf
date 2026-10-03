@@ -4,7 +4,7 @@
  "version": "1.0.30",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "e1a0afabb93e00a9",
+ "rules_digest": "54a7809fa0504708",
  "flags": {
   "match.aromatic_valence": {
    "value": "aromatic_bond_as_one",
@@ -46,6 +46,14 @@
     "single_and_ring_benzene": "match:0",
     "double_and_ring_benzene": "match:0",
     "ring_bond_control": "match:6"
+   }
+  },
+  "match.count_semantics": {
+   "value": "unique_atom_sets",
+   "observed": {
+    "ethane_CC": "match:1",
+    "benzene_ring6": "match:1",
+    "asymmetric_control": "match:1"
    }
   },
   "match.degree_with_explicit_h": {
@@ -204,6 +212,12 @@
    "value": "added",
    "observed": {
     "methylate_O": "products:CCOC"
+   }
+  },
+  "smirks.aromatic_output_form": {
+   "value": "aromatic",
+   "observed": {
+    "toluene_methyl_identity": "products:Cc1ccccc1"
    }
   },
   "smirks.aromatic_product": {

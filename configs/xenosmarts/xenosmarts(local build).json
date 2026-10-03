@@ -4,7 +4,7 @@
  "version": "xenosmarts(local build)",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "e1a0afabb93e00a9",
+ "rules_digest": "54a7809fa0504708",
  "flags": {
   "match.aromatic_valence": {
    "value": "kekule_total",
@@ -30,7 +30,7 @@
    }
   },
   "match.bond_stereo": {
-   "value": "UNKNOWN",
+   "value": "ignored",
    "observed": {
     "trans_vs_cis": "match:2",
     "trans_vs_unspecified": "match:2",
@@ -46,6 +46,14 @@
     "single_and_ring_benzene": "match:0",
     "double_and_ring_benzene": "match:0",
     "ring_bond_control": "match:12"
+   }
+  },
+  "match.count_semantics": {
+   "value": "ordered_mappings",
+   "observed": {
+    "ethane_CC": "match:2",
+    "benzene_ring6": "match:12",
+    "asymmetric_control": "match:1"
    }
   },
   "match.degree_with_explicit_h": {
@@ -204,6 +212,12 @@
    "value": "added",
    "observed": {
     "methylate_O": "products:CCOC"
+   }
+  },
+  "smirks.aromatic_output_form": {
+   "value": "kekule",
+   "observed": {
+    "toluene_methyl_identity": "products:CC1=CC=CC=C1"
    }
   },
   "smirks.aromatic_product": {
