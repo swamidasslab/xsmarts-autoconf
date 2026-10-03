@@ -1,0 +1,37 @@
+{
+ "flag": "smirks.undefined_order_both_sides",
+ "summary": "Query order on both sides between mapped atoms `-,:` >> `=,:` (A6b)",
+ "values": {
+  "first_alternative": "first product alternative applied (C=C, RDKit)",
+  "noop_applied": "reported, bond edit skipped, rest applied (Ambit A6b)",
+  "rejected": "rule rejected"
+ },
+ "cases": [
+  {
+   "id": "undef_both",
+   "op": "apply",
+   "query": "[#6:1]-,:[#6:2]>>[#6:1]=,:[#6:2]",
+   "mol": "CC",
+   "expect": {
+    "first_alternative": "products:C=C",
+    "noop_applied": [
+     "products:CC",
+     "products:[C][C]"
+    ],
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md A6b",
+   "docs/xenosmarts/DISCOVERED_BEHAVIORS.md A6b"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.undefined_bond"
+  ]
+ }
+}

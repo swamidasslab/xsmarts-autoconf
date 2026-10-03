@@ -1,0 +1,53 @@
+{
+ "flag": "match.directional_bond",
+ "summary": "Directional `/` `\\` bonds in a query without stereo context",
+ "values": {
+  "single_or_aromatic": "`/` matches single and aromatic bonds (RDKit, CDK)",
+  "single_only": "`/` matches single bonds only (Open Babel, pyref)",
+  "never_without_stereo": "`/` matches nothing unless stereo is defined, even C/C on ethane (chematic)"
+ },
+ "cases": [
+  {
+   "id": "slash_benzene",
+   "op": "match",
+   "query": "c/c",
+   "mol": "c1ccccc1",
+   "expect": {
+    "single_or_aromatic": "match:6",
+    "single_only": "match:0",
+    "never_without_stereo": "match:0"
+   }
+  },
+  {
+   "id": "slash_ethane",
+   "op": "match",
+   "query": "C/C",
+   "mol": "CC",
+   "expect": {
+    "single_or_aromatic": "match:+",
+    "single_only": "match:+",
+    "never_without_stereo": "match:0"
+   }
+  },
+  {
+   "id": "backslash_benzene",
+   "op": "match",
+   "query": "c\\c",
+   "mol": "c1ccccc1",
+   "expect": {
+    "single_or_aromatic": "match:6",
+    "single_only": "match:0",
+    "never_without_stereo": "match:0"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "fuzz rdkit vs openbabel 2026-10-03",
+  "refs": []
+ },
+ "fuzz": {
+  "avoid": [
+   "bond.stereo"
+  ]
+ }
+}

@@ -3,7 +3,7 @@
  "summary": "Aromaticity the SMIRKS reactant matcher sees on Kekule / exocyclic-C=O rings",
  "values": {
   "daylight_perceived": "Kekule benzene and 4-pyranone aromatic (RDKit, pyref)",
-  "not_perceived": "input bond orders taken as written: Kekule benzene matches [C:1] (chematic run_smirks, raw Ambit)",
+  "not_perceived": "input aromaticity taken as written: Kekule benzene matches [C:1], aromatic-spelled pyranone does not (chematic run_smirks, raw Ambit)",
   "cdk_model": "benzene aromatic, 4-pyranone not (BioTransformer B0: ElectronDonation.cdk)",
   "rejected": "transform rejected"
  },
@@ -12,6 +12,7 @@
    "id": "kekule_benzene_aliphatic_C",
    "op": "apply",
    "query": "[C:1]>>[C:1]",
+   "fixed_spelling": true,
    "mol": "C1=CC=CC=C1",
    "expect": {
     "daylight_perceived": "products:",
@@ -24,6 +25,7 @@
    "id": "pyranone_aliphatic_C",
    "op": "apply",
    "query": "[C:1]>>[C:1]",
+   "fixed_spelling": true,
    "mol": "O=C1C=COC=C1",
    "expect": {
     "daylight_perceived": "products:",
@@ -33,9 +35,24 @@
    }
   },
   {
+   "id": "pyranone_aromatic_spelling",
+   "op": "apply",
+   "query": "[C:1]>>[C:1]",
+   "fixed_spelling": true,
+   "mol": "O=c1ccocc1",
+   "note": "written aromatic: engines that take input bond orders literally now see c, not C",
+   "expect": {
+    "daylight_perceived": "products:",
+    "not_perceived": "products:",
+    "cdk_model": "re:products:.+",
+    "rejected": "error"
+   }
+  },
+  {
    "id": "tropone_aliphatic_C",
    "op": "apply",
    "query": "[C:1]>>[C:1]",
+   "fixed_spelling": true,
    "mol": "O=C1C=CC=CC=C1",
    "expect": {
     "daylight_perceived": "products:",

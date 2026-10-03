@@ -49,23 +49,25 @@ BONDS = [
     ("", F()), (":", F()), ("~", F()), ("#", F()), ("-", F({"bond.explicit_single"})),
     ("=", F({"bond.explicit_double"})), ("@", F({"bond.ring"})), ("!@", F({"bond.ring"})),
     ("/", F({"bond.stereo"})), ("->", F({"bond.dative"})),
+    ("@-", F({"bond.compound", "bond.explicit_single", "bond.ring"})), ("-;@", F({"bond.compound", "bond.explicit_single", "bond.ring"})),
+    ("=;@", F({"bond.compound", "bond.explicit_double", "bond.ring"})),
 ]
 
 MOLS = [
     ("CC", F()), ("CCO", F()), ("COC", F()), ("CN(C)C", F()), ("CC(=O)O", F()), ("C=CC=O", F()),
     ("N#CC", F()), ("ClCCBr", F()), ("CC(C)(C)O", F()), ("OCCN", F()), ("C1CC1", F({"mol.ring"})),
     ("C1CCCCC1", F({"mol.ring"})), ("C1CCOC1", F({"mol.ring"})),
-    ("c1ccccc1", F({"mol.aromatic"})), ("C1=CC=CC=C1", F({"mol.aromatic", "mol.kekule_aromatic"})), ("Cc1ccccc1", F({"mol.aromatic"})), ("c1ccncc1", F({"mol.aromatic"})),
-    ("c1cc[nH]c1", F({"mol.aromatic"})), ("Oc1ccccc1", F({"mol.aromatic"})),
+    ("c1ccccc1", F({"mol.aromatic"})), ("C1=CC=CC=C1", F({"mol.aromatic", "mol.kekule_aromatic"})), ("Cc1ccccc1", F({"mol.aromatic", "mol.aromatic_nonbenzene"})), ("c1ccncc1", F({"mol.aromatic", "mol.aromatic_nonbenzene"})),
+    ("c1cc[nH]c1", F({"mol.aromatic", "mol.aromatic_nonbenzene"})), ("Oc1ccccc1", F({"mol.aromatic", "mol.aromatic_nonbenzene"})),
     ("CS(=O)(=O)O", F({"mol.hypervalent"})), ("OP(=O)(O)O", F({"mol.hypervalent"})),
     ("C1CCC2CCCC2C1", F({"mol.fused_ring"})), ("C1CCC2(C1)CCCCC2", F({"mol.fused_ring"})),
-    ("c1ccc2ccccc2c1", F({"mol.aromatic", "mol.fused_ring"})),
+    ("c1ccc2ccccc2c1", F({"mol.aromatic", "mol.fused_ring", "mol.aromatic_nonbenzene"})),
     ("C12C3C4C1C5C2C3C45", F({"mol.cage", "mol.fused_ring"})),
     ("C1C2CC3CC1CC(C2)C3", F({"mol.cage", "mol.fused_ring"})),
     ("C[NH3+]", F({"mol.charged"})), ("CC(=O)[O-]", F({"mol.charged"})), ("C[N+](C)(C)C", F({"mol.charged"})),
     ("[13CH3]C", F({"mol.isotope"})), ("F/C=C/F", F({"mol.stereo"})), ("C[C@H](N)O", F({"mol.stereo"})),
     ("CCO.O", F({"mol.multi_component"})), ("[H+]", F({"mol.charged", "mol.proton"})),
-    ("O=C1C=COC=C1", F({"mol.aromatic_exocyclic"})), ("O=C1C=CC=CC=C1", F({"mol.aromatic_exocyclic"})),
+    ("O=C1C=COC=C1", F({"mol.aromatic_exocyclic", "mol.aromatic", "mol.aromatic_nonbenzene"})), ("O=C1C=CC=CC=C1", F({"mol.aromatic_exocyclic", "mol.aromatic", "mol.aromatic_nonbenzene"})),
 ]
 
 # SMIRKS reactant atoms: (spelling with {m} for the map number, element-ish symbol, features)
@@ -124,6 +126,11 @@ EDITS = [
     ("h_pin", F({"edit.h_pin"}), lambda a, b: "[C:1]>>[CH2:1]"),
     ("undefined_bond", F({"edit.undefined_bond"}),
      lambda a, b: f"{a.format(m=1)}-{b.format(m=2)}>>{_prod(a).format(m=1)}=,:{_prod(b).format(m=2)}"),
+    ("add_query_bond", F({"edit.add_atom", "edit.query_new_bond"}), lambda a, b: f"{a.format(m=1)}>>{_prod(a).format(m=1)}~C"),
+    ("colon_product", F({"edit.colon_product"}),
+     lambda a, b: f"{a.format(m=1)}-{b.format(m=2)}>>{_prod(a).format(m=1)}:{_prod(b).format(m=2)}"),
+    ("hydroperoxide", F({"edit.add_atom", "edit.bt_invalid"}), lambda a, b: "[O:1][H]>>[O:1]O"),
+    ("ketene", F({"edit.bond_order", "edit.bt_invalid"}), lambda a, b: "[C:1][C:2]=[O:3]>>[C:1]=[C:2]=[O:3]"),
     ("fragmented", F({"edit.fragmented"}),
      lambda a, b: f"{a.format(m=1)}.{b.format(m=2)}>>{_prod(a).format(m=1)}{_prod(b).format(m=2)}"),
 ]
@@ -307,7 +314,9 @@ def _atom_primitives(atom) -> list[tuple[str, frozenset]]:
         out.append((f"$(*~[{nbrs[0]}])", F({"prim.recursive"})))
     if atom.GetIsotope():
         out.append((str(atom.GetIsotope()), F({"prim.isotope"})))
-    return [(elem, F({"prim.h_atom"}) if atom.GetAtomicNum() == 1 else F())] + out
+    if atom.GetAtomicNum() == 1:
+        return [(elem, F({"prim.h_atom", "prim.proton"} if atom.GetFormalCharge() else {"prim.h_atom"}))] + out
+    return [(elem, F())] + out
 
 
 def _bond_spelling(bond) -> tuple[str, frozenset]:

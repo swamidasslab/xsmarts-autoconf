@@ -4,7 +4,7 @@
  "version": "2.7.1+ambit(bt-jar)",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "672c279f0e8c7737",
+ "rules_digest": "3c57d23bca41d486",
  "flags": {
   "match.aromatic_valence": {
    "value": "kekule_total",
@@ -39,11 +39,28 @@
     "trans_vs_trans_branch_spelling": "match:1"
    }
   },
+  "match.compound_bond_kekule": {
+   "value": "aromatic_aware",
+   "observed": {
+    "ring_single_benzene": "match:0",
+    "single_and_ring_benzene": "match:0",
+    "double_and_ring_benzene": "match:0",
+    "plain_single_control": "match:0"
+   }
+  },
   "match.degree_with_explicit_h": {
    "value": "counts_h_atoms",
    "observed": {
     "CD1_explicit": "match:0",
     "CD1_implicit": "match:2"
+   }
+  },
+  "match.directional_bond": {
+   "value": "single_or_aromatic",
+   "observed": {
+    "slash_benzene": "match:6",
+    "slash_ethane": "match:1",
+    "backslash_benzene": "match:6"
    }
   },
   "match.double_bond_vs_aromatic": {
@@ -118,6 +135,14 @@
     "single_on_benzene": "match:0"
    }
   },
+  "match.substituted_aromatic_perception": {
+   "value": "ok",
+   "observed": {
+    "toluene_any": "match:7",
+    "pyridine_any": "match:6",
+    "benzene_control": "match:6"
+   }
+  },
   "match.unspecified_isotope": {
    "value": "natural_is_unspecified",
    "observed": {
@@ -155,6 +180,15 @@
     "decarboxylation_co2": "products:*=C=O.[C][C][C]"
    }
   },
+  "products.validity_filter": {
+   "value": "kept",
+   "observed": {
+    "hydroperoxide": "products:[CH3][CH2][O][O]",
+    "ketene": "products:*=*=O",
+    "thiol_cleavage_h2s": "products:[C][C].[S]",
+    "gem_diol_kept": "products:[C][C]([O])[O]"
+   }
+  },
   "smirks.add_atom_with_explicit_h": {
    "value": "untyped",
    "observed": {
@@ -174,6 +208,13 @@
     "hydroxylate_benzene": "products:[O][*]1=[C][C]=[C][C]=[C]1"
    }
   },
+  "smirks.bond_order_decrease_retyping": {
+   "value": "labels",
+   "observed": {
+    "acetaldehyde_reduction": "products:[C][C][O]",
+    "nitrile_reduction": "products:[C][C]=[N]"
+   }
+  },
   "smirks.charge_hcount": {
    "value": "untyped",
    "observed": {
@@ -187,6 +228,12 @@
    "value": "untyped",
    "observed": {
     "N_plus2": "products:[*+2][C]"
+   }
+  },
+  "smirks.colon_product_bond": {
+   "value": "labels",
+   "observed": {
+    "colon_on_ethane": "products:[C][C]"
    }
   },
   "smirks.delete_mapped_by_omission": {
@@ -218,6 +265,13 @@
    },
    "errors": {
     "C_to_N": "ValueError: Map 1 atom types are inconsistent!\n"
+   }
+  },
+  "smirks.equivalent_h_mappings": {
+   "value": "per_h_atom",
+   "observed": {
+    "ethanol_oxidation_H_X": "outcomes:2",
+    "methane_chlorination_H_X": "outcomes:4"
    }
   },
   "smirks.explicit_h_apply": {
@@ -278,6 +332,15 @@
     "Nplus_to_N": "products:[*][C]"
    }
   },
+  "smirks.new_bond_query_order": {
+   "value": "rejected",
+   "observed": {
+    "add_methyl_any_bond": "error"
+   },
+   "errors": {
+    "add_methyl_any_bond": "ValueError: A product bond with undefined order: ~\n"
+   }
+  },
   "smirks.outcome_multiplicity": {
    "value": "unique_atom_sets",
    "observed": {
@@ -319,6 +382,7 @@
    "observed": {
     "kekule_benzene_aliphatic_C": "products:[C]1=[C][C]=[C][C]=[C]1",
     "pyranone_aliphatic_C": "products:[O]=[C]1[C]=[C][O][C]=[C]1",
+    "pyranone_aromatic_spelling": "products:",
     "tropone_aliphatic_C": "products:[O]=[C]1[C]=[C][C]=[C][C]=[C]1"
    }
   },
@@ -382,6 +446,12 @@
     "map_on_methyl_R": "products:[C][C]([N])[O]",
     "map_on_methyl_S": "products:[C][C]([N])[O]",
     "map_on_hydroxyl_control": "products:[C][C]([N])[O]"
+   }
+  },
+  "smirks.undefined_order_both_sides": {
+   "value": "noop_applied",
+   "observed": {
+    "undef_both": "products:[C][C]"
    }
   },
   "smirks.undefined_product_bond": {

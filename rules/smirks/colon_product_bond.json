@@ -1,0 +1,36 @@
+{
+ "flag": "smirks.colon_product_bond",
+ "summary": "Product `:` between mapped atoms of a non-aromatic bond (A14)",
+ "values": {
+  "aromatic_flag_set": "bond and atoms flagged aromatic (cc, RDKit)",
+  "aromatic_bond_written": "aromatic bond, atoms not aromatic (C:C, chematic)",
+  "no_change": "`:` never changes a bond (Ambit A14)",
+  "labels": "no change; Ambit labels"
+ },
+ "cases": [
+  {
+   "id": "colon_on_ethane",
+   "op": "apply",
+   "query": "[#6:1]-[#6:2]>>[#6:1]:[#6:2]",
+   "mol": "CC",
+   "expect": {
+    "aromatic_flag_set": "products:cc",
+    "aromatic_bond_written": "products:C:C",
+    "no_change": "products:CC",
+    "labels": "products:[C][C]"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md A14",
+   "docs/xenosmarts/DISCOVERED_BEHAVIORS.md A14"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.colon_product"
+  ]
+ }
+}

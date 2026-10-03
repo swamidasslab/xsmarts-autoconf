@@ -1,0 +1,79 @@
+{
+ "flag": "products.validity_filter",
+ "summary": "BioTransformer isValidMetabolte (B5a) on products",
+ "values": {
+  "kept": "every product returned",
+  "bt_invalid_dropped": "peroxide, ketene and carbon-free fragments (H2S, HBr) dropped; gem-diol CC(O)O kept",
+  "rejected": "transform rejected"
+ },
+ "cases": [
+  {
+   "id": "hydroperoxide",
+   "op": "apply",
+   "query": "[O:1][H]>>[O:1]O",
+   "mol": "CCO",
+   "explicit_h": true,
+   "expect": {
+    "kept": [
+     "re:products:.*O(\\]\\[)?O.*",
+     "error"
+    ],
+    "bt_invalid_dropped": "products:",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "ketene",
+   "op": "apply",
+   "query": "[C:1][C:2]=[O:3]>>[C:1]=[C:2]=[O:3]",
+   "mol": "CC=O",
+   "expect": {
+    "kept": "re:products:.+",
+    "bt_invalid_dropped": "products:",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "thiol_cleavage_h2s",
+   "op": "apply",
+   "query": "[C:1][S:2]>>[C:1].[S:2]",
+   "mol": "CCS",
+   "expect": {
+    "kept": [
+     "re:products:.*S.*",
+     "error"
+    ],
+    "bt_invalid_dropped": "products:CC",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "gem_diol_kept",
+   "op": "apply",
+   "query": "[C:1]=[O:2]>>[C:1](O)[O:2]",
+   "mol": "CC=O",
+   "note": "DISCOVERED_BEHAVIORS B5a lists gem-diol as invalid; BT keeps CC(O)O here (InValidSMARTS gem-diol pattern needs explicit [H])",
+   "expect": {
+    "kept": "*",
+    "bt_invalid_dropped": "products:CC(O)O",
+    "rejected": "*"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md B5a",
+   "docs/xenosmarts/DISCOVERED_BEHAVIORS.md B5a"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.bt_invalid",
+   [
+    "edit.disconnect",
+    "op.apply"
+   ]
+  ]
+ }
+}

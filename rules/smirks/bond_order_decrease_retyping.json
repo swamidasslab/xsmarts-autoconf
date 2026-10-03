@@ -1,0 +1,48 @@
+{
+ "flag": "smirks.bond_order_decrease_retyping",
+ "summary": "Atoms whose bond order drops (C=O -> C-O): retyped or dummies",
+ "values": {
+  "retyped": "valid product (CCO; RDKit, chematic, Open Babel, BioTransformer final)",
+  "labels": "Ambit raw: H not filled, no dummies ([C][C][O])",
+  "dummies": "atoms become dummies (pyref, xenosmarts raw apply; differs from Ambit raw)"
+ },
+ "cases": [
+  {
+   "id": "acetaldehyde_reduction",
+   "op": "apply",
+   "query": "[C:1]=[O:2]>>[C:1]-[O:2]",
+   "mol": "CC=O",
+   "expect": {
+    "retyped": "products:CCO",
+    "labels": "products:[C][C][O]",
+    "dummies": "re:products:.*\\*.*"
+   }
+  },
+  {
+   "id": "nitrile_reduction",
+   "op": "apply",
+   "query": "[C:1]#[N:2]>>[C:1]=[N:2]",
+   "mol": "CC#N",
+   "expect": {
+    "retyped": "products:CC=N",
+    "labels": "products:[C][C]=[N]",
+    "dummies": "re:products:.*\\*.*"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "fuzz rdkit vs pyref 2026-10-03",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md A25b",
+   "docs/xenosmarts/DISCOVERED_BEHAVIORS.md A25b"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   [
+    "edit.bond_order",
+    "op.apply"
+   ]
+  ]
+ }
+}

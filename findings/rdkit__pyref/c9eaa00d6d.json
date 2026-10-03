@@ -1,0 +1,30 @@
+{
+ "found": "2026-10-03",
+ "versions": {
+  "rdkit": "2026.03.6",
+  "pyref": "smarts_grammar"
+ },
+ "case": {
+  "op": "apply",
+  "query": "[C:1]=[O:2]>>[C:1]-[O:2]",
+  "mol": "CC(=O)[O-]",
+  "explicit_h": false,
+  "view": "products"
+ },
+ "observed": {
+  "rdkit": "products:CC([O-])O",
+  "pyref": "products:[*H][*H](C)[O-]"
+ },
+ "detail": {
+  "rdkit": "CC([O-])O",
+  "pyref": "[*H][*H](C)[O-]"
+ },
+ "features": [
+  "edit.bond_order",
+  "mol.charged",
+  "op.apply",
+  "op.apply_implicit_h"
+ ],
+ "explained_by": [],
+ "status": "NEW: add a rule or extend one"
+}

@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import sys
 from dataclasses import dataclass, field
 
 from .adapter import Adapter, Unsupported
@@ -130,6 +131,12 @@ class Chematic(Adapter):
 @dataclass
 class OpenBabel(Adapter):
     name: str = "openbabel"
+
+    def __post_init__(self):
+        from openbabel import openbabel as ob
+
+        ob.obErrorLog.SetOutputLevel(-1)  # its C++ log writes to stdout
+        ob.obErrorLog.StopLogging()
 
     def version(self) -> str:
         from openbabel import openbabel as ob
@@ -382,6 +389,104 @@ def _mol_smiles(mol) -> str:
     return Chem.MolToSmiles(m)
 
 
+# ------------------------------------------------------------------ xenosmarts (Rust engine)
+
+# autoconf flag -> (xenosmarts profile flag, {value: setting}). Like PYREF_FLAGS,
+# this table is the whole config -> engine wiring for round-trip tests.
+XENOSMARTS_FLAGS: dict[str, tuple[str, dict[str, bool]]] = {
+    "match.ring_size_semantics": ("ring_size_any", {"any_ring": True, "smallest_ring": False}),
+    "match.or_with_any_atom": ("or_drops_any", {"correct": False, "drops_any": True}),
+    "match.nested_recursive": ("nested_recursive_true", {"evaluated": False, "always_true": True}),
+    "match.double_bond_vs_aromatic": ("kekule_match", {"excludes_aromatic": False, "includes_aromatic": True}),
+    "match.compound_bond_kekule": ("compound_bond_kekule", {"aromatic_aware": False, "kekule_order": True}),
+}
+
+
+@dataclass
+class Xenosmarts(Adapter):
+    """``xenosmarts`` PyO3 engine (built by ``xenosmarts/build_py.sh``).
+
+    Options: ``profile`` (cdk | cdk-gate | ambit | native, default cdk),
+    ``dialect`` (default unismarts), any profile flag name -> bool, and
+    ``pipeline`` = ambit (raw ``apply``) | bt (``bt_metabolites``)."""
+
+    name: str = "xenosmarts"
+
+    @classmethod
+    def from_config(cls, flags: dict[str, str], **base) -> Xenosmarts:
+        opts = dict(base)
+        for flag, value in flags.items():
+            if flag in XENOSMARTS_FLAGS and value in XENOSMARTS_FLAGS[flag][1]:
+                fld, table = XENOSMARTS_FLAGS[flag]
+                opts[fld] = table[value]
+        return cls(options=opts)
+
+    def _x(self):
+        p = PARENT_XS
+        if str(p) not in sys.path:
+            sys.path.insert(0, str(p))
+        import xenosmarts
+
+        return xenosmarts
+
+    def version(self) -> str:
+        return "xenosmarts(local build)"
+
+    def _flags(self):
+        names = {f for _, fl in self._x().profile_flags() for f, _ in fl}
+        return {k: bool(v) for k, v in self.options.items() if k in names}
+
+    def _mol(self, smiles, explicit_h):
+        m = self._x().Mol.from_smiles(smiles)
+        return m.with_virtual_h() if explicit_h else m
+
+    def _matcher(self, smarts):
+        o = self.options
+        return self._x().Matcher(smarts, o.get("dialect", "unismarts"), o.get("profile", "cdk"), self._flags())
+
+    def parse(self, smarts):
+        self._matcher(smarts)
+
+    def match(self, smarts, smiles, explicit_h):
+        return int(self._matcher(smarts).count(self._mol(smiles, explicit_h)))
+
+    def apply(self, smirks, smiles, explicit_h):
+        rx = self._x().AmbitReaction(smirks)
+        m = self._mol(smiles, explicit_h)
+        if self.options.get("pipeline") == "bt":
+            frags = rx.bt_metabolites(m)
+            return [[_xmol_smiles(f) for f in frags]] if frags else []
+        return [_xmol_smiles(p) for p in rx.apply(m)]
+
+
+PARENT_XS = PARENT_ROOT = __import__("pathlib").Path(__file__).resolve().parents[2] / "xenosmarts" / "python"
+
+
+def _xmol_smiles(xm) -> str:
+    from rdkit import Chem
+
+    rw = Chem.RWMol()
+    pt = Chem.GetPeriodicTable()
+    for sym, charge, h, arom, iso, dummy in xm.atoms():
+        at = Chem.Atom(0 if dummy else pt.GetAtomicNumber(sym))
+        at.SetFormalCharge(charge)
+        at.SetNoImplicit(True)
+        at.SetNumExplicitHs(h)
+        if iso:
+            at.SetIsotope(iso)
+        rw.AddAtom(at)
+    bt = {1: Chem.BondType.SINGLE, 2: Chem.BondType.DOUBLE, 3: Chem.BondType.TRIPLE}
+    for a, b, order, arom, ring in xm.bonds():
+        rw.AddBond(a, b, bt.get(order, Chem.BondType.SINGLE))
+    m = rw.GetMol()
+    m.UpdatePropertyCache(strict=False)
+    try:
+        m = Chem.RemoveHs(m, sanitize=False)
+    except Exception:  # noqa: BLE001
+        pass
+    return Chem.MolToSmiles(m)
+
+
 ADAPTERS = {
     "rdkit": RDKit,
     "chematic": Chematic,
@@ -389,6 +494,7 @@ ADAPTERS = {
     "cdk": CDK,
     "biotransformer": BioTransformer,
     "pyref": PyRef,
+    "xenosmarts": Xenosmarts,
 }
 
 

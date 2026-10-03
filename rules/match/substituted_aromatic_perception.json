@@ -1,0 +1,49 @@
+{
+ "flag": "match.substituted_aromatic_perception",
+ "summary": "Molecule preparation for substituted / hetero aromatics",
+ "values": {
+  "ok": "toluene, pyridine and anisole prepare and match",
+  "error": "preparation raises for any non-benzene aromatic (pyref perceive)"
+ },
+ "cases": [
+  {
+   "id": "toluene_any",
+   "op": "match",
+   "query": "*",
+   "mol": "Cc1ccccc1",
+   "expect": {
+    "ok": "match:7",
+    "error": "error"
+   }
+  },
+  {
+   "id": "pyridine_any",
+   "op": "match",
+   "query": "*",
+   "mol": "c1ccncc1",
+   "expect": {
+    "ok": "match:6",
+    "error": "error"
+   }
+  },
+  {
+   "id": "benzene_control",
+   "op": "match",
+   "query": "*",
+   "mol": "c1ccccc1",
+   "expect": {
+    "ok": "match:6",
+    "error": "match:6"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "fuzz rdkit vs pyref 2026-10-03",
+  "refs": []
+ },
+ "fuzz": {
+  "avoid": [
+   "mol.aromatic_nonbenzene"
+  ]
+ }
+}

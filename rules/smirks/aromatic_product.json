@@ -6,7 +6,8 @@
   "kekule_labels": "Kekule, H lost (Ambit implicit-H)",
   "dearomatized": "aromatic flags dropped and H refilled as saturated (pyref)",
   "rejected": "template rejected (Open Babel Init)",
-  "kekule_h_kept": "Kekule output, substituted ring C keeps its H (BioTransformer)"
+  "kekule_h_kept": "Kekule output, substituted ring C keeps its H (BioTransformer)",
+  "kekule_output": "Kekule output, H correct (xenosmarts)"
  },
  "cases": [
   {
@@ -19,7 +20,8 @@
     "kekule_labels": "re:products:.*\\[C\\].*",
     "dearomatized": "products:C1CCCCC1",
     "rejected": "error",
-    "kekule_h_kept": "products:C1=CC=CC=C1"
+    "kekule_h_kept": "products:C1=CC=CC=C1",
+    "kekule_output": "products:C1=CC=CC=C1"
    }
   },
   {
@@ -32,7 +34,8 @@
     "kekule_labels": "re:products:.*\\*.*",
     "dearomatized": "*",
     "rejected": "error",
-    "kekule_h_kept": "products:O[CH]1=CC=CC=C1"
+    "kekule_h_kept": "products:O[CH]1=CC=CC=C1",
+    "kekule_output": "products:OC1=CC=CC=C1"
    }
   }
  ],

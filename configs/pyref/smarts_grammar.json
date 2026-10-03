@@ -4,7 +4,7 @@
  "version": "smarts_grammar",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "672c279f0e8c7737",
+ "rules_digest": "3c57d23bca41d486",
  "flags": {
   "match.aromatic_valence": {
    "value": "kekule_total",
@@ -39,11 +39,28 @@
     "trans_vs_trans_branch_spelling": "match:1"
    }
   },
+  "match.compound_bond_kekule": {
+   "value": "aromatic_aware",
+   "observed": {
+    "ring_single_benzene": "match:0",
+    "single_and_ring_benzene": "match:0",
+    "double_and_ring_benzene": "match:0",
+    "plain_single_control": "match:0"
+   }
+  },
   "match.degree_with_explicit_h": {
    "value": "counts_h_atoms",
    "observed": {
     "CD1_explicit": "match:0",
     "CD1_implicit": "match:2"
+   }
+  },
+  "match.directional_bond": {
+   "value": "single_only",
+   "observed": {
+    "slash_benzene": "match:0",
+    "slash_ethane": "match:1",
+    "backslash_benzene": "match:0"
    }
   },
   "match.double_bond_vs_aromatic": {
@@ -118,6 +135,18 @@
     "single_on_benzene": "match:0"
    }
   },
+  "match.substituted_aromatic_perception": {
+   "value": "error",
+   "observed": {
+    "toluene_any": "error",
+    "pyridine_any": "error",
+    "benzene_control": "match:6"
+   },
+   "errors": {
+    "toluene_any": "ValueError: cannot kekulize",
+    "pyridine_any": "ValueError: cannot kekulize"
+   }
+  },
   "match.unspecified_isotope": {
    "value": "natural_is_unspecified",
    "observed": {
@@ -148,7 +177,7 @@
     "grouped_cleavage": "error"
    },
    "errors": {
-    "grouped_cleavage": "ParseError: unismarts SMARTS parse failed: Unexpected token Token('opensmarts__OPEN', '(') at line 1, column 13.\nExpected one of: \n\t* $END\n\t* LSQB\nPrevious tokens: [Token('MORETHAN', '>')]\n"
+    "grouped_cleavage": "ParseError: unismarts SMARTS parse failed: Unexpected token Token('opensmarts__OPEN', '(') at line 1, column 13.\nExpected one of: \n\t* LSQB\n\t* $END\nPrevious tokens: [Token('MORETHAN', '>')]\n"
    }
   },
   "products.new_double_bond_h": {
@@ -156,6 +185,15 @@
    "observed": {
     "n_deethylation_aldehyde": "products:CC=O.CNC",
     "decarboxylation_co2": "products:*=*=O.CCC"
+   }
+  },
+  "products.validity_filter": {
+   "value": "kept",
+   "observed": {
+    "hydroperoxide": "products:CCOO",
+    "ketene": "products:[*H2]=*=O",
+    "thiol_cleavage_h2s": "products:CC.S",
+    "gem_diol_kept": "products:[*H][*H](C)O"
    }
   },
   "smirks.add_atom_with_explicit_h": {
@@ -177,6 +215,13 @@
     "hydroxylate_benzene": "products:"
    }
   },
+  "smirks.bond_order_decrease_retyping": {
+   "value": "dummies",
+   "observed": {
+    "acetaldehyde_reduction": "products:[*H][*H2]C",
+    "nitrile_reduction": "products:[*H]=[*H]C"
+   }
+  },
   "smirks.charge_hcount": {
    "value": "valence_rule",
    "observed": {
@@ -190,6 +235,12 @@
    "value": "h_cleared",
    "observed": {
     "N_plus2": "products:C[N+2]"
+   }
+  },
+  "smirks.colon_product_bond": {
+   "value": "no_change",
+   "observed": {
+    "colon_on_ethane": "products:CC"
    }
   },
   "smirks.delete_mapped_by_omission": {
@@ -221,6 +272,13 @@
    },
    "errors": {
     "C_to_N": "AmbitParseError: Map 1 atom types are inconsistent!"
+   }
+  },
+  "smirks.equivalent_h_mappings": {
+   "value": "per_h_atom",
+   "observed": {
+    "ethanol_oxidation_H_X": "outcomes:2",
+    "methane_chlorination_H_X": "outcomes:4"
    }
   },
   "smirks.explicit_h_apply": {
@@ -281,6 +339,12 @@
     "Nplus_to_N": "products:CN"
    }
   },
+  "smirks.new_bond_query_order": {
+   "value": "bond_dropped",
+   "observed": {
+    "add_methyl_any_bond": "products:C.CC"
+   }
+  },
   "smirks.outcome_multiplicity": {
    "value": "unique_atom_sets",
    "observed": {
@@ -322,6 +386,7 @@
    "observed": {
     "kekule_benzene_aliphatic_C": "products:",
     "pyranone_aliphatic_C": "products:",
+    "pyranone_aromatic_spelling": "products:",
     "tropone_aliphatic_C": "products:"
    }
   },
@@ -387,6 +452,12 @@
     "map_on_hydroxyl_control": "products:CC(N)O"
    }
   },
+  "smirks.undefined_order_both_sides": {
+   "value": "noop_applied",
+   "observed": {
+    "undef_both": "products:CC"
+   }
+  },
   "smirks.undefined_product_bond": {
    "value": "skipped",
    "observed": {
@@ -434,7 +505,7 @@
     "aromatic_selenium": "error"
    },
    "errors": {
-    "aromatic_selenium": "ParseError: unismarts SMARTS parse failed: No terminal matches 'e' in the current parser context, at line 1 col 3\n\n[se]\n  ^\nExpected one of: \n\t* HASH\n\t* \"r\"\n\t* opensmarts__TOTAL_HCOUNT\n\t* V\n\t* \"Z\"\n\t* opensmarts__CHIRAL\n\t* BARE_HYB\n\t* \"x\"\n\t* HYBRID\n\t* \"$(\"\n\t* K\n\t* RANGED_ATOM_QUERY\n\t* opensmarts__PLU"
+    "aromatic_selenium": "ParseError: unismarts SMARTS parse failed: No terminal matches 'e' in the current parser context, at line 1 col 3\n\n[se]\n  ^\nExpected one of: \n\t* BANG\n\t* COMMA\n\t* HASH\n\t* H\n\t* SEMICOLON\n\t* BARE_HYB\n\t* COLON\n\t* RSQB\n\t* V\n\t* X\n\t* opensmarts__PLUS\n\t* RANGED_ATOM_QUERY\n\t* \"$(\"\n\t* G\n\t* \"#X\"\n\t* \"A\"\n\t* D\n\t*"
    }
   },
   "syntax.cdk_hash_X": {

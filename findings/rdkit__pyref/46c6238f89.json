@@ -1,0 +1,28 @@
+{
+ "found": "2026-10-03",
+ "versions": {
+  "rdkit": "2026.03.6",
+  "pyref": "smarts_grammar"
+ },
+ "case": {
+  "op": "match",
+  "query": "C",
+  "mol": "Cc1ccccc1",
+  "explicit_h": false,
+  "view": "products"
+ },
+ "observed": {
+  "rdkit": "match:1",
+  "pyref": "error"
+ },
+ "detail": {
+  "rdkit": "",
+  "pyref": "ValueError: cannot kekulize"
+ },
+ "features": [
+  "mol.aromatic",
+  "op.match"
+ ],
+ "explained_by": [],
+ "status": "NEW: add a rule or extend one"
+}

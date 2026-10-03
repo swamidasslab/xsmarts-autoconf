@@ -1,0 +1,66 @@
+{
+ "flag": "match.compound_bond_kekule",
+ "summary": "Bare `-`/`=` inside a compound bond expression (`@-`, `-;@`) vs aromatic bonds",
+ "values": {
+  "aromatic_aware": "compound `-` still excludes aromatic bonds (Daylight)",
+  "kekule_order": "compound `-`/`=` compare the stored Kekule order (Ambit SMIRKS matcher, A7c)"
+ },
+ "cases": [
+  {
+   "id": "ring_single_benzene",
+   "op": "match",
+   "query": "[#6]@-[#6]",
+   "mol": "c1ccccc1",
+   "expect": {
+    "aromatic_aware": "match:0",
+    "kekule_order": "match:+"
+   }
+  },
+  {
+   "id": "single_and_ring_benzene",
+   "op": "match",
+   "query": "[#6]-;@[#6]",
+   "mol": "c1ccccc1",
+   "expect": {
+    "aromatic_aware": "match:0",
+    "kekule_order": "match:+"
+   }
+  },
+  {
+   "id": "double_and_ring_benzene",
+   "op": "match",
+   "query": "[#6]=;@[#6]",
+   "mol": "c1ccccc1",
+   "expect": {
+    "aromatic_aware": "match:0",
+    "kekule_order": "match:+"
+   }
+  },
+  {
+   "id": "plain_single_control",
+   "op": "match",
+   "query": "c-c",
+   "mol": "c1ccccc1",
+   "expect": {
+    "aromatic_aware": "match:0",
+    "kekule_order": "match:0"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md A7c",
+   "docs/xenosmarts/DISCOVERED_BEHAVIORS.md A7c"
+  ]
+ },
+ "processing": "Engine config: xenosmarts profile flag compound_bond_kekule. CDK SmartsPattern (gate) is aromatic_aware; only Ambit's SMIRKS matcher shows kekule_order.",
+ "fuzz": {
+  "avoid": [
+   [
+    "bond.compound",
+    "mol.aromatic"
+   ]
+  ]
+ }
+}

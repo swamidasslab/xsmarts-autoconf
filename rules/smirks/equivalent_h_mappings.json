@@ -1,0 +1,58 @@
+{
+ "flag": "smirks.equivalent_h_mappings",
+ "summary": "Mappings that differ only by which explicit H on the same atom (A11)",
+ "values": {
+  "per_h_atom": "one outcome per H atom",
+  "collapsed": "equivalent-H mappings collapse to one (Ambit FlagFilterEquivalentMappings, BioTransformer)",
+  "single_application": "one in-place application (Open Babel)"
+ },
+ "cases": [
+  {
+   "id": "ethanol_oxidation_H_X",
+   "op": "apply",
+   "query": "[H][#6:1][#8:2][H]>>[#6:1]=[#8:2]",
+   "mol": "CCO",
+   "explicit_h": true,
+   "view": "count",
+   "expect": {
+    "per_h_atom": "outcomes:2",
+    "collapsed": "outcomes:1",
+    "single_application": "outcomes:1"
+   }
+  },
+  {
+   "id": "methane_chlorination_H_X",
+   "op": "apply",
+   "query": "[#6:1][H]>>[#6:1]Cl",
+   "mol": "C",
+   "explicit_h": true,
+   "view": "count",
+   "expect": {
+    "per_h_atom": "outcomes:4",
+    "collapsed": "outcomes:1",
+    "single_application": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md A11",
+   "docs/xenosmarts/DISCOVERED_BEHAVIORS.md A11"
+  ]
+ },
+ "processing": "The cdk adapter runs SMIRKSManager without FlagFilterEquivalentMappings (per_h_atom); BioTransformer sets it (collapsed).",
+ "fuzz": {
+  "avoid": [
+   [
+    "edit.h_atom",
+    "view.count"
+   ],
+   [
+    "edit.h_atom",
+    "cond.explicit_h",
+    "sites.multiple"
+   ]
+  ]
+ }
+}

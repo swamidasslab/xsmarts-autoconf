@@ -1,0 +1,34 @@
+{
+ "flag": "smirks.new_bond_query_order",
+ "summary": "New product bond with query order `~` (A6)",
+ "values": {
+  "query_bond_copied": "product keeps a query bond (CC~C; RDKit, chematic)",
+  "rejected": "undefined order error (Ambit A6, Open Babel)",
+  "bond_dropped": "atom added, bond skipped (C.CC; pyref, xenosmarts)"
+ },
+ "cases": [
+  {
+   "id": "add_methyl_any_bond",
+   "op": "apply",
+   "query": "[C:1]>>[C:1]~C",
+   "mol": "CC",
+   "expect": {
+    "query_bond_copied": "products:CC~C",
+    "rejected": "error",
+    "bond_dropped": "re:products:.*C\\.CC.*"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md A6",
+   "docs/xenosmarts/DISCOVERED_BEHAVIORS.md A6"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.query_new_bond"
+  ]
+ }
+}
