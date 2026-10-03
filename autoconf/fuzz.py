@@ -145,7 +145,7 @@ def replay(path) -> dict:
     return {label: _adapter(label.split("[")[0]).observe(case).text for label in rec["observed"]}
 
 
-def flipcheck(a, b, *, max_examples=300, flags=None, va=None, vb=None, verbose=True) -> list[dict]:
+def flipcheck(a, b, *, max_examples=300, flags=None, va=None, vb=None, verbose=True, seed=None) -> list[dict]:
     """For each flag where A and B differ, set A's value to B's and fuzz.
     ``rediscovered`` = the shrunk example carries that flag's avoid features."""
     A, B = _adapter(a), _adapter(b)
@@ -158,7 +158,7 @@ def flipcheck(a, b, *, max_examples=300, flags=None, va=None, vb=None, verbose=T
             continue
         if f not in rules or vb.get(f) in (None, "UNKNOWN") or str(vb.get(f)).startswith("AMBIG"):
             continue
-        res = fuzz_pair(A, B, max_examples=max_examples, flips={f: vb[f]}, va=va, vb=vb, record=False)
+        res = fuzz_pair(A, B, max_examples=max_examples, flips={f: vb[f]}, va=va, vb=vb, record=False, seed=seed)
         fd = res["finding"]
         still = {frozenset(c) for c in res["avoid"]}
         masked = all(any(o <= c for o in still) for c in rules[f].avoid)

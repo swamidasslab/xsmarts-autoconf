@@ -3,7 +3,7 @@
  "summary": "Total valence `v` on aromatic atoms",
  "values": {
   "kekule_total": "aromatic C in benzene has v4 (RDKit/Daylight)",
-  "aromatic_bond_as_one": "aromatic bonds count 1: benzene C is v3 (chematic?)",
+  "aromatic_bond_as_one": "aromatic bonds count 1: benzene C is v3 (chematic)",
   "other": "neither"
  },
  "cases": [

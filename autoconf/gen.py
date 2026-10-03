@@ -75,7 +75,8 @@ RATOMS = [
     ("[C:{m}]", F()), ("[O:{m}]", F()), ("[N:{m}]", F()), ("[#6:{m}]", F()),
     ("[CH3:{m}]", F({"prim.hcount"})), ("[c:{m}]", F({"edit.aromatic"})), ("[cH:{m}]", F({"edit.aromatic", "prim.hcount"})),
     ("[N+:{m}]", F({"prim.charge", "mol.charged"})), ("[*:{m}]", F({"prim.star_mapped"})),
-    ("[C;$(CO):{m}]", F({"prim.recursive"})), ("[C;$(C[$(O)]):{m}]", F({"prim.recursive", "prim.recursive_nested"})),
+    ("[C;$(CO):{m}]", F({"prim.recursive", "syntax.smirks_reactant_logic"})),
+    ("[C;$(C[$(O)]):{m}]", F({"prim.recursive", "prim.recursive_nested", "syntax.smirks_reactant_logic"})),
 ]
 
 
@@ -131,6 +132,8 @@ EDITS = [
      lambda a, b: f"{a.format(m=1)}-{b.format(m=2)}>>{_prod(a).format(m=1)}:{_prod(b).format(m=2)}"),
     ("hydroperoxide", F({"edit.add_atom", "edit.bt_invalid"}), lambda a, b: "[O:1][H]>>[O:1]O"),
     ("ketene", F({"edit.bond_order", "edit.bt_invalid"}), lambda a, b: "[C:1][C:2]=[O:3]>>[C:1]=[C:2]=[O:3]"),
+    ("grouped_products", F({"edit.disconnect", "syntax.component_group"}),
+     lambda a, b: f"{a.format(m=1)}{b.format(m=2)}>>({_prod(a).format(m=1)}.{_prod(b).format(m=2)})"),
     ("fragmented", F({"edit.fragmented"}),
      lambda a, b: f"{a.format(m=1)}.{b.format(m=2)}>>{_prod(a).format(m=1)}{_prod(b).format(m=2)}"),
 ]
@@ -227,8 +230,13 @@ def site_features(smirks: str, smiles: str, explicit_h: bool) -> frozenset[str]:
         if rxn.GetNumReactantTemplates() == 1:
             for outcome in rxn.RunReactants((m,), 50):
                 for p in outcome:
+                    q = Chem.RWMol(p)
+                    for bd in q.GetBonds():  # query-order bonds (~, =,:) count as single
+                        if bd.GetBondType() not in (Chem.BondType.SINGLE, Chem.BondType.DOUBLE,
+                                                    Chem.BondType.TRIPLE, Chem.BondType.AROMATIC):
+                            bd.SetBondType(Chem.BondType.SINGLE)
                     try:
-                        Chem.SanitizeMol(Chem.Mol(p))
+                        Chem.SanitizeMol(q)
                     except Exception:  # noqa: BLE001
                         out.add("outcome.valence_invalid")
         return frozenset(out)
@@ -254,8 +262,15 @@ def match_case(draw, avoid: frozenset, conj=(), focus=frozenset()):
     query = "".join(parts)
     if n >= 2 and "syntax.dot" not in avoid and draw(st.booleans()):
         a, af = draw(_pick(atoms, focus))
-        query = f"{query}.{a}"
+        if "syntax.component_group" not in avoid and draw(st.booleans()):
+            query = f"({query}).({a})"
+            feats |= {"syntax.component_group"}
+        else:
+            query = f"{query}.{a}"
         feats |= af | {"syntax.dot"}
+    elif n >= 2 and "syntax.unclosed_ring" not in avoid and draw(st.integers(0, 9)) == 0:
+        query = query[:1] + "1" + query[1:] if query[0].isalpha() and query[0] != "[" else query + "1"
+        feats |= {"syntax.unclosed_ring"}
     xh = "cond.explicit_h" not in avoid and draw(st.booleans())
     mol, mf = draw(_pick_mol(mols, query, xh, focus))
     feats |= mf | ({"cond.explicit_h"} if xh else set()) | {"op.match"}
@@ -429,4 +444,6 @@ def all_features() -> frozenset:
         for it in items:
             out |= _feats(it)
     return frozenset(out | {"cond.explicit_h", "op.apply_implicit_h", "op.match", "op.apply", "syntax.dot",
-                            "sites.multiple", "sites.ordered_multiple", "outcome.valence_invalid"})
+                            "sites.multiple", "sites.ordered_multiple", "outcome.valence_invalid",
+                            "syntax.smirks_reactant_logic", "syntax.component_group", "syntax.unclosed_ring",
+                            "gen.mol_first"})
