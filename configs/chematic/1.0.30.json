@@ -4,7 +4,7 @@
  "version": "1.0.30",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "54a7809fa0504708",
+ "rules_digest": "db032ddc22425e62",
  "flags": {
   "match.aromatic_valence": {
    "value": "aromatic_bond_as_one",
@@ -154,9 +154,10 @@
    }
   },
   "match.unspecified_isotope": {
-   "value": "unspecified_is_12",
+   "value": "isotope_ignored",
    "observed": {
-    "12C_on_methane": "match:1"
+    "12C_on_methane": "match:1",
+    "13C_on_labeled_ethane": "match:2"
    }
   },
   "products.byproduct_filter": {
@@ -191,6 +192,13 @@
    "observed": {
     "n_deethylation_aldehyde": "products:CC=O.CNC",
     "decarboxylation_co2": "products:CCC.O=C=O"
+   }
+  },
+  "products.spectator_components": {
+   "value": "dropped",
+   "observed": {
+    "amine_with_butane": "objects:C[NH3+]",
+    "ethanol_with_water": "products:CCO"
    }
   },
   "products.validity_filter": {

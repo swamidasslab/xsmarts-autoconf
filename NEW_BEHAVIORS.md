@@ -21,7 +21,7 @@ fuzzer (finding JSON under `findings/`).
 |---|---|---|
 | `match.ring_count_basis` (`rules/match/ring_count_basis.json`) | `R<n>` on cages: RDKit and pyref use a symmetrized ring set (cubane `[R3]` = 8, adamantane `[R3]` = 4, bicyclo[2.2.2]octane `[R2]` = 6, norbornane `[R2]` = 4). Chematic, OB and CDK use SSSR (4 / 1 / 4 / 3). Counts are stable over 12 re-orderings on every engine. | matrix |
 | `match.ring_size_semantics` (`rules/match/ring_size_semantics.json`) | **Open Babel** `r<n>` = member of *any* ring of size n (hydrindane `[r6]` = 6; spiro). RDKit, Chematic and CDK use the smallest ring (4). pyref's default (any) matches OB, not RDKit. | matrix |
-| `match.unspecified_isotope` | Chematic: `[12C]` matches carbon with no isotope label. | matrix |
+| `match.unspecified_isotope` | **Chematic ignores isotope primitives**: `[12C]` matches unlabeled carbon, and `[13C]` matches both carbons of `[13CH3]C`. | matrix, refined by flipcheck |
 | `match.implicit_h_lowercase_h` | Chematic and OB: bare `[Ch]` does not match CH3 (Daylight: at least one implicit H). | matrix |
 | `match.proton` | Chematic, OB and pyref: `[H+]` does not match a bare proton `[H+]`. | matrix |
 | `match.h_atom_query` | OB matches `[C][H]` against **implicit** H (4 on methane, no AddHs). Chematic never matches bracket `[H]` as an atom, even after AddHs (`[#1]` works). | matrix |
@@ -92,6 +92,7 @@ fuzzer (finding JSON under `findings/`).
 | `products.validity_filter` (B5a) | BT drops hydroperoxide, ketene and carbon-free fragments (H₂S, HBr), but **keeps the gem-diol `CC(O)O`**, contrary to DISCOVERED_BEHAVIORS B5a (that InValidSMARTS pattern needs explicit `[H]`). | catalog gap probe |
 | `smirks.bond_order_decrease_retyping` | C=O → C–O: pyref and **xenosmarts raw apply produce dummies** (`[*H][*H2]C`), while real Ambit raw output (cdk adapter) gives `[C][C][O]` with no dummies. Likely an emulation difference in xenosmarts' A25b rule (dummies on bond-order *decrease*). | fuzz rdkit↔pyref |
 | `smirks.mapped_aromatic_nh` | **Chematic drops the H of a mapped aromatic `[nH]`**: identity `[n:1]>>[n:1]` on pyrrole gives `c1ccnc1` (invalid). An unmapped ring N–H is kept. | flipcheck rdkit↔chematic |
+| `products.spectator_components` | Untouched components of a multi-component substrate: RDKit and Chematic drop them. OB and xenosmarts return the whole input as one object; BioTransformer keeps them as separate fragments (then the blocklist may drop small ones); Ambit raw keeps them with labels. | sweep rdkit↔xenosmarts |
 | `smirks.aromatic_output_form` | Untouched aromatic rings come out Kekulé from BioTransformer and xenosmarts (`CC1=CC=CC=C1`), aromatic from RDKit and Chematic. | sweep rdkit↔xenosmarts |
 | `match.count_semantics` | xenosmarts `Matcher.count()` counts ordered mappings (`CC` on ethane = 2, benzene ring = 12); all libraries count unique atom sets. | sweep rdkit↔xenosmarts |
 | `match.substituted_aromatic_perception` | pyref errors on every non-benzene aromatic (toluene, pyridine, anisole). | fuzz rdkit↔pyref |

@@ -1,0 +1,31 @@
+{
+ "found": "2026-10-03",
+ "versions": {
+  "rdkit": "2026.03.6",
+  "xenosmarts": "xenosmarts(local build)"
+ },
+ "case": {
+  "op": "apply",
+  "query": "[O:1]>>[O-+:1]",
+  "mol": "CC(=O)[O-]",
+  "explicit_h": false,
+  "view": "products"
+ },
+ "observed": {
+  "rdkit": "products:CC(=O)[O+]|CC([O-])=[OH+]",
+  "xenosmarts": "products:CC(=O)[OH2+]|CC([O-])=[OH+]"
+ },
+ "detail": {
+  "rdkit": "CC([O-])=[OH+] | CC(=O)[O+]",
+  "xenosmarts": "CC([O-])=[OH+] | CC(=O)[OH2+]"
+ },
+ "features": [
+  "edit.charge_change",
+  "mol.charged",
+  "op.apply",
+  "op.apply_implicit_h",
+  "sites.multiple"
+ ],
+ "explained_by": [],
+ "status": "NEW: add a rule or extend one"
+}

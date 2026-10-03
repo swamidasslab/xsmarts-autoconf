@@ -93,7 +93,10 @@ def _prod(a: str) -> str:
 
 
 def _charge(a: str, q: str) -> str:
-    base = _prod(a).replace("+", "")
+    """Product spelling with charge ``q`` replacing any existing charge."""
+    import re
+
+    base = re.sub(r"[+-]\d*(?=:\{m\}\])", "", _prod(a))
     return base.replace(":{m}]", f"{q}:{{m}}]")
 
 
@@ -403,6 +406,8 @@ def mol_first_case(draw, avoid: frozenset, conj=(), focus=frozenset()):
     specs = []
     for at in path:
         prims = _allowed(_atom_primitives(at), avoid)
+        if not prims:
+            draw(st.nothing())
         k = draw(st.integers(1, min(3, len(prims))))
         chosen = [prims[0]] + draw(st.lists(st.sampled_from(prims[1:] or prims[:1]), min_size=k - 1, max_size=k - 1, unique=True))
         for _, f in chosen:

@@ -1,0 +1,52 @@
+{
+ "flag": "products.spectator_components",
+ "summary": "Components of a multi-component substrate that the template does not touch",
+ "values": {
+  "dropped": "only the reacted component is returned (RDKit, chematic)",
+  "kept": "the whole input comes back as one object, spectators included (Open Babel in-place, xenosmarts)",
+  "kept_split": "spectators kept as separate fragments; small ones may then hit the byproduct blocklist (BioTransformer)",
+  "kept_labels": "kept, with Ambit implicit-H labels (cdk raw)"
+ },
+ "cases": [
+  {
+   "id": "amine_with_butane",
+   "op": "apply",
+   "query": "[N:1]>>[N+:1]",
+   "mol": "CN.CCCC",
+   "view": "objects",
+   "expect": {
+    "dropped": "objects:C[NH3+]",
+    "kept": "objects:CCCC.C[NH3+]",
+    "kept_split": "objects:CCCC + C[NH3+]",
+    "kept_labels": "re:objects:.*\\[C\\].*\\..*"
+   }
+  },
+  {
+   "id": "ethanol_with_water",
+   "op": "apply",
+   "query": "[C:1]>>[C:1]",
+   "mol": "CCO.O",
+   "expect": {
+    "dropped": "re:products:CCO(\\|CCO)*",
+    "kept": [
+     "products:CCO.O",
+     "error"
+    ],
+    "kept_split": "*",
+    "kept_labels": "re:products:.*\\..*"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "sweep rdkit vs xenosmarts 2026-10-03",
+  "refs": []
+ },
+ "fuzz": {
+  "avoid": [
+   [
+    "mol.multi_component",
+    "op.apply"
+   ]
+  ]
+ }
+}

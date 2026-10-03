@@ -1,0 +1,32 @@
+{
+ "found": "2026-10-03",
+ "versions": {
+  "rdkit": "2026.03.6",
+  "xenosmarts": "xenosmarts(local build)"
+ },
+ "case": {
+  "op": "apply",
+  "query": "[C;$(CO):1]>>[C:1]",
+  "mol": "CCO.O",
+  "explicit_h": false,
+  "view": "products"
+ },
+ "observed": {
+  "rdkit": "products:CCO",
+  "xenosmarts": "products:CCO.O"
+ },
+ "detail": {
+  "rdkit": "CCO",
+  "xenosmarts": "CCO.O"
+ },
+ "features": [
+  "edit.identity",
+  "mol.multi_component",
+  "op.apply",
+  "op.apply_implicit_h",
+  "prim.recursive",
+  "syntax.smirks_reactant_logic"
+ ],
+ "explained_by": [],
+ "status": "NEW: add a rule or extend one"
+}

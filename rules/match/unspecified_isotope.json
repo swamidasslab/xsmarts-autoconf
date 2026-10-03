@@ -1,9 +1,9 @@
 {
  "flag": "match.unspecified_isotope",
- "summary": "`[12C]` against a carbon with no isotope",
+ "summary": "Isotope primitives in queries (`[12C]`, `[13C]`)",
  "values": {
-  "natural_is_unspecified": "no match",
-  "unspecified_is_12": "matches (chematic)"
+  "natural_is_unspecified": "isotope must equal the atom's label; unlabeled atoms match no isotope",
+  "isotope_ignored": "isotope primitive ignored: [12C] and [13C] match every carbon (chematic 1.0.30)"
  },
  "cases": [
   {
@@ -13,12 +13,22 @@
    "mol": "C",
    "expect": {
     "natural_is_unspecified": "match:0",
-    "unspecified_is_12": "match:1"
+    "isotope_ignored": "match:1"
+   }
+  },
+  {
+   "id": "13C_on_labeled_ethane",
+   "op": "match",
+   "query": "[13C]",
+   "mol": "[13CH3]C",
+   "expect": {
+    "natural_is_unspecified": "match:1",
+    "isotope_ignored": "match:2"
    }
   }
  ],
  "provenance": {
-  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar); refined by flipcheck 2026-10-03 ([13C] matches unlabeled C too)",
   "refs": []
  },
  "fuzz": {

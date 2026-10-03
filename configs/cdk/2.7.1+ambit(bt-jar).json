@@ -4,7 +4,7 @@
  "version": "2.7.1+ambit(bt-jar)",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "54a7809fa0504708",
+ "rules_digest": "db032ddc22425e62",
  "flags": {
   "match.aromatic_valence": {
    "value": "kekule_total",
@@ -156,7 +156,8 @@
   "match.unspecified_isotope": {
    "value": "natural_is_unspecified",
    "observed": {
-    "12C_on_methane": "match:0"
+    "12C_on_methane": "match:0",
+    "13C_on_labeled_ethane": "match:1"
    }
   },
   "products.byproduct_filter": {
@@ -188,6 +189,13 @@
    "observed": {
     "n_deethylation_aldehyde": "products:[C][*]=[O].[C][N][C]",
     "decarboxylation_co2": "products:*=C=O.[C][C][C]"
+   }
+  },
+  "products.spectator_components": {
+   "value": "kept_labels",
+   "observed": {
+    "amine_with_butane": "objects:[C][C][C][C].[C][N+]",
+    "ethanol_with_water": "products:[C][C][O].[O]"
    }
   },
   "products.validity_filter": {
