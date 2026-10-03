@@ -4,8 +4,16 @@
  "version": "3.2.1",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "d97e3285ad73a844",
+ "rules_digest": "672c279f0e8c7737",
  "flags": {
+  "match.aromatic_valence": {
+   "value": "kekule_total",
+   "observed": {
+    "benzene_v4": "match:6",
+    "benzene_v3": "match:0",
+    "pyrrole_n_v3": "match:1"
+   }
+  },
   "match.aromaticity_exocyclic_carbonyl": {
    "value": "daylight_like",
    "observed": {
@@ -372,6 +380,20 @@
     "kekule_benzene_aliphatic_C": "ValueError: OBChemTsfm.Init failed",
     "pyranone_aliphatic_C": "ValueError: OBChemTsfm.Init failed",
     "tropone_aliphatic_C": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.reactant_query_syntax": {
+   "value": "smiles_only",
+   "observed": {
+    "and_low": "error",
+    "connectivity_X": "error",
+    "or_list": "error",
+    "plain_control": "products:C=C"
+   },
+   "errors": {
+    "and_low": "ValueError: OBChemTsfm.Init failed",
+    "connectivity_X": "ValueError: OBChemTsfm.Init failed",
+    "or_list": "ValueError: OBChemTsfm.Init failed"
    }
   },
   "smirks.recursive_in_reactant": {

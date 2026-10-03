@@ -4,8 +4,16 @@
  "version": "2.7.1+biotransformer(fat-jar)",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "d97e3285ad73a844",
+ "rules_digest": "672c279f0e8c7737",
  "flags": {
+  "match.aromatic_valence": {
+   "value": "kekule_total",
+   "observed": {
+    "benzene_v4": "match:6",
+    "benzene_v3": "match:0",
+    "pyrrole_n_v3": "match:1"
+   }
+  },
   "match.aromaticity_exocyclic_carbonyl": {
    "value": "daylight_like",
    "observed": {
@@ -312,6 +320,15 @@
     "kekule_benzene_aliphatic_C": "products:",
     "pyranone_aliphatic_C": "products:O=C1C=COC=C1",
     "tropone_aliphatic_C": "products:O=C1C=CC=CC=C1"
+   }
+  },
+  "smirks.reactant_query_syntax": {
+   "value": "full_smarts",
+   "observed": {
+    "and_low": "products:CC#N",
+    "connectivity_X": "products:CC",
+    "or_list": "products:CC",
+    "plain_control": "products:"
    }
   },
   "smirks.recursive_in_reactant": {

@@ -49,6 +49,13 @@ def avoid_for(flags: set[str], rules: dict[str, Rule]) -> list[frozenset]:
     return sorted(out, key=lambda c: (len(c), sorted(c)))
 
 
+def risky_features(rules: dict[str, Rule]) -> frozenset:
+    """Every feature named by any rule's avoid list: where engines have
+    diverged before. Used to bias generation, independent of the pair."""
+    generic = {"op.apply", "op.match", "op.apply_implicit_h", "cond.explicit_h"}
+    return frozenset(x for r in rules.values() for c in r.avoid for x in c) - generic
+
+
 def explain(features: frozenset, rules: dict[str, Rule], flags=None) -> list[str]:
     """Rules (among ``flags``, default all) with an avoid conjunction fully
     present in this example. Pass the pair's divergent flags: an empty
@@ -98,7 +105,7 @@ def fuzz_pair(a, b, *, max_examples=300, flips: dict | None = None, seed=None,
     opts = dict(max_examples=max_examples, database=DB if record else None, deadline=None,
                 suppress_health_check=list(HealthCheck), phases=list(Phase))
     try:
-        case, feats = find(example(avoid), differs, settings=settings(**opts), database_key=key,
+        case, feats = find(example(avoid, focus=risky_features(rules)), differs, settings=settings(**opts), database_key=key,
                            random=None if seed is None else __import__("random").Random(seed))
     except (NoSuchExample, Unsatisfiable):
         return {"pair": [A.label(), B.label()], "known_divergent": len(known),

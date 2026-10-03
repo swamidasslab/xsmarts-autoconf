@@ -1,0 +1,56 @@
+{
+ "flag": "match.aromatic_valence",
+ "summary": "Total valence `v` on aromatic atoms",
+ "values": {
+  "kekule_total": "aromatic C in benzene has v4 (RDKit/Daylight)",
+  "aromatic_bond_as_one": "aromatic bonds count 1: benzene C is v3 (chematic?)",
+  "other": "neither"
+ },
+ "cases": [
+  {
+   "id": "benzene_v4",
+   "op": "match",
+   "query": "[c;v4]",
+   "mol": "c1ccccc1",
+   "expect": {
+    "kekule_total": "match:6",
+    "aromatic_bond_as_one": "match:0",
+    "other": "match:0"
+   }
+  },
+  {
+   "id": "benzene_v3",
+   "op": "match",
+   "query": "[c;v3]",
+   "mol": "c1ccccc1",
+   "expect": {
+    "kekule_total": "match:0",
+    "aromatic_bond_as_one": "match:6",
+    "other": "match:0"
+   }
+  },
+  {
+   "id": "pyrrole_n_v3",
+   "op": "match",
+   "query": "[n;v3]",
+   "mol": "c1cc[nH]c1",
+   "expect": {
+    "kekule_total": "match:1",
+    "aromatic_bond_as_one": "*",
+    "other": "*"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "fuzz rdkit vs chematic (molecule-first generator) 2026-10-03",
+  "refs": []
+ },
+ "fuzz": {
+  "avoid": [
+   [
+    "prim.valence",
+    "mol.aromatic"
+   ]
+  ]
+ }
+}

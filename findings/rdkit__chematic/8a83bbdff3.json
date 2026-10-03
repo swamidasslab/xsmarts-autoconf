@@ -1,0 +1,30 @@
+{
+ "found": "2026-10-03",
+ "versions": {
+  "rdkit": "2026.03.6",
+  "chematic": "1.0.30"
+ },
+ "case": {
+  "op": "match",
+  "query": "[c;v4]",
+  "mol": "c1ccccc1",
+  "explicit_h": false,
+  "view": "products"
+ },
+ "observed": {
+  "rdkit": "match:6",
+  "chematic": "match:0"
+ },
+ "detail": {
+  "rdkit": "",
+  "chematic": ""
+ },
+ "features": [
+  "gen.mol_first",
+  "mol.aromatic",
+  "op.match",
+  "prim.valence"
+ ],
+ "explained_by": [],
+ "status": "NEW: add a rule or extend one"
+}

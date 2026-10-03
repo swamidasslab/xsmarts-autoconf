@@ -1,0 +1,69 @@
+{
+ "flag": "smirks.reactant_query_syntax",
+ "summary": "SMARTS logic (`;` `,` `!`, D/X) on SMIRKS reactant atoms",
+ "values": {
+  "full_smarts": "reactant side is SMARTS",
+  "smiles_only": "reactant side parsed as SMILES: `;`, `,`, `!`, X, D fail (chematic run_smirks)",
+  "rejected": "transform rejected for other reasons"
+ },
+ "cases": [
+  {
+   "id": "and_low",
+   "op": "apply",
+   "query": "[N;#7:1]>>[N:1]",
+   "mol": "CC#N",
+   "expect": {
+    "full_smarts": "re:products:.+",
+    "smiles_only": "error",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "connectivity_X",
+   "op": "apply",
+   "query": "[CX4:1]>>[C:1]",
+   "mol": "CC",
+   "expect": {
+    "full_smarts": "re:products:.+",
+    "smiles_only": "error",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "or_list",
+   "op": "apply",
+   "query": "[C,N:1]>>[*:1]",
+   "mol": "CC",
+   "expect": {
+    "full_smarts": "*",
+    "smiles_only": "error",
+    "rejected": "*"
+   }
+  },
+  {
+   "id": "plain_control",
+   "op": "apply",
+   "query": "[C:1]-[C:2]>>[C:1]=[C:2]",
+   "mol": "CC",
+   "expect": {
+    "full_smarts": "re:products:.*",
+    "smiles_only": "re:products:.+",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "fuzz rdkit vs chematic (molecule-first generator) 2026-10-03",
+  "refs": [
+   "docs/xenosmarts/DISCOVERED_BEHAVIORS.md C1"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   [
+    "syntax.smirks_reactant_logic",
+    "op.apply"
+   ]
+  ]
+ }
+}

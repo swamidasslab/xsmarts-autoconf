@@ -1,0 +1,30 @@
+{
+ "found": "2026-10-03",
+ "versions": {
+  "rdkit": "2026.03.6",
+  "chematic": "1.0.30"
+ },
+ "case": {
+  "op": "apply",
+  "query": "[N;#7:1]>>[N:1]",
+  "mol": "N#CC",
+  "explicit_h": false,
+  "view": "products"
+ },
+ "observed": {
+  "rdkit": "products:CC#N",
+  "chematic": "error"
+ },
+ "detail": {
+  "rdkit": "CC#N",
+  "chematic": "ValueError: SMIRKS parse error: failed to parse SMILES '[N;#7:1]': invalid bracket atom at position 2: missing ']'"
+ },
+ "features": [
+  "edit.identity",
+  "gen.mol_first",
+  "op.apply",
+  "op.apply_implicit_h"
+ ],
+ "explained_by": [],
+ "status": "NEW: add a rule or extend one"
+}

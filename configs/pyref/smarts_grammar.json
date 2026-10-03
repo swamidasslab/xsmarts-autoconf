@@ -4,8 +4,16 @@
  "version": "smarts_grammar",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "d97e3285ad73a844",
+ "rules_digest": "672c279f0e8c7737",
  "flags": {
+  "match.aromatic_valence": {
+   "value": "kekule_total",
+   "observed": {
+    "benzene_v4": "match:6",
+    "benzene_v3": "match:0",
+    "pyrrole_n_v3": "match:1"
+   }
+  },
   "match.aromaticity_exocyclic_carbonyl": {
    "value": "daylight_like",
    "observed": {
@@ -140,7 +148,7 @@
     "grouped_cleavage": "error"
    },
    "errors": {
-    "grouped_cleavage": "ParseError: unismarts SMARTS parse failed: Unexpected token Token('opensmarts__OPEN', '(') at line 1, column 13.\nExpected one of: \n\t* LSQB\n\t* $END\nPrevious tokens: [Token('MORETHAN', '>')]\n"
+    "grouped_cleavage": "ParseError: unismarts SMARTS parse failed: Unexpected token Token('opensmarts__OPEN', '(') at line 1, column 13.\nExpected one of: \n\t* $END\n\t* LSQB\nPrevious tokens: [Token('MORETHAN', '>')]\n"
    }
   },
   "products.new_double_bond_h": {
@@ -317,6 +325,15 @@
     "tropone_aliphatic_C": "products:"
    }
   },
+  "smirks.reactant_query_syntax": {
+   "value": "full_smarts",
+   "observed": {
+    "and_low": "products:CC#N",
+    "connectivity_X": "products:CC",
+    "or_list": "products:CC",
+    "plain_control": "products:[*H2]=[*H2]"
+   }
+  },
   "smirks.recursive_in_reactant": {
    "value": "supported",
    "observed": {
@@ -417,7 +434,7 @@
     "aromatic_selenium": "error"
    },
    "errors": {
-    "aromatic_selenium": "ParseError: unismarts SMARTS parse failed: No terminal matches 'e' in the current parser context, at line 1 col 3\n\n[se]\n  ^\nExpected one of: \n\t* V\n\t* \"$(\"\n\t* \"x\"\n\t* \"r\"\n\t* \"#X\"\n\t* HASH\n\t* opensmarts__TOTAL_HCOUNT\n\t* \"d\"\n\t* opensmarts__MINUSMINUS\n\t* SEMICOLON\n\t* COMMA\n\t* RSQB\n\t* opensmarts__NUMBER\n\t*"
+    "aromatic_selenium": "ParseError: unismarts SMARTS parse failed: No terminal matches 'e' in the current parser context, at line 1 col 3\n\n[se]\n  ^\nExpected one of: \n\t* HASH\n\t* \"r\"\n\t* opensmarts__TOTAL_HCOUNT\n\t* V\n\t* \"Z\"\n\t* opensmarts__CHIRAL\n\t* BARE_HYB\n\t* \"x\"\n\t* HYBRID\n\t* \"$(\"\n\t* K\n\t* RANGED_ATOM_QUERY\n\t* opensmarts__PLU"
    }
   },
   "syntax.cdk_hash_X": {

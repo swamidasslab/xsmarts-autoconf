@@ -13,6 +13,8 @@ Feature names (keep in sync with rules' ``fuzz.avoid``):
 
 from __future__ import annotations
 
+from functools import lru_cache
+
 from hypothesis import strategies as st
 
 from .adapter import Case
@@ -62,7 +64,7 @@ MOLS = [
     ("C1C2CC3CC1CC(C2)C3", F({"mol.cage", "mol.fused_ring"})),
     ("C[NH3+]", F({"mol.charged"})), ("CC(=O)[O-]", F({"mol.charged"})), ("C[N+](C)(C)C", F({"mol.charged"})),
     ("[13CH3]C", F({"mol.isotope"})), ("F/C=C/F", F({"mol.stereo"})), ("C[C@H](N)O", F({"mol.stereo"})),
-    ("CCO.O", F({"mol.multi_component"})), ("[H+]", F({"mol.charged"})),
+    ("CCO.O", F({"mol.multi_component"})), ("[H+]", F({"mol.charged", "mol.proton"})),
     ("O=C1C=COC=C1", F({"mol.aromatic_exocyclic"})), ("O=C1C=CC=CC=C1", F({"mol.aromatic_exocyclic"})),
 ]
 
@@ -75,8 +77,14 @@ RATOMS = [
 ]
 
 
+_PROD: dict[str, str] = {}
+"""Product spellings registered by the molecule-first generator."""
+
+
 def _prod(a: str) -> str:
     """Product spelling of a reactant atom: strip query-only parts."""
+    if a in _PROD:
+        return _PROD[a]
     return {"[CH3:{m}]": "[C:{m}]", "[cH:{m}]": "[c:{m}]", "[C;$(CO):{m}]": "[C:{m}]",
             "[C;$(C[$(O)]):{m}]": "[C:{m}]", "[#6:{m}]": "[#6:{m}]"}.get(a, a)
 
@@ -136,6 +144,12 @@ def _blocked(feats, conj) -> bool:
     return any(c <= feats for c in conj)
 
 
+def _for_op(avoid: frozenset, conj, op: str) -> frozenset:
+    """Inside one op's generator, a conjunction ``{x, op}`` is just ``x``:
+    resolve it before drawing instead of rejecting afterwards."""
+    return avoid | {next(iter(c - {op})) for c in conj if op in c and len(c - {op}) == 1}
+
+
 def split_avoid(avoid) -> tuple[frozenset, tuple[frozenset, ...]]:
     """Conjunction list -> (single features to drop at construction,
     multi-feature conjunctions to filter after drawing)."""
@@ -143,11 +157,40 @@ def split_avoid(avoid) -> tuple[frozenset, tuple[frozenset, ...]]:
     return single, tuple(c for c in avoid if len(c) > 1 and not (c & single))
 
 
-def _pick(items):
-    return st.sampled_from(items) if items else st.nothing()
+def _pick(items, focus=frozenset()):
+    """Draw an item; with ``focus``, half the draws come from items carrying a
+    focus feature (vocabulary where engines historically diverge)."""
+    if not items:
+        return st.nothing()
+    hot = [it for it in items if _feats(it) & focus]
+    if hot and len(hot) < len(items):
+        return st.one_of(st.sampled_from(items), st.sampled_from(hot))
+    return st.sampled_from(items)
 
 
-def site_features(smirks: str, smiles: str, explicit_h: bool) -> set[str]:
+@lru_cache(maxsize=100_000)
+def _rdkit_hits(smarts: str, smiles: str, explicit_h: bool) -> bool:
+    from rdkit import Chem, RDLogger
+
+    RDLogger.DisableLog("rdApp.*")
+    q, m = Chem.MolFromSmarts(smarts), Chem.MolFromSmiles(smiles)
+    if q is None or m is None:
+        return False
+    return (Chem.AddHs(m) if explicit_h else m).HasSubstructMatch(q)
+
+
+def _pick_mol(mols, smarts: str, explicit_h: bool, focus):
+    """Mostly molecules the query / reactant template actually hits (RDKit as
+    a neutral reference), so examples exercise behavior instead of all
+    engines agreeing on "no match"; sometimes any molecule."""
+    hits = [m for m in mols if _rdkit_hits(smarts, m[0], explicit_h)]
+    if not hits:
+        return _pick(mols, focus)
+    return st.one_of(_pick(hits, focus), _pick(hits, focus), _pick(mols, focus))
+
+
+@lru_cache(maxsize=100_000)
+def site_features(smirks: str, smiles: str, explicit_h: bool) -> frozenset[str]:
     """Derived (not recipe) features: how the reactant template hits the
     molecule, computed once with RDKit as a neutral reference.
 
@@ -181,32 +224,33 @@ def site_features(smirks: str, smiles: str, explicit_h: bool) -> set[str]:
                         Chem.SanitizeMol(Chem.Mol(p))
                     except Exception:  # noqa: BLE001
                         out.add("outcome.valence_invalid")
-        return out
+        return frozenset(out)
     except Exception:  # noqa: BLE001
-        return set()
+        return frozenset()
 
 
 @st.composite
-def match_case(draw, avoid: frozenset, conj=()):
+def match_case(draw, avoid: frozenset, conj=(), focus=frozenset()):
+    avoid = _for_op(avoid, conj, "op.match")
     atoms, bonds, mols = _allowed(ATOMS, avoid), _allowed(BONDS, avoid), _allowed(MOLS, avoid)
     n = draw(st.integers(1, 3))
     feats = set()
     parts = []
     for i in range(n):
         if i:
-            b, bf = draw(_pick(bonds))
+            b, bf = draw(_pick(bonds, focus))
             parts.append(b)
             feats |= bf
-        a, af = draw(_pick(atoms))
+        a, af = draw(_pick(atoms, focus))
         parts.append(a)
         feats |= af
     query = "".join(parts)
     if n >= 2 and "syntax.dot" not in avoid and draw(st.booleans()):
-        a, af = draw(_pick(atoms))
+        a, af = draw(_pick(atoms, focus))
         query = f"{query}.{a}"
         feats |= af | {"syntax.dot"}
-    mol, mf = draw(_pick(mols))
     xh = "cond.explicit_h" not in avoid and draw(st.booleans())
+    mol, mf = draw(_pick_mol(mols, query, xh, focus))
     feats |= mf | ({"cond.explicit_h"} if xh else set()) | {"op.match"}
     if _blocked(feats, conj):
         draw(st.nothing())
@@ -214,36 +258,159 @@ def match_case(draw, avoid: frozenset, conj=()):
 
 
 @st.composite
-def apply_case(draw, avoid: frozenset, conj=()):
+def apply_case(draw, avoid: frozenset, conj=(), focus=frozenset()):
+    avoid = _for_op(avoid, conj, "op.apply")
     edits, ratoms, mols, views = (_allowed(EDITS, avoid), _allowed(RATOMS, avoid),
                                   _allowed(MOLS, avoid), _allowed(VIEWS, avoid))
-    name, ef, build = draw(_pick(edits))
-    a, af = draw(_pick(ratoms))
-    b, bf = draw(_pick(ratoms))
-    mol, mf = draw(_pick(mols))
-    view, vf = draw(_pick(views))
+    name, ef, build = draw(_pick(edits, focus))
+    a, af = draw(_pick(ratoms, focus))
+    b, bf = draw(_pick(ratoms, focus))
+    view, vf = draw(_pick(views, focus))
     can_implicit = "op.apply_implicit_h" not in avoid
     can_explicit = "cond.explicit_h" not in avoid
     if not (can_implicit or can_explicit):
         draw(st.nothing())
     xh = can_explicit and (not can_implicit or draw(st.booleans()))
+    smirks = build(a, b)
+    mol, mf = draw(_pick_mol(mols, smirks.split(">")[0], xh, focus))
     feats = set(ef | af | bf | mf | vf) | {"op.apply"}
     feats |= {"cond.explicit_h"} if xh else {"op.apply_implicit_h"}
-    smirks = build(a, b)
     feats |= site_features(smirks, mol, xh)
     if feats & avoid or _blocked(feats, conj):
         draw(st.nothing())  # combined recipe hit an avoided feature / conjunction
     return Case("fuzz", "apply", smirks, mol, xh, view), frozenset(feats)
 
 
-def example(avoid, ops=("match", "apply")):
-    """Strategy of (Case, features) outside every avoid conjunction."""
+# ------------------------------------------------------------ molecule-first
+
+def _atom_primitives(atom) -> list[tuple[str, frozenset]]:
+    """Primitives that are true for this RDKit atom, each feature-tagged.
+    RDKit's perception is the neutral reference; engines that perceive the
+    molecule differently show up as findings."""
+    sym = atom.GetSymbol()
+    elem = sym.lower() if atom.GetIsAromatic() else sym
+    ri = atom.GetOwningMol().GetRingInfo()
+    nrings = ri.NumAtomRings(atom.GetIdx())
+    out = [(f"#{atom.GetAtomicNum()}", F()), ("a" if atom.GetIsAromatic() else "A", F({"prim.aliphatic_A"} if not atom.GetIsAromatic() else set())),
+           (f"H{atom.GetTotalNumHs()}", F({"prim.hcount"})), (f"D{atom.GetDegree()}", F({"prim.degree"})),
+           (f"X{atom.GetTotalDegree()}", F({"prim.connectivity"})), (f"v{atom.GetTotalValence()}", F({"prim.valence"})),
+           (f"h{atom.GetTotalNumHs()}", F({"prim.implicit_h"})), (f"R{nrings}", F({"prim.ring_count_R"}))]
+    if nrings:
+        smallest = min(len(r) for r in ri.AtomRings() if atom.GetIdx() in r)
+        out.append((f"r{smallest}", F({"prim.ring_size_r"})))
+        out.append((f"x{sum(1 for b in atom.GetBonds() if b.IsInRing())}", F({"prim.ring_conn"})))
+    if atom.GetFormalCharge():
+        c = atom.GetFormalCharge()
+        out.append((("+" if c > 0 else "-") + (str(abs(c)) if abs(c) > 1 else ""), F({"prim.charge"})))
+    nbrs = sorted({n.GetSymbol() for n in atom.GetNeighbors() if n.GetAtomicNum() > 1})
+    if nbrs:
+        out.append((f"$(*~[{nbrs[0]}])", F({"prim.recursive"})))
+    if atom.GetIsotope():
+        out.append((str(atom.GetIsotope()), F({"prim.isotope"})))
+    return [(elem, F({"prim.h_atom"}) if atom.GetAtomicNum() == 1 else F())] + out
+
+
+def _bond_spelling(bond) -> tuple[str, frozenset]:
+    from rdkit import Chem
+
+    if bond.GetIsAromatic():
+        return ":", F()
+    t = bond.GetBondType()
+    if t == Chem.BondType.DOUBLE:
+        return "=", F({"bond.explicit_double"})
+    if t == Chem.BondType.TRIPLE:
+        return "#", F()
+    return "-", F({"bond.explicit_single"})
+
+
+@lru_cache(maxsize=1000)
+def _rdmol(smiles: str, explicit_h: bool):
+    from rdkit import Chem
+
+    m = Chem.MolFromSmiles(smiles)
+    return Chem.AddHs(m) if explicit_h else m
+
+
+@st.composite
+def mol_first_case(draw, avoid: frozenset, conj=(), focus=frozenset()):
+    """Draw a molecule, then a 1-2 atom path in it, then a query whose atoms
+    are built from primitives true for those atoms; optionally turn it into a
+    SMIRKS by mapping the atoms and applying a tagged edit recipe."""
+    op = draw(st.sampled_from(["match", "apply"]))
+    avoid = _for_op(avoid, conj, f"op.{op}")
+    mols = _allowed(MOLS, avoid)
+    mol, mf = draw(_pick(mols, focus))
+    if "." in mol:
+        draw(st.nothing())
+    m = _rdmol(mol, False)
+    i = draw(st.integers(0, m.GetNumAtoms() - 1))
+    path = [m.GetAtomWithIdx(i)]
+    if draw(st.booleans()) and path[0].GetDegree():
+        nb = draw(st.sampled_from(sorted(n.GetIdx() for n in path[0].GetNeighbors())))
+        path.append(m.GetAtomWithIdx(nb))
+    feats = set(mf) | {f"op.{op}", "gen.mol_first"}
+    specs = []
+    for at in path:
+        prims = _allowed(_atom_primitives(at), avoid)
+        k = draw(st.integers(1, min(3, len(prims))))
+        chosen = [prims[0]] + draw(st.lists(st.sampled_from(prims[1:] or prims[:1]), min_size=k - 1, max_size=k - 1, unique=True))
+        for _, f in chosen:
+            feats |= f
+        specs.append((";".join(dict.fromkeys(p for p, _ in chosen)), at))
+    bond = ""
+    if len(path) == 2:
+        bond, bf = _bond_spelling(m.GetBondBetweenAtoms(path[0].GetIdx(), path[1].GetIdx()))
+        if bf & avoid:
+            bond, bf = "~", F()
+        feats |= bf
+    if op == "match":
+        query = bond.join(f"[{e}]" for e, _ in specs)
+        xh = "cond.explicit_h" not in avoid and draw(st.booleans())
+        feats |= {"cond.explicit_h"} if xh else set()
+        if _blocked(feats, conj):
+            draw(st.nothing())
+        return Case("fuzz", "match", query, mol, xh), frozenset(feats)
+    ratoms = []
+    for e, at in specs:
+        sym = at.GetSymbol().lower() if at.GetIsAromatic() else at.GetSymbol()
+        c = at.GetFormalCharge()
+        chg = ("+" if c > 0 else "-") + (str(abs(c)) if abs(c) > 1 else "") if c else ""
+        r = f"[{e}:{{m}}]"
+        _PROD[r] = f"[{sym}{chg}:{{m}}]"
+        ratoms.append(r)
+    if any(";" in e for e, _ in specs):
+        feats.add("syntax.smirks_reactant_logic")
+    two = len(ratoms) == 2
+    edits = [e for e in _allowed(EDITS, avoid) if two == ("{m}" in e[2]("A{m}", "B{m}").split(">")[0].replace("A{m}", "", 1))]
+    name, ef, build = draw(_pick(edits, focus))
+    smirks = build(ratoms[0], ratoms[-1])
+    if two and bond not in ("", "-"):
+        smirks = smirks.replace(ratoms[0].format(m=1) + ratoms[1].format(m=2),
+                                ratoms[0].format(m=1) + bond + ratoms[1].format(m=2), 1)
+    view, vf = draw(_pick(_allowed(VIEWS, avoid), focus))
+    can_implicit = "op.apply_implicit_h" not in avoid
+    can_explicit = "cond.explicit_h" not in avoid
+    if not (can_implicit or can_explicit):
+        draw(st.nothing())
+    xh = can_explicit and (not can_implicit or draw(st.booleans()))
+    feats |= set(ef | vf) | ({"cond.explicit_h"} if xh else {"op.apply_implicit_h"})
+    feats |= site_features(smirks, mol, xh)
+    if feats & avoid or _blocked(feats, conj):
+        draw(st.nothing())
+    return Case("fuzz", "apply", smirks, mol, xh, view), frozenset(feats)
+
+
+def example(avoid, ops=("match", "apply"), focus=frozenset()):
+    """Strategy of (Case, features) outside every avoid conjunction, biased
+    toward ``focus`` features."""
     single, conj = split_avoid(avoid)
     strategies = []
     if "match" in ops and "op.match" not in single:
-        strategies.append(match_case(single, conj))
+        strategies.append(match_case(single, conj, focus))
     if "apply" in ops and "op.apply" not in single:
-        strategies.append(apply_case(single, conj))
+        strategies.append(apply_case(single, conj, focus))
+    if "mol_first" in ops or ops == ("match", "apply"):
+        strategies.append(mol_first_case(single, conj, focus))
     return st.one_of(strategies) if strategies else st.nothing()
 
 

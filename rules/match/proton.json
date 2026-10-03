@@ -23,7 +23,10 @@
  },
  "fuzz": {
   "avoid": [
-   "prim.proton"
+   [
+    "prim.proton",
+    "mol.proton"
+   ]
   ]
  }
 }
