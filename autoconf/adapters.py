@@ -397,6 +397,7 @@ XENOSMARTS_FLAGS: dict[str, tuple[str, dict[str, bool]]] = {
     "match.ring_size_semantics": ("ring_size_any", {"any_ring": True, "smallest_ring": False}),
     "match.or_with_any_atom": ("or_drops_any", {"correct": False, "drops_any": True}),
     "match.nested_recursive": ("nested_recursive_true", {"evaluated": False, "always_true": True}),
+    "match.single_bond_vs_aromatic": ("kekule_match", {"excludes_aromatic": False, "includes_aromatic": True}),
     "match.double_bond_vs_aromatic": ("kekule_match", {"excludes_aromatic": False, "includes_aromatic": True}),
     "match.compound_bond_kekule": ("compound_bond_kekule", {"aromatic_aware": False, "kekule_order": True}),
 }

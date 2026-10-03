@@ -37,13 +37,13 @@
    }
   },
   {
-   "id": "plain_single_control",
+   "id": "ring_bond_control",
    "op": "match",
-   "query": "c-c",
+   "query": "[#6]@[#6]",
    "mol": "c1ccccc1",
    "expect": {
-    "aromatic_aware": "match:0",
-    "kekule_order": "match:0"
+    "aromatic_aware": "match:+",
+    "kekule_order": "match:+"
    }
   }
  ],

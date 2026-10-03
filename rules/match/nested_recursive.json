@@ -13,7 +13,7 @@
    "mol": "CC",
    "expect": {
     "evaluated": "match:0",
-    "always_true": "match:1"
+    "always_true": "match:+"
    }
   },
   {

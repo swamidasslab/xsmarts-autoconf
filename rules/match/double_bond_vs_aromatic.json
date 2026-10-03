@@ -19,10 +19,20 @@
   {
    "id": "double_on_kekule_benzene",
    "op": "match",
-   "query": "C=C",
+   "query": "[#6]=[#6]",
    "mol": "C1=CC=CC=C1",
    "expect": {
     "excludes_aromatic": "match:0",
+    "includes_aromatic": "match:+"
+   }
+  },
+  {
+   "id": "double_control_ethene",
+   "op": "match",
+   "query": "[#6]=[#6]",
+   "mol": "C=C",
+   "expect": {
+    "excludes_aromatic": "match:+",
     "includes_aromatic": "match:+"
    }
   }
