@@ -103,6 +103,11 @@ fuzzer (finding JSON under `findings/`).
 - Round trip (`python -m autoconf roundtrip --blinded 24`) passes for all 5 profile flags, with one coupling found and declared: `kekule_match=True` implies Kekulé comparison inside compound bonds (`compound_bond_kekule` reads `kekule_order` regardless).
 - `bond_order_decrease_retyping` above is the one place xenosmarts' raw apply differs from real Ambit raw output.
 
+## For the pyref / smarts_grammar owner
+
+- Round trip: `double_excludes_aromatic=False` makes `=` match aromatic bonds **only when the molecule was written Kekulé** (`C1=CC=CC=C1`: 3 matches; `c1ccccc1`: 0). Recorded as `match.double_bond_vs_aromatic = kekule_input_only`.
+- pyref errors on any non-benzene aromatic (toluene, pyridine, anisole) and dearomatizes products.
+
 ## Not yet captured as a flag
 
 - pyref raises on `[R2]` against pyrene: a case of `match.substituted_aromatic_perception`.

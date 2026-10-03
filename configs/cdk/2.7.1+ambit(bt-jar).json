@@ -4,7 +4,7 @@
  "version": "2.7.1+ambit(bt-jar)",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "db032ddc22425e62",
+ "rules_digest": "6c530e61e71f8019",
  "flags": {
   "match.aromatic_valence": {
    "value": "kekule_total",

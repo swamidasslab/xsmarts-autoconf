@@ -6,15 +6,50 @@
   "h_lost_when_mapped": "mapped [nH] loses its H: identity on pyrrole gives c1ccnc1 (chematic 1.0.30); unmapped ring N-H is fine",
   "kekule": "kept, output Kekule (BioTransformer, xenosmarts)",
   "labels": "Ambit implicit-H labels",
-  "rejected": "identity template rejected (Open Babel)"
+  "rejected": "identity template rejected (Open Babel)",
+  "dearomatized": "ring saturated (pyref)"
  },
  "cases": [
-  {"id": "pyrrole_n_identity", "op": "apply", "query": "[n:1]>>[n:1]", "mol": "c1cc[nH]c1",
-   "expect": {"preserved": "products:c1cc[nH]c1", "h_lost_when_mapped": "products:c1ccnc1", "kekule": "products:C1=CNC=C1", "labels": "re:products:.*\\[N\\].*", "rejected": "error"}},
-  {"id": "pyrrole_c_identity_control", "op": "apply", "query": "[c:1]>>[c:1]", "mol": "c1cc[nH]c1",
+  {
+   "id": "pyrrole_n_identity",
+   "op": "apply",
+   "query": "[n:1]>>[n:1]",
+   "mol": "c1cc[nH]c1",
+   "expect": {
+    "preserved": "products:c1cc[nH]c1",
+    "h_lost_when_mapped": "products:c1ccnc1",
+    "kekule": "products:C1=CNC=C1",
+    "labels": "re:products:.*\\[N\\].*",
+    "rejected": "error",
+    "dearomatized": "products:C1CCNC1"
+   }
+  },
+  {
+   "id": "pyrrole_c_identity_control",
+   "op": "apply",
+   "query": "[c:1]>>[c:1]",
+   "mol": "c1cc[nH]c1",
    "note": "unmapped N-H: chematic keeps it",
-   "expect": {"preserved": "products:c1cc[nH]c1", "h_lost_when_mapped": "products:c1cc[nH]c1", "kekule": "products:C1=CNC=C1", "labels": "*", "rejected": "error"}}
+   "expect": {
+    "preserved": "products:c1cc[nH]c1",
+    "h_lost_when_mapped": "products:c1cc[nH]c1",
+    "kekule": "products:C1=CNC=C1",
+    "labels": "*",
+    "rejected": "error",
+    "dearomatized": "products:C1CCNC1"
+   }
+  }
  ],
- "provenance": {"discovered": "flipcheck rdkit vs chematic 2026-10-03 (fuzzer, flips of h_atom_query / reactant_aromaticity)", "refs": []},
- "fuzz": {"avoid": [["edit.mapped_aromatic_nh", "op.apply"]]}
+ "provenance": {
+  "discovered": "flipcheck rdkit vs chematic 2026-10-03 (fuzzer, flips of h_atom_query / reactant_aromaticity)",
+  "refs": []
+ },
+ "fuzz": {
+  "avoid": [
+   [
+    "edit.mapped_aromatic_nh",
+    "op.apply"
+   ]
+  ]
+ }
 }

@@ -4,7 +4,7 @@
  "version": "smarts_grammar",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "3c57d23bca41d486",
+ "rules_digest": "6c530e61e71f8019",
  "flags": {
   "match.aromatic_valence": {
    "value": "kekule_total",
@@ -45,7 +45,15 @@
     "ring_single_benzene": "match:0",
     "single_and_ring_benzene": "match:0",
     "double_and_ring_benzene": "match:0",
-    "plain_single_control": "match:0"
+    "ring_bond_control": "match:6"
+   }
+  },
+  "match.count_semantics": {
+   "value": "unique_atom_sets",
+   "observed": {
+    "ethane_CC": "match:1",
+    "benzene_ring6": "match:1",
+    "asymmetric_control": "match:1"
    }
   },
   "match.degree_with_explicit_h": {
@@ -67,7 +75,8 @@
    "value": "excludes_aromatic",
    "observed": {
     "double_on_benzene": "match:0",
-    "double_on_kekule_benzene": "match:0"
+    "double_on_kekule_benzene": "match:0",
+    "double_control_ethene": "match:1"
    }
   },
   "match.h_atom_query": {
@@ -132,7 +141,8 @@
   "match.single_bond_vs_aromatic": {
    "value": "excludes_aromatic",
    "observed": {
-    "single_on_benzene": "match:0"
+    "single_on_benzene": "match:0",
+    "single_any_atoms_benzene": "match:0"
    }
   },
   "match.substituted_aromatic_perception": {
@@ -150,7 +160,8 @@
   "match.unspecified_isotope": {
    "value": "natural_is_unspecified",
    "observed": {
-    "12C_on_methane": "match:0"
+    "12C_on_methane": "match:0",
+    "13C_on_labeled_ethane": "match:1"
    }
   },
   "products.byproduct_filter": {
@@ -172,12 +183,9 @@
    }
   },
   "products.grouped_product_component": {
-   "value": "rejected",
+   "value": "one_object",
    "observed": {
-    "grouped_cleavage": "error"
-   },
-   "errors": {
-    "grouped_cleavage": "ParseError: unismarts SMARTS parse failed: Unexpected token Token('opensmarts__OPEN', '(') at line 1, column 13.\nExpected one of: \n\t* LSQB\n\t* $END\nPrevious tokens: [Token('MORETHAN', '>')]\n"
+    "grouped_cleavage": "objects:CC.O"
    }
   },
   "products.new_double_bond_h": {
@@ -185,6 +193,13 @@
    "observed": {
     "n_deethylation_aldehyde": "products:CC=O.CNC",
     "decarboxylation_co2": "products:*=*=O.CCC"
+   }
+  },
+  "products.spectator_components": {
+   "value": "kept",
+   "observed": {
+    "amine_with_butane": "objects:CCCC.C[NH3+]",
+    "ethanol_with_water": "products:CCO.O"
    }
   },
   "products.validity_filter": {
@@ -206,6 +221,15 @@
    "value": "added",
    "observed": {
     "methylate_O": "products:CCOC"
+   }
+  },
+  "smirks.aromatic_output_form": {
+   "value": "rejected",
+   "observed": {
+    "toluene_methyl_identity": "error"
+   },
+   "errors": {
+    "toluene_methyl_identity": "ValueError: cannot kekulize"
    }
   },
   "smirks.aromatic_product": {
@@ -318,6 +342,13 @@
    "observed": {
     "ident_implicit": "products:CC",
     "ident_explicit": "products:CC"
+   }
+  },
+  "smirks.mapped_aromatic_nh": {
+   "value": "dearomatized",
+   "observed": {
+    "pyrrole_n_identity": "products:C1CCNC1",
+    "pyrrole_c_identity_control": "products:C1CCNC1"
    }
   },
   "smirks.multi_site_application": {
@@ -505,7 +536,7 @@
     "aromatic_selenium": "error"
    },
    "errors": {
-    "aromatic_selenium": "ParseError: unismarts SMARTS parse failed: No terminal matches 'e' in the current parser context, at line 1 col 3\n\n[se]\n  ^\nExpected one of: \n\t* BANG\n\t* COMMA\n\t* HASH\n\t* H\n\t* SEMICOLON\n\t* BARE_HYB\n\t* COLON\n\t* RSQB\n\t* V\n\t* X\n\t* opensmarts__PLUS\n\t* RANGED_ATOM_QUERY\n\t* \"$(\"\n\t* G\n\t* \"#X\"\n\t* \"A\"\n\t* D\n\t*"
+    "aromatic_selenium": "ParseError: unismarts SMARTS parse failed: No terminal matches 'e' in the current parser context, at line 1 col 3\n\n[se]\n  ^\nExpected one of: \n\t* HASH\n\t* \"#X\"\n\t* RSQB\n\t* opensmarts__TOTAL_HCOUNT\n\t* \"r\"\n\t* opensmarts__MINUSMINUS\n\t* COMMA\n\t* COLON\n\t* G\n\t* opensmarts__SYMBOL\n\t* D\n\t* opensmarts__NUMBER\n\t"
    }
   },
   "syntax.cdk_hash_X": {
@@ -522,14 +553,10 @@
    }
   },
   "syntax.component_grouping": {
-   "value": "rejected",
+   "value": "ignored",
    "observed": {
-    "separate_groups_same_component": "error",
-    "same_group_two_components": "error"
-   },
-   "errors": {
-    "separate_groups_same_component": "ParseError: unismarts SMARTS parse failed: Unexpected token Token('opensmarts__OPEN', '(') at line 1, column 1.\nExpected one of: \n\t* LSQB\nPrevious tokens: [None]\n",
-    "same_group_two_components": "ParseError: unismarts SMARTS parse failed: Unexpected token Token('opensmarts__OPEN', '(') at line 1, column 1.\nExpected one of: \n\t* LSQB\nPrevious tokens: [None]\n"
+    "separate_groups_same_component": "match:1",
+    "same_group_two_components": "match:1"
    }
   },
   "syntax.dative_bond": {

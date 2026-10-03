@@ -3,7 +3,8 @@
  "summary": "Explicit `=` against an aromatic bond",
  "values": {
   "excludes_aromatic": "Daylight: `=` never matches aromatic",
-  "includes_aromatic": "`=` matches Kekule double of aromatic ring"
+  "includes_aromatic": "`=` matches Kekule double of aromatic ring",
+  "kekule_input_only": "`=` matches aromatic bonds only when the molecule was written Kekule (pyref with double_excludes_aromatic=False)"
  },
  "cases": [
   {
@@ -13,7 +14,8 @@
    "mol": "c1ccccc1",
    "expect": {
     "excludes_aromatic": "match:0",
-    "includes_aromatic": "match:+"
+    "includes_aromatic": "match:+",
+    "kekule_input_only": "match:0"
    }
   },
   {
@@ -23,8 +25,10 @@
    "mol": "C1=CC=CC=C1",
    "expect": {
     "excludes_aromatic": "match:0",
-    "includes_aromatic": "match:+"
-   }
+    "includes_aromatic": "match:+",
+    "kekule_input_only": "match:+"
+   },
+   "fixed_spelling": true
   },
   {
    "id": "double_control_ethene",
@@ -33,7 +37,8 @@
    "mol": "C=C",
    "expect": {
     "excludes_aromatic": "match:+",
-    "includes_aromatic": "match:+"
+    "includes_aromatic": "match:+",
+    "kekule_input_only": "match:+"
    }
   }
  ],

@@ -306,8 +306,9 @@ PYREF_FLAGS: dict[str, tuple[str, dict[str, bool]]] = {
     "match.ring_size_semantics": ("ring_size_any", {"any_ring": True, "smallest_ring": False}),
     "match.single_bond_vs_aromatic": ("single_excludes_aromatic",
                                       {"excludes_aromatic": True, "includes_aromatic": False}),
+    # pyref's False setting only reaches Kekule-written input (round trip finding)
     "match.double_bond_vs_aromatic": ("double_excludes_aromatic",
-                                      {"excludes_aromatic": True, "includes_aromatic": False}),
+                                      {"excludes_aromatic": True, "kekule_input_only": False}),
     "match.or_with_any_atom": ("or_drops_any", {"correct": False, "drops_any": True}),
     "match.nested_recursive": ("nested_recursive_true", {"evaluated": False, "always_true": True}),
 }
