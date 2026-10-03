@@ -22,11 +22,12 @@
    "id": "diol_oxidation_two_sites",
    "op": "apply",
    "query": "[O:1][C:2]>>[O:1]=[C:2]",
+   "orderings": 6,
    "mol": "OCC(C)O",
    "expect": {
     "per_site": "re:products:[^|]+\\|[^|]+",
     "all_sites_in_place": "products:CC(=O)C=O",
-    "flattened_h_kept": "re:products:[^|]*"
+    "flattened_h_kept": "re:products:[^|]*( / products:[^|]*)*"
    }
   }
  ],

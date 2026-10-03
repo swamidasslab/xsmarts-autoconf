@@ -1,0 +1,54 @@
+{
+ "flag": "smirks.site_choice_order_dependence",
+ "summary": "Which mapping/site survives depends on input atom order",
+ "values": {
+  "order_independent": "same products for every spelling of the molecule",
+  "mapping_order_dependent": "symmetric pattern: which end is which follows atom order (chematic, Open Babel)",
+  "site_order_dependent": "several sites: which site survives follows atom order (BioTransformer, Ambit A8c)"
+ },
+ "cases": [
+  {
+   "id": "symmetric_delete",
+   "op": "apply",
+   "query": "[C:1][C:2]>>[C:1]",
+   "orderings": 6,
+   "mol": "CCO",
+   "note": "the same atom pair matches in two orders; the deleted end decides C vs CO",
+   "expect": {
+    "order_independent": "re:[^/]*",
+    "mapping_order_dependent": "re:.* / .*",
+    "site_order_dependent": "re:[^/]*"
+   }
+  },
+  {
+   "id": "two_site_oxidation",
+   "op": "apply",
+   "query": "[O:1][C:2]>>[O:1]=[C:2]",
+   "orderings": 6,
+   "mol": "OCC(C)O",
+   "expect": {
+    "order_independent": "re:[^/]*",
+    "mapping_order_dependent": "*",
+    "site_order_dependent": "re:.* / .*"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "autoconf stability check 2026-10-03 (systematic reorderings)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md A8, A8c"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   [
+    "sites.ordered_multiple",
+    "op.apply"
+   ],
+   [
+    "sites.multiple",
+    "op.apply"
+   ]
+  ]
+ }
+}

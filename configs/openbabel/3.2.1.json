@@ -4,7 +4,7 @@
  "version": "3.2.1",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "3763e977f720f2fb",
+ "rules_digest": "390103b7d4d58f85",
  "flags": {
   "match.aromaticity_exocyclic_carbonyl": {
    "value": "daylight_like",
@@ -307,7 +307,6 @@
    "observed": {
     "bond_order_count": "outcomes:1",
     "ring_open_count": "error",
-    "symmetric_delete_products": "products:[CH3].[OH]",
     "star_identity_count": "error"
    },
    "errors": {
@@ -373,6 +372,13 @@
    },
    "errors": {
     "identity_sanitized": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.site_choice_order_dependence": {
+   "value": "mapping_order_dependent",
+   "observed": {
+    "symmetric_delete": "products:[CH2]O / products:[CH3].[OH]",
+    "two_site_oxidation": "products:CC(=O)C=O"
    }
   },
   "smirks.star_on_explicit_h": {

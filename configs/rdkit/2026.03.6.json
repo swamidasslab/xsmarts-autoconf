@@ -4,7 +4,7 @@
  "version": "2026.03.6",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "3763e977f720f2fb",
+ "rules_digest": "390103b7d4d58f85",
  "flags": {
   "match.aromaticity_exocyclic_carbonyl": {
    "value": "daylight_like",
@@ -258,7 +258,6 @@
    "observed": {
     "bond_order_count": "outcomes:2",
     "ring_open_count": "outcomes:8",
-    "symmetric_delete_products": "products:C|CO",
     "star_identity_count": "outcomes:3"
    }
   },
@@ -304,6 +303,13 @@
    "value": "native",
    "observed": {
     "identity_sanitized": "products:CC"
+   }
+  },
+  "smirks.site_choice_order_dependence": {
+   "value": "order_independent",
+   "observed": {
+    "symmetric_delete": "products:C|CO",
+    "two_site_oxidation": "products:CC(=O)CO|CC(O)C=O"
    }
   },
   "smirks.star_on_explicit_h": {

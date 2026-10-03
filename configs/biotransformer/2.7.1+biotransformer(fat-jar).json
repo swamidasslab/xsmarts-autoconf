@@ -4,7 +4,7 @@
  "version": "2.7.1+biotransformer(fat-jar)",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "3763e977f720f2fb",
+ "rules_digest": "390103b7d4d58f85",
  "flags": {
   "match.aromaticity_exocyclic_carbonyl": {
    "value": "daylight_like",
@@ -247,7 +247,7 @@
    "value": "flattened_h_kept",
    "observed": {
     "diol_deprotonate": "products:OCC[OH-]",
-    "diol_oxidation_two_sites": "products:C[CH](=[OH])CO"
+    "diol_oxidation_two_sites": "products:CC(O)[CH2]=[OH] / products:C[CH](=[OH])CO"
    }
   },
   "smirks.nested_recursive": {
@@ -267,11 +267,7 @@
    "observed": {
     "bond_order_count": "outcomes:0",
     "ring_open_count": "outcomes:1",
-    "symmetric_delete_products": "error",
     "star_identity_count": "outcomes:1"
-   },
-   "errors": {
-    "symmetric_delete_products": "ValueError: Reactant Map Index 2 is not valid product map index!\n"
    }
   },
   "smirks.product_h_atom_added": {
@@ -319,6 +315,16 @@
    "value": "native",
    "observed": {
     "identity_sanitized": "products:CC"
+   }
+  },
+  "smirks.site_choice_order_dependence": {
+   "value": "site_order_dependent",
+   "observed": {
+    "symmetric_delete": "error",
+    "two_site_oxidation": "products:CC(O)[CH2]=[OH] / products:C[CH](=[OH])CO"
+   },
+   "errors": {
+    "symmetric_delete": "ValueError: Reactant Map Index 2 is not valid product map index!\n | ValueError: Reactant Map Index 2 is not valid product map index!\n | ValueError: Reactant Map Index 2 is not valid product map index!\n"
    }
   },
   "smirks.star_on_explicit_h": {

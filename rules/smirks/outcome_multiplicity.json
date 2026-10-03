@@ -41,23 +41,6 @@
    }
   },
   {
-   "id": "symmetric_delete_products",
-   "op": "apply",
-   "query": "[C:1][C:2]>>[C:1]",
-   "mol": "CCO",
-   "note": "same atom set matched both ways: products differ per mapping order",
-   "expect": {
-    "all_mappings": "products:C|CO",
-    "unique_atom_sets": [
-     "re:products:[^|]*",
-     "error"
-    ],
-    "deduped_products": "re:products:[^|]*",
-    "single_application": "*",
-    "flattened": "*"
-   }
-  },
-  {
    "id": "star_identity_count",
    "op": "apply",
    "query": "[*:1]>>[*:1]",

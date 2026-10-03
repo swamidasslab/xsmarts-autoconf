@@ -4,7 +4,7 @@
  "version": "smarts_grammar",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "3763e977f720f2fb",
+ "rules_digest": "390103b7d4d58f85",
  "flags": {
   "match.aromaticity_exocyclic_carbonyl": {
    "value": "daylight_like",
@@ -270,11 +270,7 @@
    "observed": {
     "bond_order_count": "outcomes:1",
     "ring_open_count": "outcomes:1",
-    "symmetric_delete_products": "error",
     "star_identity_count": "outcomes:3"
-   },
-   "errors": {
-    "symmetric_delete_products": "AmbitParseError: Reactant Map Index 2 is not valid product map index!"
    }
   },
   "smirks.product_h_atom_added": {
@@ -322,6 +318,16 @@
    "value": "n/a",
    "observed": {
     "identity_sanitized": "unsupported"
+   }
+  },
+  "smirks.site_choice_order_dependence": {
+   "value": "order_independent",
+   "observed": {
+    "symmetric_delete": "error",
+    "two_site_oxidation": "products:*=*(C)CO|*=[*H]C(C)O"
+   },
+   "errors": {
+    "symmetric_delete": "AmbitParseError: Reactant Map Index 2 is not valid product map index! | AmbitParseError: Reactant Map Index 2 is not valid product map index! | AmbitParseError: Reactant Map Index 2 is not valid product map index!"
    }
   },
   "smirks.star_on_explicit_h": {
@@ -387,7 +393,7 @@
     "aromatic_selenium": "error"
    },
    "errors": {
-    "aromatic_selenium": "ParseError: unismarts SMARTS parse failed: No terminal matches 'e' in the current parser context, at line 1 col 3\n\n[se]\n  ^\nExpected one of: \n\t* AMPERSAND\n\t* opensmarts__IMPLICIT_HCOUNT\n\t* H\n\t* \"A\"\n\t* opensmarts__TOTAL_HCOUNT\n\t* BANG\n\t* COLON\n\t* \"d\"\n\t* Z\n\t* R\n\t* HYBRID\n\t* \"$(\"\n\t* D\n\t* \"x\"\n\t* A\n\t* op"
+    "aromatic_selenium": "ParseError: unismarts SMARTS parse failed: No terminal matches 'e' in the current parser context, at line 1 col 3\n\n[se]\n  ^\nExpected one of: \n\t* opensmarts__NUMBER\n\t* opensmarts__SYMBOL\n\t* COLON\n\t* \"x\"\n\t* RANGED_ATOM_QUERY\n\t* HYBRID\n\t* \"#x\"\n\t* opensmarts__TOTAL_HCOUNT\n\t* V\n\t* K\n\t* SEMICOLON\n\t* COMMA"
    }
   },
   "syntax.cdk_hash_X": {
