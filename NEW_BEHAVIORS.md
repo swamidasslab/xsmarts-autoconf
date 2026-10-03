@@ -74,9 +74,35 @@ fuzzer (finding JSON under `findings/`).
 | `products.byproduct_filter` | Only BioTransformer drops small byproducts: H₂O, NH₃, HCl and formaldehyde (O-demethylation leaves only the alcohol). Methanol and acetic acid are kept. |
 | `products.new_double_bond_h` | BioTransformer leaves H on atoms that gain a double bond: N-deethylation gives `C[CH2]=O`, decarboxylation gives `O=C=[OH]`. That malformed CO₂ escapes the CO₂ blocklist. pyref emits dummies. |
 
+## Added after the first write-up (same day)
+
+| Flag (rule file) | New behavior | How found |
+|---|---|---|
+| `smirks.stereo_carried` | **Chematic flips tetrahedral parity** on a stereocenter next to the mapped atom when the map is on a particular neighbor: `[CH3:1]>>[C:1]` on `C[C@H](N)O` gives `C[C@@H](N)O`; mapping the O neighbor preserves it. BioTransformer and pyref drop stereo. | fuzz rdkit↔chematic |
+| `smirks.reactant_aromaticity` | Aromaticity seen by the SMIRKS reactant matcher. RDKit and pyref perceive Daylight aromaticity. **Chematic `run_smirks` and raw Ambit take the input as written**: Kekulé benzene matches `[C:1]`, and aromatic-spelled 4-pyranone doesn't. BioTransformer uses the CDK model (benzene aromatic, 4-pyranone not; B0). | fuzz rdkit↔chematic |
+| `smirks.explicit_h_apply` | With AddHs, Chematic returns nothing even for simple charge edits (`[O:1]>>[O-:1]`). OB, BioTransformer and pyref keep the H count (`CC[OH-]`). | fuzz rdkit↔chematic |
+| `smirks.reactant_query_syntax` | Chematic **and Open Babel** reject SMARTS logic in SMIRKS reactants (`;` `,` `X`). This is DISCOVERED_BEHAVIORS C1, rediscovered automatically; OB is new. | fuzz (molecule-first) |
+| `match.aromatic_valence` | Chematic counts aromatic bonds as order 1 for `v`: benzene C is `v3`, `[c;v4]` matches nothing. | fuzz (molecule-first) |
+| `match.directional_bond` | `/` and `\` without stereo context: RDKit, CDK and BT match single **and aromatic** bonds; OB, pyref and xenosmarts match single only; **Chematic matches nothing** (even `C/C` on ethane). | fuzz rdkit↔openbabel |
+| `smirks.multi_site_application` | OB transforms every site in one product (`[O-]CC[O-]`); BT flattens sites. | fuzz rdkit↔openbabel |
+| `smirks.new_bond_query_order` (A6) | `[C:1]>>[C:1]~C`: RDKit and Chematic copy the query bond into the product (`CC~C`). Ambit, BT and OB reject it. pyref and xenosmarts add the atom **without the bond** (`C.CC`). | catalog gap probe |
+| `smirks.colon_product_bond` (A14) | Product `:` on ethane: RDKit sets aromatic flags (`cc`); Chematic writes an aromatic bond on aliphatic atoms (`C:C`); Ambit, BT, pyref and xenosmarts make no change. | catalog gap probe |
+| `smirks.undefined_order_both_sides` (A6b) | `-,:` → `=,:`: RDKit applies `C=C`; Chematic and OB reject; Ambit, BT, pyref and xenosmarts apply it as a no-op. | catalog gap probe |
+| `smirks.equivalent_h_mappings` (A11) | The cdk adapter (SMIRKSManager without `FlagFilterEquivalentMappings`) gives one outcome per H atom (4 on methane), like RDKit and Chematic. BT and xenosmarts collapse them to 1. | catalog gap probe |
+| `products.validity_filter` (B5a) | BT drops hydroperoxide, ketene and carbon-free fragments (H₂S, HBr), but **keeps the gem-diol `CC(O)O`**, contrary to DISCOVERED_BEHAVIORS B5a (that InValidSMARTS pattern needs explicit `[H]`). | catalog gap probe |
+| `smirks.bond_order_decrease_retyping` | C=O → C–O: pyref and **xenosmarts raw apply produce dummies** (`[*H][*H2]C`), while real Ambit raw output (cdk adapter) gives `[C][C][O]` with no dummies. Likely an emulation difference in xenosmarts' A25b rule (dummies on bond-order *decrease*). | fuzz rdkit↔pyref |
+| `match.substituted_aromatic_perception` | pyref errors on every non-benzene aromatic (toluene, pyridine, anisole). | fuzz rdkit↔pyref |
+
+## For the xenosmarts agent
+
+- `Matcher.count()` counts **ordered mappings**, not unique atom sets (`F/C=C/F` → 2, `C/C` on ethane → 2). The autoconf adapter can't de-duplicate without a mapping list or a unique count from the API, so `match.bond_stereo` is `UNKNOWN` for xenosmarts.
+- Round trip (`python -m autoconf roundtrip --blinded 24`) passes for all 5 profile flags, with one coupling found and declared: `kekule_match=True` implies Kekulé comparison inside compound bonds (`compound_bond_kekule` reads `kekule_order` regardless).
+- `bond_order_decrease_retyping` above is the one place xenosmarts' raw apply differs from real Ambit raw output.
+
 ## Not yet captured as a flag
 
-- pyref raises on `[R2]` against pyrene (`c1cc2ccc3cccc4ccc(c1)c2c34`); seen while probing ring cases.
+- pyref raises on `[R2]` against pyrene: a case of `match.substituted_aromatic_perception`.
+- **Environment, not a library:** at 18:01 on 2026-10-03, `scripts/smarts_grammar/grammars/opensmarts.lark` was modified and `build_querymol('c=c', ...)` now returns zero atoms. pyref results after that time are invalid; `tests/test_autoconf.py::test_committed_config_reproduces[pyref/...]` flags it.
 - BioTransformer drops ethene from `[C:1]-[C:2]>>[C:1]=[C:2]` on ethane (no product; likely the validity filter). It's folded into `smirks.edits_with_explicit_h` and `smirks.outcome_multiplicity` as accepted observations, not isolated.
 
 ## For the feature prober
