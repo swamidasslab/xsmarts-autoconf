@@ -4,7 +4,7 @@
  "version": "2.7.1+ambit(bt-jar)",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "390103b7d4d58f85",
+ "rules_digest": "d97e3285ad73a844",
  "flags": {
   "match.aromaticity_exocyclic_carbonyl": {
    "value": "daylight_like",
@@ -212,6 +212,14 @@
     "C_to_N": "ValueError: Map 1 atom types are inconsistent!\n"
    }
   },
+  "smirks.explicit_h_apply": {
+   "value": "untyped",
+   "observed": {
+    "deprotonate_X": "products:[*H-]CC",
+    "cleave_X": "products:[CH2]C.[OH]",
+    "methylate_X": "products:[C][*H][CH2][CH3]"
+   }
+  },
   "smirks.fragmented_reactant": {
    "value": "rejected",
    "observed": {
@@ -298,6 +306,14 @@
     "N_pp": "products:[*+2][C]"
    }
   },
+  "smirks.reactant_aromaticity": {
+   "value": "not_perceived",
+   "observed": {
+    "kekule_benzene_aliphatic_C": "products:[C]1=[C][C]=[C][C]=[C]1",
+    "pyranone_aliphatic_C": "products:[O]=[C]1[C]=[C][O][C]=[C]1",
+    "tropone_aliphatic_C": "products:[O]=[C]1[C]=[C][C]=[C][C]=[C]1"
+   }
+  },
   "smirks.recursive_in_reactant": {
    "value": "supported",
    "observed": {
@@ -341,6 +357,14 @@
    },
    "errors": {
     "acetyl_star": "ValueError: Map 1 atom types are inconsistent!\n"
+   }
+  },
+  "smirks.stereo_carried": {
+   "value": "labels",
+   "observed": {
+    "map_on_methyl_R": "products:[C][C]([N])[O]",
+    "map_on_methyl_S": "products:[C][C]([N])[O]",
+    "map_on_hydroxyl_control": "products:[C][C]([N])[O]"
    }
   },
   "smirks.undefined_product_bond": {

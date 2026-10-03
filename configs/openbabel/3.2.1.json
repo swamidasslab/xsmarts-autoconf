@@ -4,7 +4,7 @@
  "version": "3.2.1",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "390103b7d4d58f85",
+ "rules_digest": "d97e3285ad73a844",
  "flags": {
   "match.aromaticity_exocyclic_carbonyl": {
    "value": "daylight_like",
@@ -238,6 +238,18 @@
     "C_to_N": "products:[NH3][NH3]"
    }
   },
+  "smirks.explicit_h_apply": {
+   "value": "h_kept",
+   "observed": {
+    "deprotonate_X": "products:CC[OH-]",
+    "cleave_X": "error",
+    "methylate_X": "error"
+   },
+   "errors": {
+    "cleave_X": "ValueError: OBChemTsfm.Init failed",
+    "methylate_X": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
   "smirks.fragmented_reactant": {
    "value": "rejected",
    "observed": {
@@ -349,6 +361,19 @@
     "N_pp": "products:C[NH2+2]"
    }
   },
+  "smirks.reactant_aromaticity": {
+   "value": "rejected",
+   "observed": {
+    "kekule_benzene_aliphatic_C": "error",
+    "pyranone_aliphatic_C": "error",
+    "tropone_aliphatic_C": "error"
+   },
+   "errors": {
+    "kekule_benzene_aliphatic_C": "ValueError: OBChemTsfm.Init failed",
+    "pyranone_aliphatic_C": "ValueError: OBChemTsfm.Init failed",
+    "tropone_aliphatic_C": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
   "smirks.recursive_in_reactant": {
    "value": "rejected",
    "observed": {
@@ -396,6 +421,19 @@
    "value": "corrupt",
    "observed": {
     "acetyl_star": "products:[*H]CC"
+   }
+  },
+  "smirks.stereo_carried": {
+   "value": "rejected",
+   "observed": {
+    "map_on_methyl_R": "error",
+    "map_on_methyl_S": "error",
+    "map_on_hydroxyl_control": "error"
+   },
+   "errors": {
+    "map_on_methyl_R": "ValueError: OBChemTsfm.Init failed",
+    "map_on_methyl_S": "ValueError: OBChemTsfm.Init failed",
+    "map_on_hydroxyl_control": "ValueError: OBChemTsfm.Init failed"
    }
   },
   "smirks.undefined_product_bond": {

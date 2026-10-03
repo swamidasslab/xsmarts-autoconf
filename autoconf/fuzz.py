@@ -165,3 +165,25 @@ def flipcheck(a, b, *, max_examples=300, flags=None, va=None, vb=None, verbose=T
             ex = fd and f"{fd['case']['query']} on {fd['case']['mol']}"
             print(f"{tag:6s} {f:42s} {res['seconds']:6.1f}s  {ex}")
     return rows
+
+
+def sweep(a, b, *, seeds=8, max_examples=600, record=True, verbose=True) -> list[dict]:
+    """Baseline fuzz over several seeds; distinct findings (by query, mol).
+    A clean sweep (no findings) is the precondition for ``flipcheck``."""
+    out, seen = [], set()
+    for seed in range(seeds):
+        f = fuzz_pair(a, b, max_examples=max_examples, seed=seed, record=record)["finding"]
+        if not f:
+            continue
+        k = (f["case"]["query"], f["case"]["mol"], f["case"]["explicit_h"], f["case"]["view"])
+        if k in seen:
+            continue
+        seen.add(k)
+        out.append(f)
+        if verbose:
+            c = f["case"]
+            print(f"{'NEW' if not f['explained_by'] else 'known'}  {c['query']} on {c['mol']} "
+                  f"xh={c['explicit_h']} view={c['view']}  {f['observed']}  features={f['features']}")
+    if verbose:
+        print(f"{len(out)} distinct findings over {seeds} seeds")
+    return out

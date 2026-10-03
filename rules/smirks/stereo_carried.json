@@ -1,0 +1,67 @@
+{
+ "flag": "smirks.stereo_carried",
+ "summary": "Tetrahedral stereo on an atom carried through an edit next to it",
+ "values": {
+  "preserved": "parity kept (RDKit)",
+  "flipped_by_neighbor_order": "parity inverted when the mapped atom is a particular neighbor (chematic 1.0.30 bug)",
+  "dropped": "stereo removed (BioTransformer, pyref)",
+  "labels": "Ambit labels, stereo dropped",
+  "rejected": "transform rejected (Open Babel identity)"
+ },
+ "cases": [
+  {
+   "id": "map_on_methyl_R",
+   "op": "apply",
+   "query": "[CH3:1]>>[C:1]",
+   "fixed_spelling": true,
+   "mol": "C[C@H](N)O",
+   "expect": {
+    "preserved": "products:C[C@H](N)O",
+    "flipped_by_neighbor_order": "products:C[C@@H](N)O",
+    "dropped": "products:CC(N)O",
+    "labels": "re:products:.*\\[C\\].*",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "map_on_methyl_S",
+   "op": "apply",
+   "query": "[CH3:1]>>[C:1]",
+   "fixed_spelling": true,
+   "mol": "C[C@@H](N)O",
+   "expect": {
+    "preserved": "products:C[C@@H](N)O",
+    "flipped_by_neighbor_order": "products:C[C@H](N)O",
+    "dropped": "products:CC(N)O",
+    "labels": "re:products:.*\\[C\\].*",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "map_on_hydroxyl_control",
+   "op": "apply",
+   "query": "[O:1]>>[O:1]",
+   "fixed_spelling": true,
+   "mol": "C[C@H](N)O",
+   "expect": {
+    "preserved": "products:C[C@H](N)O",
+    "flipped_by_neighbor_order": "products:C[C@H](N)O",
+    "dropped": "products:CC(N)O",
+    "labels": "re:products:.*\\[C\\].*",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "fuzz rdkit vs chematic baseline 2026-10-03",
+  "refs": []
+ },
+ "fuzz": {
+  "avoid": [
+   [
+    "mol.stereo",
+    "op.apply"
+   ]
+  ]
+ }
+}

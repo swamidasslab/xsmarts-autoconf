@@ -53,7 +53,7 @@ MOLS = [
     ("CC", F()), ("CCO", F()), ("COC", F()), ("CN(C)C", F()), ("CC(=O)O", F()), ("C=CC=O", F()),
     ("N#CC", F()), ("ClCCBr", F()), ("CC(C)(C)O", F()), ("OCCN", F()), ("C1CC1", F({"mol.ring"})),
     ("C1CCCCC1", F({"mol.ring"})), ("C1CCOC1", F({"mol.ring"})),
-    ("c1ccccc1", F({"mol.aromatic"})), ("Cc1ccccc1", F({"mol.aromatic"})), ("c1ccncc1", F({"mol.aromatic"})),
+    ("c1ccccc1", F({"mol.aromatic"})), ("C1=CC=CC=C1", F({"mol.aromatic", "mol.kekule_aromatic"})), ("Cc1ccccc1", F({"mol.aromatic"})), ("c1ccncc1", F({"mol.aromatic"})),
     ("c1cc[nH]c1", F({"mol.aromatic"})), ("Oc1ccccc1", F({"mol.aromatic"})),
     ("CS(=O)(=O)O", F({"mol.hypervalent"})), ("OP(=O)(O)O", F({"mol.hypervalent"})),
     ("C1CCC2CCCC2C1", F({"mol.fused_ring"})), ("C1CCC2(C1)CCCCC2", F({"mol.fused_ring"})),
@@ -154,7 +154,9 @@ def site_features(smirks: str, smiles: str, explicit_h: bool) -> set[str]:
     ``sites.multiple``: more than one matched atom set (engines differ on
     per-site outcomes vs all-sites-in-place vs flattened).
     ``sites.ordered_multiple``: the same atom set matched in several orders
-    (symmetric pattern; engines differ on ordered vs atom-set mappings)."""
+    (symmetric pattern; engines differ on ordered vs atom-set mappings).
+    ``outcome.valence_invalid``: some raw RDKit product fails SanitizeMol
+    (engines differ on keep / drop / rewrite of invalid products)."""
     from rdkit import Chem, RDLogger
     from rdkit.Chem import AllChem
 
@@ -172,6 +174,13 @@ def site_features(smirks: str, smiles: str, explicit_h: bool) -> set[str]:
                 out.add("sites.multiple")
             if ordered > uniq:
                 out.add("sites.ordered_multiple")
+        if rxn.GetNumReactantTemplates() == 1:
+            for outcome in rxn.RunReactants((m,), 50):
+                for p in outcome:
+                    try:
+                        Chem.SanitizeMol(Chem.Mol(p))
+                    except Exception:  # noqa: BLE001
+                        out.add("outcome.valence_invalid")
         return out
     except Exception:  # noqa: BLE001
         return set()
@@ -244,4 +253,4 @@ def all_features() -> frozenset:
         for it in items:
             out |= _feats(it)
     return frozenset(out | {"cond.explicit_h", "op.apply_implicit_h", "op.match", "op.apply", "syntax.dot",
-                            "sites.multiple", "sites.ordered_multiple"})
+                            "sites.multiple", "sites.ordered_multiple", "outcome.valence_invalid"})

@@ -1,0 +1,65 @@
+{
+ "flag": "smirks.explicit_h_apply",
+ "summary": "Any edit on a reactant with explicit H (AddHs)",
+ "values": {
+  "h_aware": "edits apply, H adjusted (RDKit)",
+  "edits_empty": "most edits return nothing with AddHs (chematic)",
+  "h_kept": "edits apply, H count kept (CC[OH-]; Open Babel, BioTransformer, pyref)",
+  "untyped": "Ambit dummies"
+ },
+ "cases": [
+  {
+   "id": "deprotonate_X",
+   "op": "apply",
+   "query": "[O:1]>>[O-:1]",
+   "mol": "CCO",
+   "explicit_h": true,
+   "expect": {
+    "h_aware": "products:CC[O-]",
+    "edits_empty": "products:",
+    "h_kept": "products:CC[OH-]",
+    "untyped": "re:products:.*\\*.*"
+   }
+  },
+  {
+   "id": "cleave_X",
+   "op": "apply",
+   "query": "[C:1][O:2]>>[C:1].[O:2]",
+   "mol": "CCO",
+   "explicit_h": true,
+   "expect": {
+    "h_aware": "products:CC.O",
+    "edits_empty": "*",
+    "h_kept": "*",
+    "untyped": "*"
+   }
+  },
+  {
+   "id": "methylate_X",
+   "op": "apply",
+   "query": "[O:1]>>[O:1]C",
+   "mol": "CCO",
+   "explicit_h": true,
+   "expect": {
+    "h_aware": "products:CCOC",
+    "edits_empty": "products:",
+    "h_kept": "*",
+    "untyped": "*"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "fuzz rdkit vs chematic baseline 2026-10-03",
+  "refs": [
+   "docs/smirks/chematic_deltas.md AddHs"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   [
+    "cond.explicit_h",
+    "op.apply"
+   ]
+  ]
+ }
+}

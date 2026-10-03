@@ -1,0 +1,30 @@
+{
+ "found": "2026-10-03",
+ "versions": {
+  "rdkit": "2026.03.6",
+  "chematic": "1.0.30"
+ },
+ "case": {
+  "op": "apply",
+  "query": "[O:1]>>[*:1]C",
+  "mol": "C1CCOC1",
+  "explicit_h": false,
+  "view": "products"
+ },
+ "observed": {
+  "rdkit": "products:CO1CCCC1",
+  "chematic": "products:"
+ },
+ "detail": {
+  "rdkit": "CO1CCCC1",
+  "chematic": ""
+ },
+ "features": [
+  "edit.star_retype",
+  "mol.ring",
+  "op.apply",
+  "op.apply_implicit_h"
+ ],
+ "explained_by": [],
+ "status": "NEW: add a rule or extend one"
+}

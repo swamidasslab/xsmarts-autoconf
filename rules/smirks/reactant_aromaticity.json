@@ -1,0 +1,66 @@
+{
+ "flag": "smirks.reactant_aromaticity",
+ "summary": "Aromaticity the SMIRKS reactant matcher sees on Kekule / exocyclic-C=O rings",
+ "values": {
+  "daylight_perceived": "Kekule benzene and 4-pyranone aromatic (RDKit, pyref)",
+  "not_perceived": "input bond orders taken as written: Kekule benzene matches [C:1] (chematic run_smirks, raw Ambit)",
+  "cdk_model": "benzene aromatic, 4-pyranone not (BioTransformer B0: ElectronDonation.cdk)",
+  "rejected": "transform rejected"
+ },
+ "cases": [
+  {
+   "id": "kekule_benzene_aliphatic_C",
+   "op": "apply",
+   "query": "[C:1]>>[C:1]",
+   "mol": "C1=CC=CC=C1",
+   "expect": {
+    "daylight_perceived": "products:",
+    "not_perceived": "re:products:.+",
+    "cdk_model": "products:",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "pyranone_aliphatic_C",
+   "op": "apply",
+   "query": "[C:1]>>[C:1]",
+   "mol": "O=C1C=COC=C1",
+   "expect": {
+    "daylight_perceived": "products:",
+    "not_perceived": "re:products:.+",
+    "cdk_model": "re:products:.+",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "tropone_aliphatic_C",
+   "op": "apply",
+   "query": "[C:1]>>[C:1]",
+   "mol": "O=C1C=CC=CC=C1",
+   "expect": {
+    "daylight_perceived": "products:",
+    "not_perceived": "re:products:.+",
+    "cdk_model": "re:products:.+",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "fuzz rdkit vs chematic baseline 2026-10-03",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md B0"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   [
+    "mol.aromatic_exocyclic",
+    "op.apply"
+   ],
+   [
+    "mol.kekule_aromatic",
+    "op.apply"
+   ]
+  ]
+ }
+}

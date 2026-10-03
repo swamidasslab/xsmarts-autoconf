@@ -6,6 +6,7 @@
   report [CONFIG ...] [--out FILE]                        condensed markdown report
   target CONFIG --like VALUESRC [--out FILE]              tests to move a lib toward another's behavior
   fuzz A B [--max-examples N] [--flip flag=value ...] [--seed S]
+  sweep A B [--seeds N]                                  baseline fuzz, distinct findings
   flipcheck A B [--max-examples N]                        key test: every divergent flag rediscovered
   roundtrip [--blinded N]                                 pyref config round trip
 """
@@ -54,6 +55,11 @@ def main(argv=None):
     p.add_argument("--max-examples", type=int, default=300)
     p.add_argument("--flip", action="append", help="pretend A's flag has this value")
     p.add_argument("--seed", type=int)
+    p = sub.add_parser("sweep")
+    p.add_argument("a")
+    p.add_argument("b")
+    p.add_argument("--seeds", type=int, default=8)
+    p.add_argument("--max-examples", type=int, default=600)
     p = sub.add_parser("flipcheck")
     p.add_argument("a")
     p.add_argument("b")
@@ -125,6 +131,11 @@ def main(argv=None):
                         flips=dict(f.split("=", 1) for f in args.flip or []), seed=args.seed)
         print(json.dumps(res, indent=1))
         return 0 if res["finding"] is None else 1
+
+    if args.cmd == "sweep":
+        from .fuzz import sweep
+
+        return 1 if sweep(args.a, args.b, seeds=args.seeds, max_examples=args.max_examples) else 0
 
     if args.cmd == "flipcheck":
         from .fuzz import flipcheck

@@ -4,7 +4,7 @@
  "version": "1.0.30",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "390103b7d4d58f85",
+ "rules_digest": "d97e3285ad73a844",
  "flags": {
   "match.aromaticity_exocyclic_carbonyl": {
    "value": "daylight_like",
@@ -209,6 +209,14 @@
     "C_to_N": "products:CC"
    }
   },
+  "smirks.explicit_h_apply": {
+   "value": "edits_empty",
+   "observed": {
+    "deprotonate_X": "products:",
+    "cleave_X": "products:CC.O",
+    "methylate_X": "products:"
+   }
+  },
   "smirks.fragmented_reactant": {
    "value": "rejected",
    "observed": {
@@ -295,6 +303,14 @@
     "N_pp": "products:C[NH4+2]"
    }
   },
+  "smirks.reactant_aromaticity": {
+   "value": "not_perceived",
+   "observed": {
+    "kekule_benzene_aliphatic_C": "products:C1=CC=CC=C1",
+    "pyranone_aliphatic_C": "products:O=C1C=COC=C1",
+    "tropone_aliphatic_C": "products:O=C1C=CC=CC=C1"
+   }
+  },
   "smirks.recursive_in_reactant": {
    "value": "rejected",
    "observed": {
@@ -335,6 +351,14 @@
    "value": "keeps_reactant_atom",
    "observed": {
     "acetyl_star": "products:CCOC(C)=O"
+   }
+  },
+  "smirks.stereo_carried": {
+   "value": "flipped_by_neighbor_order",
+   "observed": {
+    "map_on_methyl_R": "products:C[C@@H](N)O",
+    "map_on_methyl_S": "products:C[C@H](N)O",
+    "map_on_hydroxyl_control": "products:C[C@H](N)O"
    }
   },
   "smirks.undefined_product_bond": {

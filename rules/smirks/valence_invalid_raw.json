@@ -31,7 +31,11 @@
  },
  "fuzz": {
   "avoid": [
-   "edit.bond_order_valence"
+   "edit.bond_order_valence",
+   [
+    "outcome.valence_invalid",
+    "op.apply"
+   ]
   ]
  }
 }

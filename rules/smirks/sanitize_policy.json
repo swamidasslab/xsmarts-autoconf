@@ -53,6 +53,10 @@
    [
     "edit.bond_order_valence",
     "view.sanitized"
+   ],
+   [
+    "outcome.valence_invalid",
+    "view.sanitized"
    ]
   ]
  }

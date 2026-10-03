@@ -4,7 +4,7 @@
  "version": "smarts_grammar",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "390103b7d4d58f85",
+ "rules_digest": "d97e3285ad73a844",
  "flags": {
   "match.aromaticity_exocyclic_carbonyl": {
    "value": "daylight_like",
@@ -140,7 +140,7 @@
     "grouped_cleavage": "error"
    },
    "errors": {
-    "grouped_cleavage": "ParseError: unismarts SMARTS parse failed: Unexpected token Token('opensmarts__OPEN', '(') at line 1, column 13.\nExpected one of: \n\t* $END\n\t* LSQB\nPrevious tokens: [Token('MORETHAN', '>')]\n"
+    "grouped_cleavage": "ParseError: unismarts SMARTS parse failed: Unexpected token Token('opensmarts__OPEN', '(') at line 1, column 13.\nExpected one of: \n\t* LSQB\n\t* $END\nPrevious tokens: [Token('MORETHAN', '>')]\n"
    }
   },
   "products.new_double_bond_h": {
@@ -213,6 +213,14 @@
    },
    "errors": {
     "C_to_N": "AmbitParseError: Map 1 atom types are inconsistent!"
+   }
+  },
+  "smirks.explicit_h_apply": {
+   "value": "h_kept",
+   "observed": {
+    "deprotonate_X": "products:CC[OH-]",
+    "cleave_X": "products:CC.O",
+    "methylate_X": "products:CC[OH]C"
    }
   },
   "smirks.fragmented_reactant": {
@@ -301,6 +309,14 @@
     "N_pp": "products:C[N+2]"
    }
   },
+  "smirks.reactant_aromaticity": {
+   "value": "daylight_perceived",
+   "observed": {
+    "kekule_benzene_aliphatic_C": "products:",
+    "pyranone_aliphatic_C": "products:",
+    "tropone_aliphatic_C": "products:"
+   }
+  },
   "smirks.recursive_in_reactant": {
    "value": "supported",
    "observed": {
@@ -344,6 +360,14 @@
    },
    "errors": {
     "acetyl_star": "AmbitParseError: Map 1 atom types are inconsistent!"
+   }
+  },
+  "smirks.stereo_carried": {
+   "value": "dropped",
+   "observed": {
+    "map_on_methyl_R": "products:CC(N)O",
+    "map_on_methyl_S": "products:CC(N)O",
+    "map_on_hydroxyl_control": "products:CC(N)O"
    }
   },
   "smirks.undefined_product_bond": {
@@ -393,7 +417,7 @@
     "aromatic_selenium": "error"
    },
    "errors": {
-    "aromatic_selenium": "ParseError: unismarts SMARTS parse failed: No terminal matches 'e' in the current parser context, at line 1 col 3\n\n[se]\n  ^\nExpected one of: \n\t* opensmarts__NUMBER\n\t* opensmarts__SYMBOL\n\t* COLON\n\t* \"x\"\n\t* RANGED_ATOM_QUERY\n\t* HYBRID\n\t* \"#x\"\n\t* opensmarts__TOTAL_HCOUNT\n\t* V\n\t* K\n\t* SEMICOLON\n\t* COMMA"
+    "aromatic_selenium": "ParseError: unismarts SMARTS parse failed: No terminal matches 'e' in the current parser context, at line 1 col 3\n\n[se]\n  ^\nExpected one of: \n\t* V\n\t* \"$(\"\n\t* \"x\"\n\t* \"r\"\n\t* \"#X\"\n\t* HASH\n\t* opensmarts__TOTAL_HCOUNT\n\t* \"d\"\n\t* opensmarts__MINUSMINUS\n\t* SEMICOLON\n\t* COMMA\n\t* RSQB\n\t* opensmarts__NUMBER\n\t*"
    }
   },
   "syntax.cdk_hash_X": {
