@@ -6,7 +6,8 @@
   "keeps_hypervalent_n": "ether dropped, neutral 4-valent N kept (chematic)",
   "keeps_all": "nothing dropped (Open Babel)",
   "untyped": "Ambit dummies survive",
-  "unsupported": "no sanitizer"
+  "unsupported": "no sanitizer",
+  "h_kept_overvalent": "explicit-H substrate, H never adjusted after the edit (BioTransformer pipeline)"
  },
  "cases": [
   {
@@ -20,7 +21,8 @@
     "keeps_hypervalent_n": "products:",
     "keeps_all": "products:C=O=C",
     "untyped": "re:products:.*\\*.*",
-    "unsupported": "unsupported"
+    "unsupported": "unsupported",
+    "h_kept_overvalent": "products:CO=[CH3]"
    }
   },
   {
@@ -34,7 +36,8 @@
     "keeps_hypervalent_n": "products:C=N(C)C",
     "keeps_all": "re:products:.+",
     "untyped": "re:products:.*\\*.*",
-    "unsupported": "unsupported"
+    "unsupported": "unsupported",
+    "h_kept_overvalent": "products:CN(C)=[CH3]"
    }
   }
  ],
@@ -47,8 +50,10 @@
  "processing": "Layer S: each engine's own sanitizer only (smirks_apply.sanitize_product).",
  "fuzz": {
   "avoid": [
-   "edit.bond_order_valence",
-   "view.sanitized"
+   [
+    "edit.bond_order_valence",
+    "view.sanitized"
+   ]
   ]
  }
 }

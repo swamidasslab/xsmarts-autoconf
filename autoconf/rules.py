@@ -13,8 +13,12 @@ Schema (see README for the annotated version)::
       ],
       "provenance": {"discovered": "...", "refs": ["docs/..."]},
       "processing": "pre/post-processing notes (AddHs, sanitize, H mode)",
-      "fuzz": {"avoid": ["ring.fused"]}
+      "fuzz": {"avoid": [["prim.ring_size_r", "mol.fused_ring"]]}
     }
+
+``fuzz.avoid`` entries are conjunctions of generator features (a bare string
+is a one-feature conjunction). The fuzzer excludes single features while
+building examples and filters multi-feature conjunctions after drawing.
 
 A value is *selected* when every case's observation satisfies that value's
 expectation. Expectation patterns: an exact observation string, ``*`` (any),
@@ -46,7 +50,9 @@ class Rule:
     """case id -> value -> pattern"""
     provenance: dict = field(default_factory=dict)
     processing: str = ""
-    avoid: list[str] = field(default_factory=list)
+    avoid: list[frozenset] = field(default_factory=list)
+    """Fuzz exclusions, each a conjunction of generator features: the
+    divergence needs *all* features of one entry to show up."""
     path: Path | None = None
 
     @property
@@ -105,7 +111,8 @@ def load_rule(path: Path) -> Rule:
         raise ValueError(f"{path}: duplicate case ids")
     return Rule(d["flag"], d.get("summary", ""), d["values"], cases, expect,
                 d.get("provenance", {}), d.get("processing", ""),
-                d.get("fuzz", {}).get("avoid", []), path)
+                [frozenset([a]) if isinstance(a, str) else frozenset(a)
+                 for a in d.get("fuzz", {}).get("avoid", [])], path)
 
 
 def load_rules(root: Path = RULES_DIR, flags: list[str] | None = None) -> list[Rule]:

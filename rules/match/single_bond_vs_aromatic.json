@@ -24,8 +24,10 @@
  "processing": "Engine config: pyref Profile.single_excludes_aromatic",
  "fuzz": {
   "avoid": [
-   "bond.explicit_single",
-   "mol.aromatic"
+   [
+    "bond.explicit_single",
+    "mol.aromatic"
+   ]
   ]
  }
 }

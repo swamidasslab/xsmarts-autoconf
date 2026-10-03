@@ -80,8 +80,7 @@
  },
  "fuzz": {
   "avoid": [
-   "bond.stereo",
-   "mol.stereo"
+   "bond.stereo"
   ]
  }
 }

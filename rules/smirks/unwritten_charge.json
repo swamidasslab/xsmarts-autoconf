@@ -29,8 +29,10 @@
  },
  "fuzz": {
   "avoid": [
-   "edit.identity",
-   "mol.charged"
+   [
+    "mol.charged",
+    "op.apply"
+   ]
   ]
  }
 }

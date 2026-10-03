@@ -29,8 +29,7 @@
  },
  "fuzz": {
   "avoid": [
-   "edit.h_atom",
-   "mol.charged"
+   "edit.h_atom"
   ]
  }
 }

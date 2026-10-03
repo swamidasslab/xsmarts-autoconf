@@ -4,7 +4,7 @@
  "version": "1.0.30",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "549f34cfd6694640",
+ "rules_digest": "6819fe8544ed6b48",
  "flags": {
   "match.aromaticity_exocyclic_carbonyl": {
    "value": "daylight_like",
@@ -116,6 +116,40 @@
     "12C_on_methane": "match:1"
    }
   },
+  "products.byproduct_filter": {
+   "value": "kept",
+   "observed": {
+    "dehydroxylation_water": "products:CC.O",
+    "deamination_nh3": "products:CC.N",
+    "dechlorination_hcl": "products:CC.Cl",
+    "o_demethylation_hcho": "products:C=O.CCO",
+    "methanol_control": "products:CCO.CO"
+   }
+  },
+  "products.fragment_objects": {
+   "value": "per_template_component",
+   "observed": {
+    "ester_hydrolysis": "objects:CC(=O)O + CCO",
+    "chain_scission_sites": "objects:C + CCC|CC + CC",
+    "ether_both_sides_same": "objects:CC + CC"
+   }
+  },
+  "products.grouped_product_component": {
+   "value": "rejected",
+   "observed": {
+    "grouped_cleavage": "error"
+   },
+   "errors": {
+    "grouped_cleavage": "ValueError: SMIRKS parse error: failed to parse SMILES '([C:1]': unexpected character at position 0"
+   }
+  },
+  "products.new_double_bond_h": {
+   "value": "h_adjusted",
+   "observed": {
+    "n_deethylation_aldehyde": "products:CC=O.CNC",
+    "decarboxylation_co2": "products:CCC.O=C=O"
+   }
+  },
   "smirks.add_atom_with_explicit_h": {
    "value": "empty",
    "observed": {
@@ -133,6 +167,15 @@
    "observed": {
     "benzene_identity": "products:c1ccccc1",
     "hydroxylate_benzene": "products:Oc1ccccc1"
+   }
+  },
+  "smirks.charge_hcount": {
+   "value": "cation_adds_h",
+   "observed": {
+    "carbocation": "products:C[CH4+]",
+    "carbanion": "products:[CH2-]C",
+    "oxonium": "products:CC[OH2+]",
+    "alkoxide": "products:CC[O-]"
    }
   },
   "smirks.charge_plus2_hcount": {

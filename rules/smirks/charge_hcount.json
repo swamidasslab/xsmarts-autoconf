@@ -1,0 +1,74 @@
+{
+ "flag": "smirks.charge_hcount",
+ "summary": "H count after setting a +-1 charge on a neutral atom",
+ "values": {
+  "valence_rule": "H from default valence of the charged atom ([CH2+]C, CC[OH2+], C[NH-])",
+  "cation_adds_h": "carbocation gains H (C[CH4+], chematic)",
+  "h_count_kept": "H count unchanged (C[CH3+], CC[OH-]; BioTransformer explicit H)",
+  "all_sites_in_place": "every match transformed in one molecule (Open Babel)",
+  "untyped": "Ambit dummies"
+ },
+ "cases": [
+  {
+   "id": "carbocation",
+   "op": "apply",
+   "query": "[C:1]>>[C+:1]",
+   "mol": "CC",
+   "expect": {
+    "valence_rule": "products:[CH2+]C",
+    "cation_adds_h": "products:C[CH4+]",
+    "h_count_kept": "products:C[CH3+]",
+    "all_sites_in_place": "products:[CH2+][CH2+]",
+    "untyped": "re:products:.*\\*.*"
+   }
+  },
+  {
+   "id": "carbanion",
+   "op": "apply",
+   "query": "[C:1]>>[C-:1]",
+   "mol": "CC",
+   "expect": {
+    "valence_rule": "products:[CH2-]C",
+    "cation_adds_h": "products:[CH2-]C",
+    "h_count_kept": "products:C[CH3-]",
+    "all_sites_in_place": "products:[CH2-][CH2-]",
+    "untyped": "re:products:.*\\*.*"
+   }
+  },
+  {
+   "id": "oxonium",
+   "op": "apply",
+   "query": "[O:1]>>[O+:1]",
+   "mol": "CCO",
+   "expect": {
+    "valence_rule": "products:CC[OH2+]",
+    "cation_adds_h": "products:CC[OH2+]",
+    "h_count_kept": "products:CC[OH2+]",
+    "all_sites_in_place": "products:CC[OH2+]",
+    "untyped": "re:products:.*\\[O\\+\\].*"
+   }
+  },
+  {
+   "id": "alkoxide",
+   "op": "apply",
+   "query": "[O:1]>>[O-:1]",
+   "mol": "CCO",
+   "expect": {
+    "valence_rule": "products:CC[O-]",
+    "cation_adds_h": "products:CC[O-]",
+    "h_count_kept": "products:CC[OH-]",
+    "all_sites_in_place": "products:CC[O-]",
+    "untyped": "re:products:.*\\*.*"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "fuzz rdkit vs chematic 2026-10-03 (findings/rdkit__chematic/01361e5f50.json)",
+  "refs": []
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.charge_change"
+  ]
+ }
+}

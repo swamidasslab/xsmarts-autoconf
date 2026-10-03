@@ -29,8 +29,7 @@
  },
  "fuzz": {
   "avoid": [
-   "edit.charge_high",
-   "prim.charge_plusplus"
+   "edit.charge_high"
   ]
  }
 }

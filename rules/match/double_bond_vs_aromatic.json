@@ -34,8 +34,10 @@
  "processing": "Engine config: pyref Profile.double_excludes_aromatic",
  "fuzz": {
   "avoid": [
-   "bond.explicit_double",
-   "mol.aromatic"
+   [
+    "bond.explicit_double",
+    "mol.aromatic"
+   ]
   ]
  }
 }

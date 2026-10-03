@@ -4,7 +4,8 @@
  "values": {
   "split": "C.C",
   "labels": "[C].[C] (Ambit implicit-H)",
-  "rejected": "Open Babel Init fails"
+  "rejected": "Open Babel Init fails",
+  "split_deduped": "identical fragments merged: one C (BioTransformer)"
  },
  "cases": [
   {
@@ -15,7 +16,8 @@
    "expect": {
     "split": "products:C.C",
     "labels": "products:[C].[C]",
-    "rejected": "error"
+    "rejected": "error",
+    "split_deduped": "products:C"
    }
   }
  ],

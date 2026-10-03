@@ -46,7 +46,10 @@
  "processing": "Toolkit aromaticity at match time. BioTransformer re-perceives with the CDK model before SMIRKS matching.",
  "fuzz": {
   "avoid": [
-   "mol.aromatic_exocyclic"
+   [
+    "mol.aromatic_exocyclic",
+    "op.match"
+   ]
   ]
  }
 }

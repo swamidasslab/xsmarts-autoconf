@@ -64,7 +64,7 @@ class RDKit(Adapter):
                 except Exception:  # noqa: BLE001
                     pass
                 parts.append(Chem.MolToSmiles(p))
-            out.append(".".join(sorted(parts)))
+            out.append(parts)
         return out
 
     def sanitize(self, smiles):
@@ -115,7 +115,7 @@ class Chematic(Adapter):
                 except Exception:  # noqa: BLE001
                     pass
                 parts.append(str(p.smiles))
-            out.append(".".join(sorted(parts)))
+            out.append(parts)
         return out
 
     def sanitize(self, smiles):
@@ -203,8 +203,10 @@ class CDK(Adapter):
         return str(jpype.JClass("org.openscience.cdk.CDK").getVersion()) + "+ambit(bt-jar)"
 
     def _ready(self):
+        import biotransformer_ambit as ba
         from smarts_grammar.lib_query import _cdk_ready
 
+        ba.start_jvm()  # one JVM for every CDK-side adapter: BioTransformer fat jar
         return _cdk_ready()
 
     def _mol(self, smiles, explicit_h):
@@ -252,6 +254,39 @@ class CDK(Adapter):
         from smarts_grammar.smirks_apply import sanitize_product
 
         return sanitize_product("cdk", smiles)
+
+
+@dataclass
+class BioTransformer(CDK):
+    """BioTransformer's own Java pipeline for one SMIRKS:
+    ``generateAllMetabolitesFromAtomContainer(mol, SMIRKSReaction, false)`` on a
+    BioTransformer-prepared substrate (atom typing, Daylight aromaticity,
+    explicit H; AMBIT.md B0-B5). Products are post-split fragments with
+    cofactors / small byproducts dropped (B1, B2) and validity-filtered (B5a).
+    All outcomes come back as one flat fragment list, so the whole result is a
+    single outcome whose objects are the fragments. Matching (the rule *gate*)
+    is CDK SmartsPattern, inherited. ``explicit_h`` is ignored: BioTransformer
+    always prepares explicit H."""
+
+    name: str = "biotransformer"
+
+    def version(self) -> str:
+        return super().version().replace("+ambit(bt-jar)", "+biotransformer(fat-jar)")
+
+    def apply(self, smirks, smiles, explicit_h):
+        import biotransformer_ambit as ba
+
+        self._ready()
+        ctx = ba._context()
+        rxn = ctx["smrk"].parse(smirks)
+        if str(ctx["smrk"].getErrors()).strip():
+            raise ValueError(str(ctx["smrk"].getErrors()))
+        mets = ba._biotransformer_helper().generateAllMetabolitesFromAtomContainer(
+            ba.prepare_molecule(smiles), rxn, False)
+        if mets is None or mets.getAtomContainerCount() == 0:
+            return []
+        return [[str(ctx["smi_gen"].create(mets.getAtomContainer(i)))
+                 for i in range(mets.getAtomContainerCount())]]
 
 
 # ------------------------------------------------------------------ Python reference
@@ -352,6 +387,7 @@ ADAPTERS = {
     "chematic": Chematic,
     "openbabel": OpenBabel,
     "cdk": CDK,
+    "biotransformer": BioTransformer,
     "pyref": PyRef,
 }
 

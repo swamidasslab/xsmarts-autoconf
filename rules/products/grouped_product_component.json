@@ -1,0 +1,32 @@
+{
+ "flag": "products.grouped_product_component",
+ "summary": "Product-side component grouping `([C:1].[O:2])`",
+ "values": {
+  "one_object": "grouped components form one product object (RDKit)",
+  "ignored_split": "grouping ignored (BioTransformer split)",
+  "rejected": "parse error"
+ },
+ "cases": [
+  {
+   "id": "grouped_cleavage",
+   "op": "apply",
+   "query": "[C:1][O:2]>>([C:1].[O:2])",
+   "mol": "CCO",
+   "view": "objects",
+   "expect": {
+    "one_object": "re:objects:[^+|]*\\.[^+|]*",
+    "ignored_split": "re:objects:[^.]*",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": []
+ },
+ "fuzz": {
+  "avoid": [
+   "syntax.component_group"
+  ]
+ }
+}

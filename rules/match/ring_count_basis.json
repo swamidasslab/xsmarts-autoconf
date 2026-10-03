@@ -80,8 +80,10 @@
  },
  "fuzz": {
   "avoid": [
-   "prim.ring_count_R",
-   "mol.cage"
+   [
+    "prim.ring_count_R",
+    "mol.fused_ring"
+   ]
   ]
  }
 }

@@ -5,7 +5,8 @@
   "kept_raw": "unsanitized C=OC kept (RDKit Layer E)",
   "dropped_at_apply": "valence check drops it (chematic)",
   "hypervalent": "C=O=C (Open Babel)",
-  "untyped": "Ambit dummies"
+  "untyped": "Ambit dummies",
+  "h_kept_overvalent": "explicit-H substrate, H never adjusted after the edit (BioTransformer pipeline)"
  },
  "cases": [
   {
@@ -17,7 +18,8 @@
     "kept_raw": "products:C=OC",
     "dropped_at_apply": "products:",
     "hypervalent": "products:C=O=C",
-    "untyped": "re:products:.*\\*.*"
+    "untyped": "re:products:.*\\*.*",
+    "h_kept_overvalent": "products:CO=[CH3]"
    }
   }
  ],

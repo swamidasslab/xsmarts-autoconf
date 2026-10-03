@@ -30,8 +30,12 @@
  },
  "fuzz": {
   "avoid": [
-   "edit.h_pin",
-   "cond.explicit_h"
+   [
+    "prim.hcount",
+    "cond.explicit_h",
+    "op.apply"
+   ],
+   "edit.h_pin"
   ]
  }
 }

@@ -27,8 +27,10 @@
  },
  "fuzz": {
   "avoid": [
-   "prim.recursive_nested",
-   "prim.recursive"
+   [
+    "prim.recursive_nested",
+    "op.apply"
+   ]
   ]
  }
 }

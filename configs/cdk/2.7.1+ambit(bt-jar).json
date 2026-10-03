@@ -4,7 +4,7 @@
  "version": "2.7.1+ambit(bt-jar)",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "549f34cfd6694640",
+ "rules_digest": "6819fe8544ed6b48",
  "flags": {
   "match.aromaticity_exocyclic_carbonyl": {
    "value": "daylight_like",
@@ -116,6 +116,37 @@
     "12C_on_methane": "match:0"
    }
   },
+  "products.byproduct_filter": {
+   "value": "kept",
+   "observed": {
+    "dehydroxylation_water": "products:[C][C].[O]",
+    "deamination_nh3": "products:[C][C].[N]",
+    "dechlorination_hcl": "products:[C][C].[Cl]",
+    "o_demethylation_hcho": "products:*=O.[C][C][O]",
+    "methanol_control": "products:[C][C][O].[C][O]"
+   }
+  },
+  "products.fragment_objects": {
+   "value": "single_object",
+   "observed": {
+    "ester_hydrolysis": "objects:[C][C]([O])=[O].[C][C][O]",
+    "chain_scission_sites": "objects:[C].[C][C][C]|[C][C].[C][C]",
+    "ether_both_sides_same": "objects:[C][C].[C][C]"
+   }
+  },
+  "products.grouped_product_component": {
+   "value": "one_object",
+   "observed": {
+    "grouped_cleavage": "objects:[C][C].[O]"
+   }
+  },
+  "products.new_double_bond_h": {
+   "value": "dummies",
+   "observed": {
+    "n_deethylation_aldehyde": "products:[C][*]=[O].[C][N][C]",
+    "decarboxylation_co2": "products:*=C=O.[C][C][C]"
+   }
+  },
   "smirks.add_atom_with_explicit_h": {
    "value": "untyped",
    "observed": {
@@ -133,6 +164,15 @@
    "observed": {
     "benzene_identity": "products:[C]1=[C][C]=[C][C]=[C]1",
     "hydroxylate_benzene": "products:[O][*]1=[C][C]=[C][C]=[C]1"
+   }
+  },
+  "smirks.charge_hcount": {
+   "value": "untyped",
+   "observed": {
+    "carbocation": "products:[*+][C]",
+    "carbanion": "products:[*-][C]",
+    "oxonium": "products:[C][C][O+]",
+    "alkoxide": "products:[*-][C][C]"
    }
   },
   "smirks.charge_plus2_hcount": {

@@ -4,7 +4,7 @@
  "version": "3.2.1",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "549f34cfd6694640",
+ "rules_digest": "6819fe8544ed6b48",
  "flags": {
   "match.aromaticity_exocyclic_carbonyl": {
    "value": "daylight_like",
@@ -116,6 +116,56 @@
     "12C_on_methane": "match:0"
    }
   },
+  "products.byproduct_filter": {
+   "value": "rejected",
+   "observed": {
+    "dehydroxylation_water": "error",
+    "deamination_nh3": "error",
+    "dechlorination_hcl": "error",
+    "o_demethylation_hcho": "error",
+    "methanol_control": "error"
+   },
+   "errors": {
+    "dehydroxylation_water": "ValueError: OBChemTsfm.Init failed",
+    "deamination_nh3": "ValueError: OBChemTsfm.Init failed",
+    "dechlorination_hcl": "ValueError: OBChemTsfm.Init failed",
+    "o_demethylation_hcho": "ValueError: OBChemTsfm.Init failed",
+    "methanol_control": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "products.fragment_objects": {
+   "value": "rejected",
+   "observed": {
+    "ester_hydrolysis": "error",
+    "chain_scission_sites": "error",
+    "ether_both_sides_same": "error"
+   },
+   "errors": {
+    "ester_hydrolysis": "ValueError: OBChemTsfm.Init failed",
+    "chain_scission_sites": "ValueError: OBChemTsfm.Init failed",
+    "ether_both_sides_same": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "products.grouped_product_component": {
+   "value": "rejected",
+   "observed": {
+    "grouped_cleavage": "error"
+   },
+   "errors": {
+    "grouped_cleavage": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "products.new_double_bond_h": {
+   "value": "rejected",
+   "observed": {
+    "n_deethylation_aldehyde": "error",
+    "decarboxylation_co2": "error"
+   },
+   "errors": {
+    "n_deethylation_aldehyde": "ValueError: OBChemTsfm.Init failed",
+    "decarboxylation_co2": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
   "smirks.add_atom_with_explicit_h": {
    "value": "rejected",
    "observed": {
@@ -143,6 +193,15 @@
    "errors": {
     "benzene_identity": "ValueError: OBChemTsfm.Init failed",
     "hydroxylate_benzene": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.charge_hcount": {
+   "value": "all_sites_in_place",
+   "observed": {
+    "carbocation": "products:[CH2+][CH2+]",
+    "carbanion": "products:[CH2-][CH2-]",
+    "oxonium": "products:CC[OH2+]",
+    "alkoxide": "products:CC[O-]"
    }
   },
   "smirks.charge_plus2_hcount": {

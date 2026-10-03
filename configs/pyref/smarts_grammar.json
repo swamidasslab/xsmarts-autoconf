@@ -4,7 +4,7 @@
  "version": "smarts_grammar",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "549f34cfd6694640",
+ "rules_digest": "6819fe8544ed6b48",
  "flags": {
   "match.aromaticity_exocyclic_carbonyl": {
    "value": "daylight_like",
@@ -116,6 +116,40 @@
     "12C_on_methane": "match:0"
    }
   },
+  "products.byproduct_filter": {
+   "value": "kept",
+   "observed": {
+    "dehydroxylation_water": "products:CC.O",
+    "deamination_nh3": "products:CC.N",
+    "dechlorination_hcl": "products:CC.Cl",
+    "o_demethylation_hcho": "products:C=O.CCO",
+    "methanol_control": "products:CCO.CO"
+   }
+  },
+  "products.fragment_objects": {
+   "value": "single_object",
+   "observed": {
+    "ester_hydrolysis": "objects:CC(=O)O.CCO",
+    "chain_scission_sites": "objects:C.CCC|CC.CC",
+    "ether_both_sides_same": "objects:CC.CC"
+   }
+  },
+  "products.grouped_product_component": {
+   "value": "rejected",
+   "observed": {
+    "grouped_cleavage": "error"
+   },
+   "errors": {
+    "grouped_cleavage": "ParseError: unismarts SMARTS parse failed: Unexpected token Token('opensmarts__OPEN', '(') at line 1, column 13.\nExpected one of: \n\t* $END\n\t* LSQB\nPrevious tokens: [Token('MORETHAN', '>')]\n"
+   }
+  },
+  "products.new_double_bond_h": {
+   "value": "dummies",
+   "observed": {
+    "n_deethylation_aldehyde": "products:CC=O.CNC",
+    "decarboxylation_co2": "products:*=*=O.CCC"
+   }
+  },
   "smirks.add_atom_with_explicit_h": {
    "value": "h_not_adjusted",
    "observed": {
@@ -133,6 +167,15 @@
    "observed": {
     "benzene_identity": "products:C1CCCCC1",
     "hydroxylate_benzene": "products:"
+   }
+  },
+  "smirks.charge_hcount": {
+   "value": "valence_rule",
+   "observed": {
+    "carbocation": "products:[CH2+]C",
+    "carbanion": "products:[CH2-]C",
+    "oxonium": "products:CC[OH2+]",
+    "alkoxide": "products:CC[O-]"
    }
   },
   "smirks.charge_plus2_hcount": {
@@ -320,7 +363,7 @@
     "aromatic_selenium": "error"
    },
    "errors": {
-    "aromatic_selenium": "ParseError: unismarts SMARTS parse failed: No terminal matches 'e' in the current parser context, at line 1 col 3\n\n[se]\n  ^\nExpected one of: \n\t* SEMICOLON\n\t* \"r\"\n\t* opensmarts__TOTAL_HCOUNT\n\t* \"#G\"\n\t* H\n\t* opensmarts__MINUS\n\t* RSQB\n\t* D\n\t* opensmarts__MINUSMINUS\n\t* G\n\t* opensmarts__IMPLICIT_HCOUNT\n\t"
+    "aromatic_selenium": "ParseError: unismarts SMARTS parse failed: No terminal matches 'e' in the current parser context, at line 1 col 3\n\n[se]\n  ^\nExpected one of: \n\t* X\n\t* opensmarts__PLUSPLUS\n\t* V\n\t* \"d\"\n\t* R\n\t* opensmarts__IMPLICIT_HCOUNT\n\t* G\n\t* D\n\t* opensmarts__SYMBOL\n\t* \"#x\"\n\t* BARE_HYB\n\t* opensmarts__PLUS\n\t* H\n\t* S"
    }
   },
   "syntax.cdk_hash_X": {

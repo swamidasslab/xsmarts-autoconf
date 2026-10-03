@@ -4,7 +4,8 @@
  "values": {
   "neutralized": "charge set to 0",
   "inherited": "product charge unwritten -> reactant charge kept (RDKit)",
-  "untyped": "Ambit untyped"
+  "untyped": "Ambit untyped",
+  "neutralized_h_kept": "charge 0, H count kept: C[NH3] (BioTransformer)"
  },
  "cases": [
   {
@@ -15,7 +16,8 @@
    "expect": {
     "neutralized": "products:CN",
     "inherited": "products:C[NH3+]",
-    "untyped": "re:products:.*\\*.*"
+    "untyped": "re:products:.*\\*.*",
+    "neutralized_h_kept": "products:C[NH3]"
    }
   }
  ],
@@ -27,8 +29,7 @@
  },
  "fuzz": {
   "avoid": [
-   "edit.neutralize",
-   "mol.charged"
+   "edit.neutralize"
   ]
  }
 }

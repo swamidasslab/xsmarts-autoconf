@@ -4,7 +4,8 @@
  "values": {
   "added": "CCOC",
   "untyped": "added but Ambit dummy labels",
-  "rejected": "Open Babel Init fails"
+  "rejected": "Open Babel Init fails",
+  "h_kept_overvalent": "explicit-H substrate, H never adjusted after the edit (BioTransformer pipeline)"
  },
  "cases": [
   {
@@ -15,7 +16,8 @@
    "expect": {
     "added": "products:CCOC",
     "untyped": "re:products:.*\\*.*",
-    "rejected": "error"
+    "rejected": "error",
+    "h_kept_overvalent": "products:CC[OH]C"
    }
   }
  ],

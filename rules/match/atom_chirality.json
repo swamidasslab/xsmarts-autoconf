@@ -34,8 +34,7 @@
  "processing": "RDKit adapter option use_chirality=True switches to enforced.",
  "fuzz": {
   "avoid": [
-   "prim.chiral",
-   "mol.stereo"
+   "prim.chiral"
   ]
  }
 }

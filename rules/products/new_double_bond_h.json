@@ -1,0 +1,50 @@
+{
+ "flag": "products.new_double_bond_h",
+ "summary": "H on atoms that gain a double bond in a cleavage (aldehyde / CO2 byproduct)",
+ "values": {
+  "h_adjusted": "CC=O / O=C=O",
+  "h_kept_overvalent": "explicit-H substrate keeps H: C[CH2]=O, O=C=[OH] (BioTransformer; rules must delete [H])",
+  "dummies": "Ambit dummy atoms",
+  "rejected": "transform rejected"
+ },
+ "cases": [
+  {
+   "id": "n_deethylation_aldehyde",
+   "op": "apply",
+   "query": "[N:1][CH2:2][CH3:3]>>[N:1].[C:2](=O)[C:3]",
+   "mol": "CCN(C)C",
+   "expect": {
+    "h_adjusted": "products:CC=O.CNC",
+    "h_kept_overvalent": "products:CNC.C[CH2]=O",
+    "dummies": "*",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "decarboxylation_co2",
+   "op": "apply",
+   "query": "[C:1][C:2](=[O:3])[O:4]>>[C:1].[O:3]=[C:2]=[O:4]",
+   "mol": "CCCC(=O)O",
+   "expect": {
+    "h_adjusted": "products:CCC.O=C=O",
+    "h_kept_overvalent": "products:CCC.O=C=[OH]",
+    "dummies": "re:products:.*\\*.*",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md B0, A24"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   [
+    "edit.disconnect",
+    "edit.new_double_bond"
+   ]
+  ]
+ }
+}

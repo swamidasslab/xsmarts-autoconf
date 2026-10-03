@@ -1,7 +1,7 @@
 {
- "adapter": "rdkit",
- "label": "rdkit",
- "version": "2026.03.6",
+ "adapter": "biotransformer",
+ "label": "biotransformer",
+ "version": "2.7.1+biotransformer(fat-jar)",
  "options": {},
  "generated": "2026-10-03",
  "rules_digest": "6819fe8544ed6b48",
@@ -15,19 +15,19 @@
    }
   },
   "match.atom_chirality": {
-   "value": "ignored",
+   "value": "enforced",
    "observed": {
-    "opposite": "match:1",
-    "unspecified_mol": "match:1"
+    "opposite": "match:0",
+    "unspecified_mol": "match:0"
    }
   },
   "match.bond_stereo": {
-   "value": "ignored",
+   "value": "enforced",
    "observed": {
-    "trans_vs_cis": "match:1",
-    "trans_vs_unspecified": "match:1",
-    "trans_vs_cis_branch_spelling": "match:1",
-    "cis_all_spellings": "match:1",
+    "trans_vs_cis": "match:0",
+    "trans_vs_unspecified": "match:0",
+    "trans_vs_cis_branch_spelling": "match:0",
+    "cis_all_spellings": "match:0",
     "trans_vs_trans_branch_spelling": "match:1"
    }
   },
@@ -73,10 +73,10 @@
    }
   },
   "match.or_with_any_atom": {
-   "value": "correct",
+   "value": "drops_any",
    "observed": {
-    "star_or_n_on_ethane": "match:2",
-    "star_or_h_on_methane": "match:1"
+    "star_or_n_on_ethane": "match:0",
+    "star_or_h_on_methane": "match:0"
    }
   },
   "match.proton": {
@@ -86,13 +86,13 @@
    }
   },
   "match.ring_count_basis": {
-   "value": "symmetric",
+   "value": "sssr",
    "observed": {
-    "R3_cubane": "match:8",
-    "R2_bicyclo222": "match:6",
-    "R3_adamantane": "match:4",
-    "R1_adamantane": "match:0",
-    "R2_norbornane": "match:4",
+    "R3_cubane": "match:4",
+    "R2_bicyclo222": "match:4",
+    "R3_adamantane": "match:1",
+    "R1_adamantane": "match:3",
+    "R2_norbornane": "match:3",
     "R2_naphthalene_control": "match:2"
    }
   },
@@ -117,62 +117,62 @@
    }
   },
   "products.byproduct_filter": {
-   "value": "kept",
+   "value": "blocklist",
    "observed": {
-    "dehydroxylation_water": "products:CC.O",
-    "deamination_nh3": "products:CC.N",
-    "dechlorination_hcl": "products:CC.Cl",
-    "o_demethylation_hcho": "products:C=O.CCO",
+    "dehydroxylation_water": "products:CC",
+    "deamination_nh3": "products:CC",
+    "dechlorination_hcl": "products:CC",
+    "o_demethylation_hcho": "products:CCO",
     "methanol_control": "products:CCO.CO"
    }
   },
   "products.fragment_objects": {
-   "value": "per_template_component",
+   "value": "split_flattened",
    "observed": {
     "ester_hydrolysis": "objects:CC(=O)O + CCO",
-    "chain_scission_sites": "objects:C + CCC|CC + CC",
-    "ether_both_sides_same": "objects:CC + CC"
+    "chain_scission_sites": "objects:C + CC + CCC",
+    "ether_both_sides_same": "objects:CC"
    }
   },
   "products.grouped_product_component": {
-   "value": "one_object",
+   "value": "ignored_split",
    "observed": {
-    "grouped_cleavage": "objects:CC.O"
+    "grouped_cleavage": "objects:CC"
    }
   },
   "products.new_double_bond_h": {
-   "value": "h_adjusted",
+   "value": "h_kept_overvalent",
    "observed": {
-    "n_deethylation_aldehyde": "products:CC=O.CNC",
-    "decarboxylation_co2": "products:CCC.O=C=O"
+    "n_deethylation_aldehyde": "products:CNC.C[CH2]=O",
+    "decarboxylation_co2": "products:CCC.O=C=[OH]"
    }
   },
   "smirks.add_atom_with_explicit_h": {
-   "value": "h_aware",
+   "value": "h_not_adjusted",
    "observed": {
-    "addCl_X": "products:CCCl"
+    "addCl_X": "products:C[CH3]Cl"
    }
   },
   "smirks.add_unmapped_atom": {
-   "value": "added",
+   "value": "h_kept_overvalent",
    "observed": {
-    "methylate_O": "products:CCOC"
+    "methylate_O": "products:CC[OH]C"
    }
   },
   "smirks.aromatic_product": {
-   "value": "aromatic_preserved",
+   "value": "kekule_h_kept",
    "observed": {
-    "benzene_identity": "products:c1ccccc1",
-    "hydroxylate_benzene": "products:Oc1ccccc1"
+    "benzene_identity": "products:C1=CC=CC=C1",
+    "hydroxylate_benzene": "products:O[CH]1=CC=CC=C1"
    }
   },
   "smirks.charge_hcount": {
-   "value": "valence_rule",
+   "value": "h_count_kept",
    "observed": {
-    "carbocation": "products:[CH2+]C",
-    "carbanion": "products:[CH2-]C",
+    "carbocation": "products:C[CH3+]",
+    "carbanion": "products:C[CH3-]",
     "oxonium": "products:CC[OH2+]",
-    "alkoxide": "products:CC[O-]"
+    "alkoxide": "products:CC[OH-]"
    }
   },
   "smirks.charge_plus2_hcount": {
@@ -182,49 +182,58 @@
    }
   },
   "smirks.delete_mapped_by_omission": {
-   "value": "deleted",
+   "value": "rejected",
    "observed": {
-    "drop_O": "products:CC"
+    "drop_O": "error"
+   },
+   "errors": {
+    "drop_O": "ValueError: Reactant Map Index 2 is not valid product map index!\n"
    }
   },
   "smirks.disconnect": {
-   "value": "split",
+   "value": "split_deduped",
    "observed": {
-    "split_ethane": "products:C.C"
+    "split_ethane": "products:C"
    }
   },
   "smirks.edits_with_explicit_h": {
-   "value": "h_aware",
+   "value": "h_kept_overvalent",
    "observed": {
-    "CC_to_CdC_X": "products:C=C",
-    "ethanol_oxid_X": "products:CC=O"
+    "CC_to_CdC_X": "products:",
+    "ethanol_oxid_X": "products:C[CH2]=[OH]"
    }
   },
   "smirks.element_change": {
-   "value": "applied",
+   "value": "rejected",
    "observed": {
-    "C_to_N": "products:CN"
+    "C_to_N": "error"
+   },
+   "errors": {
+    "C_to_N": "ValueError: Map 1 atom types are inconsistent!\n"
    }
   },
   "smirks.fragmented_reactant": {
-   "value": "intermolecular_pair",
+   "value": "rejected",
    "observed": {
-    "frag_template": "products:COCO"
+    "frag_template": "error"
+   },
+   "errors": {
+    "frag_template": "java.lang.ArrayIndexOutOfBoundsException: java.lang.ArrayIndexOutOfBoundsException: Index 0 out of bounds for length 0"
    }
   },
   "smirks.h_atom_in_template": {
-   "value": "explicit_only",
+   "value": "implicit_matchable",
    "observed": {
-    "CH_delete_implicit": "products:",
+    "CH_delete_implicit": "products:C",
     "CH_delete_explicit": "products:C",
-    "OH_deprotonate_implicit": "products:",
+    "OH_deprotonate_implicit": "products:CC[O-]",
     "OH_deprotonate_explicit": "products:CC[O-]"
    }
   },
   "smirks.hcount_query_explicit_h": {
-   "value": "pin_adds_h",
+   "value": "preserved",
    "observed": {
-    "CH3_identity_X": "products:C[CH6]"
+    "CH3_identity_X": "products:CC"
    }
   },
   "smirks.identity_labels": {
@@ -235,42 +244,45 @@
    }
   },
   "smirks.nested_recursive": {
-   "value": "evaluated",
+   "value": "always_true",
    "observed": {
-    "nested_absent_apply": "products:"
+    "nested_absent_apply": "products:CC"
    }
   },
   "smirks.neutralize_written_charge": {
-   "value": "inherited",
+   "value": "neutralized_h_kept",
    "observed": {
-    "Nplus_to_N": "products:C[NH3+]"
+    "Nplus_to_N": "products:C[NH3]"
    }
   },
   "smirks.outcome_multiplicity": {
-   "value": "all_mappings",
+   "value": "flattened",
    "observed": {
-    "bond_order_count": "outcomes:2",
-    "ring_open_count": "outcomes:8",
-    "star_identity_count": "outcomes:3"
+    "bond_order_count": "outcomes:0",
+    "ring_open_count": "outcomes:1",
+    "star_identity_count": "outcomes:1"
    }
   },
   "smirks.product_h_atom_added": {
-   "value": "h_dropped",
+   "value": "h_added_charge_kept",
    "observed": {
-    "protonate_alkoxide": "products:CC[O-]"
+    "protonate_alkoxide": "products:CC[OH-]"
    }
   },
   "smirks.product_h_pin": {
-   "value": "authoritative",
+   "value": "ignored",
    "observed": {
-    "pin_CH2": "products:[CH2]C",
-    "pin_CH2_X": "products:C[CH5]"
+    "pin_CH2": "products:CC",
+    "pin_CH2_X": "products:CC"
    }
   },
   "smirks.product_only_map": {
-   "value": "created",
+   "value": "rejected",
    "observed": {
-    "product_only_N": "products:CCN"
+    "product_only_N": "error"
+   },
+   "errors": {
+    "product_only_N": "ValueError: Product Map Index 2 is not valid reactant map index!\n"
    }
   },
   "smirks.product_plusplus": {
@@ -286,22 +298,28 @@
    }
   },
   "smirks.sanitize_policy": {
-   "value": "drops_invalid",
+   "value": "h_kept_overvalent",
    "observed": {
-    "ether_S": "products:",
-    "iminium_S": "products:"
+    "ether_S": "products:CO=[CH3]",
+    "iminium_S": "products:CN(C)=[CH3]"
    }
   },
   "smirks.star_retype": {
-   "value": "keeps_reactant_atom",
+   "value": "rejected",
    "observed": {
-    "acetyl_star": "products:CCOC(C)=O"
+    "acetyl_star": "error"
+   },
+   "errors": {
+    "acetyl_star": "ValueError: Map 1 atom types are inconsistent!\n"
    }
   },
   "smirks.undefined_product_bond": {
-   "value": "first_alternative",
+   "value": "rejected",
    "observed": {
-    "undef_order": "products:C=C"
+    "undef_order": "error"
+   },
+   "errors": {
+    "undef_order": "ValueError: A product bond with undefined order: =,:\n"
    }
   },
   "smirks.unmapped_reactant_deleted": {
@@ -319,9 +337,9 @@
    }
   },
   "smirks.valence_invalid_raw": {
-   "value": "kept_raw",
+   "value": "h_kept_overvalent",
    "observed": {
-    "ether_trap": "products:C=OC"
+    "ether_trap": "products:CO=[CH3]"
    }
   },
   "syntax.aliphatic_any_A": {
@@ -331,9 +349,12 @@
    }
   },
   "syntax.aliphatic_hetero_neighbors_Z": {
-   "value": "supported",
+   "value": "rejected",
    "observed": {
-    "aliphatic_hetero_neighbors_Z": "match:1"
+    "aliphatic_hetero_neighbors_Z": "error"
+   },
+   "errors": {
+    "aliphatic_hetero_neighbors_Z": "java.lang.IllegalArgumentException: java.lang.IllegalArgumentException: Could not parse SMARTS: [CZ1]\nInvalid atom expression\n[CZ1]\n   ^\n"
    }
   },
   "syntax.aromatic_selenium": {
@@ -343,12 +364,9 @@
    }
   },
   "syntax.cdk_hash_X": {
-   "value": "rejected",
+   "value": "supported",
    "observed": {
-    "cdk_hash_X": "error"
-   },
-   "errors": {
-    "cdk_hash_X": "ValueError: MolFromSmarts returned None"
+    "cdk_hash_X": "match:1"
    }
   },
   "syntax.charge_plusplus": {
@@ -359,20 +377,19 @@
    }
   },
   "syntax.component_grouping": {
-   "value": "rejected",
+   "value": "enforced",
    "observed": {
-    "separate_groups_same_component": "error",
-    "same_group_two_components": "error"
-   },
-   "errors": {
-    "separate_groups_same_component": "ValueError: MolFromSmarts returned None",
-    "same_group_two_components": "ValueError: MolFromSmarts returned None"
+    "separate_groups_same_component": "match:0",
+    "same_group_two_components": "match:0"
    }
   },
   "syntax.dative_bond": {
-   "value": "supported",
+   "value": "rejected",
    "observed": {
-    "dative_parse": "ok"
+    "dative_parse": "error"
+   },
+   "errors": {
+    "dative_parse": "java.lang.IllegalArgumentException: java.lang.IllegalArgumentException: Could not parse SMARTS: N->[Fe]\nMissing '>' to complete reaction\nN->[Fe]\n      ^\n"
    }
   },
   "syntax.dot_disconnected": {
@@ -382,31 +399,31 @@
    }
   },
   "syntax.hetero_neighbors_z": {
-   "value": "supported",
+   "value": "rejected",
    "observed": {
-    "hetero_neighbors_z": "match:1"
+    "hetero_neighbors_z": "error"
+   },
+   "errors": {
+    "hetero_neighbors_z": "java.lang.IllegalArgumentException: java.lang.IllegalArgumentException: Could not parse SMARTS: [Cz1]\nInvalid atom expression\n[Cz1]\n  ^\n"
    }
   },
   "syntax.hybridization": {
-   "value": "zero_to_five",
+   "value": "cdk_one_based_untyped",
    "observed": {
-    "hyb_digit0": "ok",
-    "hyb_digit7": "error",
-    "hyb_sp3_ethane": "match:2",
+    "hyb_digit0": "error",
+    "hyb_digit7": "ok",
+    "hyb_sp3_ethane": "match:0",
     "hyb_bare_ethyne": "error"
    },
    "errors": {
-    "hyb_digit7": "ValueError: MolFromSmarts returned None",
-    "hyb_bare_ethyne": "ValueError: MolFromSmarts returned None"
+    "hyb_digit0": "java.lang.IllegalArgumentException: java.lang.IllegalArgumentException: Could not parse SMARTS: [C^0]\nInvalid atom expression\n[C^0]\n   ^\n",
+    "hyb_bare_ethyne": "java.lang.IllegalArgumentException: java.lang.IllegalArgumentException: Could not parse SMARTS: [C^]\nInvalid atom expression\n[C^]\n  ^\n"
    }
   },
   "syntax.insaturation_i": {
-   "value": "rejected",
+   "value": "supported",
    "observed": {
-    "i1_ethene": "error"
-   },
-   "errors": {
-    "i1_ethene": "ValueError: MolFromSmarts returned None"
+    "i1_ethene": "match:2"
    }
   },
   "syntax.periodic_group_G": {
@@ -415,7 +432,7 @@
     "periodic_group_G": "error"
    },
    "errors": {
-    "periodic_group_G": "ValueError: MolFromSmarts returned None"
+    "periodic_group_G": "java.lang.IllegalArgumentException: java.lang.IllegalArgumentException: Could not parse SMARTS: [G16]\nInvalid atom expression\n[G16]\n   ^\n"
    }
   },
   "syntax.range_counts": {
@@ -425,9 +442,12 @@
    }
   },
   "syntax.ring_size_k": {
-   "value": "supported",
+   "value": "rejected",
    "observed": {
-    "ring_size_k": "match:6"
+    "ring_size_k": "error"
+   },
+   "errors": {
+    "ring_size_k": "java.lang.IllegalArgumentException: java.lang.IllegalArgumentException: Could not parse SMARTS: [Ck6]\nInvalid atom expression\n[Ck6]\n  ^\n"
    }
   },
   "syntax.unclosed_ring": {
@@ -436,7 +456,7 @@
     "unclosed": "error"
    },
    "errors": {
-    "unclosed": "ValueError: MolFromSmarts returned None"
+    "unclosed": "java.lang.IllegalArgumentException: java.lang.IllegalArgumentException: Could not parse SMARTS: C1CC\nUnclosed ring, component group, or branch\nC1CC\n   ^\n"
    }
   }
  }

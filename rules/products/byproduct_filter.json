@@ -1,0 +1,81 @@
+{
+ "flag": "products.byproduct_filter",
+ "summary": "Small byproducts (H2O, NH3, HCl, formaldehyde) kept or dropped",
+ "values": {
+  "kept": "every fragment returned",
+  "blocklist": "BioTransformer isUnneccessaryMetabolite drops H2O/NH3/HCl/HCHO/CO2...; methanol kept",
+  "rejected": "transform rejected"
+ },
+ "cases": [
+  {
+   "id": "dehydroxylation_water",
+   "op": "apply",
+   "query": "[C:1][O:2]>>[C:1].[O:2]",
+   "mol": "CCO",
+   "expect": {
+    "kept": "re:products:(.*\\.)?(O|\\[OH\\]|\\[O\\])(\\..*)?",
+    "blocklist": "products:CC",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "deamination_nh3",
+   "op": "apply",
+   "query": "[C:1][N:2]>>[C:1].[N:2]",
+   "mol": "CCN",
+   "expect": {
+    "kept": "re:products:.*N.*",
+    "blocklist": "products:CC",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "dechlorination_hcl",
+   "op": "apply",
+   "query": "[C:1][Cl:2]>>[C:1].[Cl:2]",
+   "mol": "CCCl",
+   "expect": {
+    "kept": "re:products:.*Cl.*",
+    "blocklist": "products:CC",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "o_demethylation_hcho",
+   "op": "apply",
+   "query": "[O:1][CH3:2]>>[O:1].[C:2]=O",
+   "mol": "COCC",
+   "expect": {
+    "kept": "re:products:.*=O.*",
+    "blocklist": "products:CCO",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "methanol_control",
+   "op": "apply",
+   "query": "[C:1][O:2][C:3]>>[C:1][O:2].[C:3]O",
+   "mol": "CCOC",
+   "expect": {
+    "kept": "re:products:.+",
+    "blocklist": "products:CCO.CO",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md B2"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   [
+    "edit.disconnect",
+    "op.apply"
+   ],
+   "edit.byproduct"
+  ]
+ }
+}

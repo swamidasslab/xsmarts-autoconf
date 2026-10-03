@@ -51,8 +51,10 @@
  "processing": "Engine config: pyref Profile.ring_size_any",
  "fuzz": {
   "avoid": [
-   "prim.ring_size_r",
-   "mol.fused_ring"
+   [
+    "prim.ring_size_r",
+    "mol.fused_ring"
+   ]
   ]
  }
 }

@@ -5,7 +5,8 @@
   "h_aware": "H removed/refilled correctly (RDKit)",
   "empty": "edits produce nothing with AddHs (chematic)",
   "h_not_adjusted": "explicit H kept, valence exceeded (Open Babel)",
-  "untyped": "Ambit dummies"
+  "untyped": "Ambit dummies",
+  "h_kept_overvalent": "explicit-H substrate, H never adjusted after the edit (BioTransformer pipeline)"
  },
  "cases": [
   {
@@ -18,7 +19,8 @@
     "h_aware": "products:C=C",
     "empty": "products:",
     "h_not_adjusted": "products:[CH3]=[CH3]",
-    "untyped": "re:products:.*\\*.*"
+    "untyped": "re:products:.*\\*.*",
+    "h_kept_overvalent": "products:"
    }
   },
   {
@@ -31,7 +33,8 @@
     "h_aware": "products:CC=O",
     "empty": "products:",
     "h_not_adjusted": "re:products:.*\\[.H.*",
-    "untyped": "re:products:.*\\*.*"
+    "untyped": "re:products:.*\\*.*",
+    "h_kept_overvalent": "products:C[CH2]=[OH]"
    }
   }
  ],
@@ -44,8 +47,10 @@
  },
  "fuzz": {
   "avoid": [
-   "edit.bond_order",
-   "cond.explicit_h"
+   [
+    "edit.bond_order",
+    "cond.explicit_h"
+   ]
   ]
  }
 }

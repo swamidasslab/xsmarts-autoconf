@@ -34,8 +34,10 @@
  },
  "fuzz": {
   "avoid": [
-   "prim.degree",
-   "cond.explicit_h"
+   [
+    "prim.degree",
+    "cond.explicit_h"
+   ]
   ]
  }
 }

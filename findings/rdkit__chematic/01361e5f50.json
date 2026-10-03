@@ -1,0 +1,32 @@
+{
+ "found": "2026-10-03",
+ "versions": {
+  "rdkit": "2026.03.6",
+  "chematic": "1.0.30"
+ },
+ "case": {
+  "op": "apply",
+  "query": "[C:1]>>[C+:1]",
+  "mol": "CC",
+  "explicit_h": false,
+  "view": "products"
+ },
+ "observed": {
+  "rdkit": "products:[CH2+]C",
+  "chematic": "products:C[CH4+]"
+ },
+ "detail": {
+  "rdkit": "[CH2+]C | [CH2+]C",
+  "chematic": "[CH4+]C | [CH4+]C"
+ },
+ "features": [
+  "edit.charge_change",
+  "op.apply",
+  "op.apply_implicit_h"
+ ],
+ "explained_by": [
+  "smirks.add_unmapped_atom",
+  "smirks.identity_labels"
+ ],
+ "status": "explained"
+}

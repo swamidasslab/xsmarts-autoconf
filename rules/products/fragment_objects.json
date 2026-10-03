@@ -1,0 +1,67 @@
+{
+ "flag": "products.fragment_objects",
+ "summary": "Cleavage products: one object per fragment, or one disconnected object",
+ "values": {
+  "per_template_component": "one object per product-template component (RDKit, chematic)",
+  "single_object": "one disconnected object per outcome (Ambit raw, pyref)",
+  "split_flattened": "fragments split, all sites merged into one de-duplicated set (BioTransformer B1)",
+  "rejected": "transform rejected"
+ },
+ "cases": [
+  {
+   "id": "ester_hydrolysis",
+   "op": "apply",
+   "query": "[C:1](=[O:2])[O:3][C:4]>>[C:1](=[O:2])O.[O:3][C:4]",
+   "mol": "CC(=O)OCC",
+   "view": "objects",
+   "expect": {
+    "per_template_component": "objects:CC(=O)O + CCO",
+    "single_object": "re:objects:[^+|]*\\.[^+|]*",
+    "split_flattened": "objects:CC(=O)O + CCO",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "chain_scission_sites",
+   "op": "apply",
+   "query": "[C:1][C:2]>>[C:1].[C:2]",
+   "mol": "CCCC",
+   "view": "objects",
+   "expect": {
+    "per_template_component": "objects:C + CCC|CC + CC",
+    "single_object": "re:objects:[^+]*",
+    "split_flattened": "objects:C + CC + CCC",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "ether_both_sides_same",
+   "op": "apply",
+   "query": "[C:1]O[C:2]>>[C:1].[C:2]",
+   "mol": "CCOCC",
+   "view": "objects",
+   "note": "identical fragments: kept twice or merged",
+   "expect": {
+    "per_template_component": "objects:CC + CC",
+    "single_object": "re:objects:[^+]*",
+    "split_flattened": "objects:CC",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md B1"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.disconnect",
+   [
+    "view.objects",
+    "op.apply"
+   ]
+  ]
+ }
+}

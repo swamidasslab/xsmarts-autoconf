@@ -5,7 +5,8 @@
   "all_mappings": "one outcome per ordered mapping (RDKit RunReactants)",
   "unique_atom_sets": "one per atom set (Ambit non-identical A8)",
   "deduped_products": "unique atom sets, identical products merged (chematic)",
-  "single_application": "one in-place application (Open Babel)"
+  "single_application": "one in-place application (Open Babel)",
+  "flattened": "all sites merged into one fragment set (BioTransformer)"
  },
  "cases": [
   {
@@ -18,7 +19,11 @@
     "all_mappings": "outcomes:2",
     "unique_atom_sets": "outcomes:1",
     "deduped_products": "outcomes:1",
-    "single_application": "outcomes:1"
+    "single_application": "outcomes:1",
+    "flattened": [
+     "outcomes:0",
+     "outcomes:1"
+    ]
    }
   },
   {
@@ -31,7 +36,8 @@
     "all_mappings": "outcomes:8",
     "unique_atom_sets": "outcomes:1",
     "deduped_products": "outcomes:1",
-    "single_application": "error"
+    "single_application": "error",
+    "flattened": "outcomes:1"
    }
   },
   {
@@ -44,7 +50,8 @@
     "all_mappings": "outcomes:3",
     "unique_atom_sets": "outcomes:3",
     "deduped_products": "outcomes:2",
-    "single_application": "error"
+    "single_application": "error",
+    "flattened": "outcomes:1"
    }
   }
  ],

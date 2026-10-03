@@ -4,7 +4,8 @@ A library adapter overrides a handful of methods that return *native* results:
 
 - ``parse(smarts)``                      -> None, raise on rejection
 - ``match(smarts, smiles, explicit_h)``  -> number of unique (atom-set) matches
-- ``apply(smirks, smiles, explicit_h)``  -> list of product-set SMILES, one per outcome
+- ``apply(smirks, smiles, explicit_h)``  -> one entry per outcome: a list of
+  product-object SMILES (or a single SMILES string for one object)
 - ``sanitize(smiles)``                   -> lib-native sanitized SMILES or None (reject)
 
 Everything else (error capture, unsupported ops, SMILES normalization, the
@@ -37,8 +38,9 @@ class Case:
     mol: str | None = None
     explicit_h: bool = False
     view: str = "products"
-    """apply only: ``products`` (raw edit set), ``sanitized`` (lib-native
-    sanitize, rejects dropped) or ``count`` (number of outcomes, with dups)."""
+    """apply only: ``products`` (raw edit set, all objects joined), ``sanitized``
+    (lib-native sanitize, rejects dropped), ``count`` (number of outcomes, with
+    dups) or ``objects`` (product objects per outcome, ``A + B``)."""
     note: str = ""
     orderings: int = 0
     """Also observe on this many deterministic re-orderings of ``mol`` and
@@ -143,7 +145,7 @@ class Adapter:
     def match(self, smarts: str, smiles: str, explicit_h: bool) -> int:
         raise Unsupported
 
-    def apply(self, smirks: str, smiles: str, explicit_h: bool) -> list[str]:
+    def apply(self, smirks: str, smiles: str, explicit_h: bool) -> list[list[str] | str]:
         raise Unsupported
 
     def sanitize(self, smiles: str) -> str | None:
@@ -185,13 +187,20 @@ class Adapter:
             n = self.match(case.query, case.mol, case.explicit_h)
             return f"match:{n}", ""
         if case.op == "apply":
-            outs = self.apply(case.query, case.mol, case.explicit_h)
+            outs = [[o] if isinstance(o, str) else list(o)
+                    for o in self.apply(case.query, case.mol, case.explicit_h)]
+            detail = " | ".join(" + ".join(o) for o in outs)
             if case.view == "count":
-                return f"outcomes:{len(outs)}", " | ".join(outs)
+                return f"outcomes:{len(outs)}", detail
+            if case.view == "objects":
+                # Product objects per outcome: one disconnected object ("C.O")
+                # vs separate objects ("C + O"); dropped fragments show here too.
+                per = {" + ".join(sorted(canon_set(x) for x in o)) for o in outs}
+                return "objects:" + "|".join(sorted(per)), detail
+            flat = [".".join(o) for o in outs]
             if case.view == "sanitized":
-                kept = [s for s in (self._sanitize_set(o) for o in outs) if s is not None]
-                return "products:" + "|".join(sorted({canon_set(s) for s in kept})), " | ".join(outs)
-            return "products:" + "|".join(sorted({canon_set(o) for o in outs})), " | ".join(outs)
+                flat = [s for s in (self._sanitize_set(o) for o in flat) if s is not None]
+            return "products:" + "|".join(sorted({canon_set(o) for o in flat})), detail
         raise ValueError(f"unknown op {case.op!r}")
 
     def _sanitize_set(self, smiles: str) -> str | None:
