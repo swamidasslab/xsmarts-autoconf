@@ -1,0 +1,31 @@
+{
+ "flag": "syntax.ring_size_k",
+ "summary": "`k<n>` member of any ring of size n",
+ "values": {
+  "supported": "parses and matches (RDKit/chematic extension)",
+  "rejected": "parse error"
+ },
+ "cases": [
+  {
+   "id": "ring_size_k",
+   "op": "match",
+   "query": "[Ck6]",
+   "mol": "C1CCC2CCCC2C1",
+   "expect": {
+    "supported": "match:6",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smarts_dialects.md"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "prim.ring_k"
+  ]
+ }
+}

@@ -1,0 +1,34 @@
+{
+ "flag": "smirks.add_unmapped_atom",
+ "summary": "Add unmapped product atom `[O:1]>>[O:1]C`",
+ "values": {
+  "added": "CCOC",
+  "untyped": "added but Ambit dummy labels",
+  "rejected": "Open Babel Init fails"
+ },
+ "cases": [
+  {
+   "id": "methylate_O",
+   "op": "apply",
+   "query": "[O:1]>>[O:1]C",
+   "mol": "CCO",
+   "expect": {
+    "added": "products:CCOC",
+    "untyped": "re:products:.*\\*.*",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smirks/README.md section 6"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.add_atom",
+   "op.apply_implicit_h"
+  ]
+ }
+}

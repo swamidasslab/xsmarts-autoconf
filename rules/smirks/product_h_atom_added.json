@@ -1,0 +1,36 @@
+{
+ "flag": "smirks.product_h_atom_added",
+ "summary": "Product adds a graph `[H]` `[O:1]>>[O:1][H]` on an anion",
+ "values": {
+  "h_dropped": "H atom dropped, charge kept (CC[O-])",
+  "protonated_reset": "H added and charge reset (CCO, chematic)",
+  "h_added_charge_kept": "CC[OH-]",
+  "untyped": "Ambit dummies",
+  "rejected": "template rejected (Open Babel Init)"
+ },
+ "cases": [
+  {
+   "id": "protonate_alkoxide",
+   "op": "apply",
+   "query": "[O:1]>>[O:1][H]",
+   "mol": "CC[O-]",
+   "expect": {
+    "h_dropped": "products:CC[O-]",
+    "protonated_reset": "products:CCO",
+    "h_added_charge_kept": "products:CC[OH-]",
+    "untyped": "re:products:.*\\*.*",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": []
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.h_atom",
+   "mol.charged"
+  ]
+ }
+}

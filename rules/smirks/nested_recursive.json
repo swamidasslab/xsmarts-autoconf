@@ -1,0 +1,34 @@
+{
+ "flag": "smirks.nested_recursive",
+ "summary": "Nested recursive SMARTS in SMIRKS reactant (apply path)",
+ "values": {
+  "evaluated": "nested $() evaluated: no products on ethane",
+  "always_true": "nested $() true: identity applies (Ambit A7b)",
+  "rejected": "parse error"
+ },
+ "cases": [
+  {
+   "id": "nested_absent_apply",
+   "op": "apply",
+   "query": "[C;$(C[$(O)]):1]>>[C:1]",
+   "mol": "CC",
+   "expect": {
+    "evaluated": "products:",
+    "always_true": "re:products:.+",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md A7b"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "prim.recursive_nested",
+   "prim.recursive"
+  ]
+ }
+}

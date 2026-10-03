@@ -1,0 +1,29 @@
+{
+ "flag": "match.unspecified_isotope",
+ "summary": "`[12C]` against a carbon with no isotope",
+ "values": {
+  "natural_is_unspecified": "no match",
+  "unspecified_is_12": "matches (chematic)"
+ },
+ "cases": [
+  {
+   "id": "12C_on_methane",
+   "op": "match",
+   "query": "[12C]",
+   "mol": "C",
+   "expect": {
+    "natural_is_unspecified": "match:0",
+    "unspecified_is_12": "match:1"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": []
+ },
+ "fuzz": {
+  "avoid": [
+   "prim.isotope"
+  ]
+ }
+}

@@ -1,0 +1,33 @@
+{
+ "flag": "match.h_count_with_explicit_h",
+ "summary": "`H<n>` total H count when H are explicit atoms",
+ "values": {
+  "counts_h_atoms": "[CH3] matches ethane after AddHs",
+  "ignores_h_atoms": "explicit H not counted"
+ },
+ "cases": [
+  {
+   "id": "CH3_explicit",
+   "op": "match",
+   "query": "[CH3]",
+   "mol": "CC",
+   "explicit_h": true,
+   "expect": {
+    "counts_h_atoms": "match:2",
+    "ignores_h_atoms": "match:0"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smirks/README.md"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "prim.hcount",
+   "cond.explicit_h"
+  ]
+ }
+}

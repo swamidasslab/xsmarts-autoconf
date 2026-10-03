@@ -1,0 +1,58 @@
+{
+ "flag": "match.h_atom_query",
+ "summary": "Graph `[H]` atom in a query (`[C][H]`) vs implicit / explicit H",
+ "values": {
+  "explicit_only": "matches only after AddHs",
+  "implicit_matchable": "matches implicit H too (Open Babel)",
+  "bracket_h_not_atom": "never matches as an atom, even with AddHs (chematic)"
+ },
+ "cases": [
+  {
+   "id": "CH_implicit",
+   "op": "match",
+   "query": "[C][H]",
+   "mol": "C",
+   "expect": {
+    "explicit_only": "match:0",
+    "implicit_matchable": "match:4",
+    "bracket_h_not_atom": "match:0"
+   }
+  },
+  {
+   "id": "CH_explicit",
+   "op": "match",
+   "query": "[C][H]",
+   "mol": "C",
+   "explicit_h": true,
+   "expect": {
+    "explicit_only": "match:4",
+    "implicit_matchable": "match:4",
+    "bracket_h_not_atom": "match:0"
+   }
+  },
+  {
+   "id": "hash1_explicit",
+   "op": "match",
+   "query": "[#1]",
+   "mol": "C",
+   "explicit_h": true,
+   "expect": {
+    "explicit_only": "match:4",
+    "implicit_matchable": "match:4",
+    "bracket_h_not_atom": "match:4"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smirks/README.md (Explicit H)"
+  ]
+ },
+ "processing": "explicit_h=True means the adapter adds explicit H to the molecule before matching.",
+ "fuzz": {
+  "avoid": [
+   "prim.h_atom"
+  ]
+ }
+}

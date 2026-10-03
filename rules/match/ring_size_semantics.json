@@ -1,0 +1,58 @@
+{
+ "flag": "match.ring_size_semantics",
+ "summary": "`r<n>`: smallest ring is n vs member of any ring of size n",
+ "values": {
+  "smallest_ring": "Daylight/RDKit: SSSR smallest ring size",
+  "any_ring": "member of any (relevant) ring of size n"
+ },
+ "cases": [
+  {
+   "id": "r6_hydrindane",
+   "op": "match",
+   "query": "[r6]",
+   "orderings": 6,
+   "mol": "C1CCC2CCCC2C1",
+   "note": "bridgeheads are in a 5 and a 6 ring",
+   "expect": {
+    "smallest_ring": "match:4",
+    "any_ring": "match:6"
+   }
+  },
+  {
+   "id": "r5_hydrindane",
+   "op": "match",
+   "query": "[r5]",
+   "orderings": 6,
+   "mol": "C1CCC2CCCC2C1",
+   "expect": {
+    "smallest_ring": "match:5",
+    "any_ring": "match:5"
+   }
+  },
+  {
+   "id": "r6_indane_like_spiro",
+   "op": "match",
+   "query": "[r6]",
+   "orderings": 6,
+   "mol": "C1CCC2(C1)CCCCC2",
+   "note": "spiro atom: smallest ring 5",
+   "expect": {
+    "smallest_ring": "match:5",
+    "any_ring": "match:6"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "scripts/smarts_grammar/match.py Profile.ring_size_any"
+  ]
+ },
+ "processing": "Engine config: pyref Profile.ring_size_any",
+ "fuzz": {
+  "avoid": [
+   "prim.ring_size_r",
+   "mol.fused_ring"
+  ]
+ }
+}

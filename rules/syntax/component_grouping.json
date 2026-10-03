@@ -1,0 +1,44 @@
+{
+ "flag": "syntax.component_grouping",
+ "summary": "Component-level grouping `(C).(O)` / `(C.O)`",
+ "values": {
+  "enforced": "groups constrain components",
+  "ignored": "parentheses accepted, grouping ignored",
+  "rejected": "parse error"
+ },
+ "cases": [
+  {
+   "id": "separate_groups_same_component",
+   "op": "match",
+   "query": "(C).(O)",
+   "mol": "CO",
+   "expect": {
+    "enforced": "match:0",
+    "ignored": "match:1",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "same_group_two_components",
+   "op": "match",
+   "query": "(C.O)",
+   "mol": "C.O",
+   "expect": {
+    "enforced": "match:0",
+    "ignored": "*",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smarts_dialects.md"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "syntax.component_group"
+  ]
+ }
+}

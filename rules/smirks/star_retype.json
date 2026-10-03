@@ -1,0 +1,34 @@
+{
+ "flag": "smirks.star_retype",
+ "summary": "Typed reactant map rewritten as product `*` `[O:1]>>[*:1]C(=O)C`",
+ "values": {
+  "keeps_reactant_atom": "acetyl ester",
+  "corrupt": "[*H]CC (Open Babel)",
+  "rejected": "map atom types inconsistent (Ambit A4)"
+ },
+ "cases": [
+  {
+   "id": "acetyl_star",
+   "op": "apply",
+   "query": "[O:1]>>[*:1]C(=O)C",
+   "mol": "CCO",
+   "expect": {
+    "keeps_reactant_atom": "products:CCOC(C)=O",
+    "corrupt": "products:[*H]CC",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smirks/README.md section 7",
+   "docs/chematic/issues/002-smirks-product-hash-bracket-expand.md"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.star_retype"
+  ]
+ }
+}

@@ -1,0 +1,41 @@
+{
+ "flag": "match.degree_with_explicit_h",
+ "summary": "`D<n>` when H are explicit atoms",
+ "values": {
+  "counts_h_atoms": "D counts explicit H neighbors ([CD1] fails on ethane+AddHs)",
+  "heavy_only": "D ignores H atoms"
+ },
+ "cases": [
+  {
+   "id": "CD1_explicit",
+   "op": "match",
+   "query": "[CD1]",
+   "mol": "CC",
+   "explicit_h": true,
+   "expect": {
+    "counts_h_atoms": "match:0",
+    "heavy_only": "match:2"
+   }
+  },
+  {
+   "id": "CD1_implicit",
+   "op": "match",
+   "query": "[CD1]",
+   "mol": "CC",
+   "expect": {
+    "counts_h_atoms": "match:2",
+    "heavy_only": "match:2"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": []
+ },
+ "fuzz": {
+  "avoid": [
+   "prim.degree",
+   "cond.explicit_h"
+  ]
+ }
+}

@@ -1,0 +1,35 @@
+{
+ "flag": "smirks.charge_plus2_hcount",
+ "summary": "Set +2 on a neutral N: H count on product",
+ "values": {
+  "valence_reduced": "C[NH2+2]",
+  "h_added": "C[NH4+2] (chematic)",
+  "untyped": "Ambit: atom untyped ([*+2])",
+  "h_cleared": "C[N+2] (H not refilled)"
+ },
+ "cases": [
+  {
+   "id": "N_plus2",
+   "op": "apply",
+   "query": "[N:1]>>[N+2:1]",
+   "mol": "CN",
+   "expect": {
+    "valence_reduced": "products:C[NH2+2]",
+    "h_added": "products:C[NH4+2]",
+    "untyped": "re:products:.*\\*.*",
+    "h_cleared": "products:C[N+2]"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smirks/README.md section 3"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.charge_high"
+  ]
+ }
+}

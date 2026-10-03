@@ -1,0 +1,35 @@
+{
+ "flag": "smirks.valence_invalid_raw",
+ "summary": "Raw edit product that breaks valence (ether -> C=O)",
+ "values": {
+  "kept_raw": "unsanitized C=OC kept (RDKit Layer E)",
+  "dropped_at_apply": "valence check drops it (chematic)",
+  "hypervalent": "C=O=C (Open Babel)",
+  "untyped": "Ambit dummies"
+ },
+ "cases": [
+  {
+   "id": "ether_trap",
+   "op": "apply",
+   "query": "[C:1][O:2]>>[C:1]=[O:2]",
+   "mol": "COC",
+   "expect": {
+    "kept_raw": "products:C=OC",
+    "dropped_at_apply": "products:",
+    "hypervalent": "products:C=O=C",
+    "untyped": "re:products:.*\\*.*"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smirks/README.md section 9"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.bond_order_valence"
+  ]
+ }
+}

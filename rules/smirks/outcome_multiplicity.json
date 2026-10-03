@@ -1,0 +1,62 @@
+{
+ "flag": "smirks.outcome_multiplicity",
+ "summary": "How many outcomes per match set",
+ "values": {
+  "all_mappings": "one outcome per ordered mapping (RDKit RunReactants)",
+  "unique_atom_sets": "one per atom set (Ambit non-identical A8)",
+  "deduped_products": "unique atom sets, identical products merged (chematic)",
+  "single_application": "one in-place application (Open Babel)"
+ },
+ "cases": [
+  {
+   "id": "bond_order_count",
+   "op": "apply",
+   "query": "[C:1]-[C:2]>>[C:1]=[C:2]",
+   "mol": "CC",
+   "view": "count",
+   "expect": {
+    "all_mappings": "outcomes:2",
+    "unique_atom_sets": "outcomes:1",
+    "deduped_products": "outcomes:1",
+    "single_application": "outcomes:1"
+   }
+  },
+  {
+   "id": "ring_open_count",
+   "op": "apply",
+   "query": "[C:1]1[C:2]CC1>>[C:1].[C:2]",
+   "mol": "C1CCC1",
+   "view": "count",
+   "expect": {
+    "all_mappings": "outcomes:8",
+    "unique_atom_sets": "outcomes:1",
+    "deduped_products": "outcomes:1",
+    "single_application": "error"
+   }
+  },
+  {
+   "id": "star_identity_count",
+   "op": "apply",
+   "query": "[*:1]>>[*:1]",
+   "mol": "CCO",
+   "view": "count",
+   "expect": {
+    "all_mappings": "outcomes:3",
+    "unique_atom_sets": "outcomes:3",
+    "deduped_products": "outcomes:2",
+    "single_application": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md A8, A11"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "view.count"
+  ]
+ }
+}

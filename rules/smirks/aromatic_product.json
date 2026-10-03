@@ -1,0 +1,48 @@
+{
+ "flag": "smirks.aromatic_product",
+ "summary": "Products of edits on aromatic atoms",
+ "values": {
+  "aromatic_preserved": "phenol / benzene stay aromatic",
+  "kekule_labels": "Kekule, H lost (Ambit implicit-H)",
+  "dearomatized": "aromatic flags dropped and H refilled as saturated (pyref)",
+  "rejected": "template rejected (Open Babel Init)"
+ },
+ "cases": [
+  {
+   "id": "benzene_identity",
+   "op": "apply",
+   "query": "[c:1]:[c:2]>>[c:1]:[c:2]",
+   "mol": "c1ccccc1",
+   "expect": {
+    "aromatic_preserved": "products:c1ccccc1",
+    "kekule_labels": "re:products:.*\\[C\\].*",
+    "dearomatized": "products:C1CCCCC1",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "hydroxylate_benzene",
+   "op": "apply",
+   "query": "[cH:1]>>[c:1]O",
+   "mol": "c1ccccc1",
+   "expect": {
+    "aromatic_preserved": "products:Oc1ccccc1",
+    "kekule_labels": "re:products:.*\\*.*",
+    "dearomatized": "*",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md A21, A26"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.aromatic",
+   "mol.aromatic"
+  ]
+ }
+}

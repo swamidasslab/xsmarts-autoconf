@@ -1,0 +1,39 @@
+{
+ "flag": "smirks.add_atom_with_explicit_h",
+ "summary": "Add unmapped atom on reactant with explicit H",
+ "values": {
+  "h_aware": "CCCl",
+  "empty": "nothing (chematic)",
+  "h_not_adjusted": "C[CH3]Cl (H not removed)",
+  "untyped": "Ambit dummies",
+  "rejected": "Open Babel Init fails"
+ },
+ "cases": [
+  {
+   "id": "addCl_X",
+   "op": "apply",
+   "query": "[C:1]>>[C:1]Cl",
+   "mol": "CC",
+   "explicit_h": true,
+   "expect": {
+    "h_aware": "products:CCCl",
+    "empty": "products:",
+    "h_not_adjusted": "products:C[CH3]Cl",
+    "untyped": "re:products:.*\\*.*",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smirks/README.md AddHs matrix"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.add_atom",
+   "cond.explicit_h"
+  ]
+ }
+}

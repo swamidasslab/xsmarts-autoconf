@@ -1,0 +1,52 @@
+{
+ "flag": "match.aromaticity_exocyclic_carbonyl",
+ "summary": "Ring carbon with exocyclic C=O (4-pyranone) perceived aromatic?",
+ "values": {
+  "daylight_like": "4-pyranone ring aromatic (5 aromatic ring atoms)",
+  "cdk_model": "CDK ElectronDonation.cdk(): not aromatic (BioTransformer B0 match prep)"
+ },
+ "cases": [
+  {
+   "id": "pyranone_c",
+   "op": "match",
+   "query": "c",
+   "mol": "O=C1C=COC=C1",
+   "expect": {
+    "daylight_like": "match:5",
+    "cdk_model": "match:0"
+   }
+  },
+  {
+   "id": "tropone_c",
+   "op": "match",
+   "query": "c",
+   "mol": "O=C1C=CC=CC=C1",
+   "expect": {
+    "daylight_like": "match:7",
+    "cdk_model": "match:0"
+   }
+  },
+  {
+   "id": "benzene_control",
+   "op": "match",
+   "query": "c",
+   "mol": "c1ccccc1",
+   "expect": {
+    "daylight_like": "match:6",
+    "cdk_model": "match:6"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md B0"
+  ]
+ },
+ "processing": "Toolkit aromaticity at match time. BioTransformer re-perceives with the CDK model before SMIRKS matching.",
+ "fuzz": {
+  "avoid": [
+   "mol.aromatic_exocyclic"
+  ]
+ }
+}

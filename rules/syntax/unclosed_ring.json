@@ -1,0 +1,30 @@
+{
+ "flag": "syntax.unclosed_ring",
+ "summary": "Unclosed ring-closure digit in SMARTS",
+ "values": {
+  "rejected": "parse error",
+  "accepted": "accepted (smarts_grammar records QueryMol.open_rings)"
+ },
+ "cases": [
+  {
+   "id": "unclosed",
+   "op": "parse",
+   "query": "C1CC",
+   "expect": {
+    "rejected": "error",
+    "accepted": "ok"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smarts_dialects.md"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "syntax.unclosed_ring"
+  ]
+ }
+}

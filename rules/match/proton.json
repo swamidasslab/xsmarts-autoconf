@@ -1,0 +1,29 @@
+{
+ "flag": "match.proton",
+ "summary": "`[H+]` matches a bare proton",
+ "values": {
+  "matches": "proton matched",
+  "no_match": "no match"
+ },
+ "cases": [
+  {
+   "id": "proton",
+   "op": "match",
+   "query": "[H+]",
+   "mol": "[H+]",
+   "expect": {
+    "matches": "match:1",
+    "no_match": "match:0"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": []
+ },
+ "fuzz": {
+  "avoid": [
+   "prim.proton"
+  ]
+ }
+}

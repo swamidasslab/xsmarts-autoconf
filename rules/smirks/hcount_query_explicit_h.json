@@ -1,0 +1,37 @@
+{
+ "flag": "smirks.hcount_query_explicit_h",
+ "summary": "`[CH3:1]>>[CH3:1]` on ethane with AddHs",
+ "values": {
+  "pin_adds_h": "C[CH6] (template H added to explicit H, RDKit)",
+  "empty": "no products (chematic)",
+  "preserved": "CC",
+  "rejected": "template rejected (Open Babel Init)"
+ },
+ "cases": [
+  {
+   "id": "CH3_identity_X",
+   "op": "apply",
+   "query": "[CH3:1]>>[CH3:1]",
+   "mol": "CC",
+   "explicit_h": true,
+   "expect": {
+    "pin_adds_h": "products:C[CH6]",
+    "empty": "products:",
+    "preserved": "products:CC",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smirks/README.md Explicit H"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.h_pin",
+   "cond.explicit_h"
+  ]
+ }
+}

@@ -1,0 +1,41 @@
+{
+ "flag": "match.atom_chirality",
+ "summary": "Tetrahedral `@`/`@@` in queries",
+ "values": {
+  "ignored": "chirality ignored (RDKit default useChirality=False)",
+  "enforced": "chirality must agree; unspecified mol fails"
+ },
+ "cases": [
+  {
+   "id": "opposite",
+   "op": "match",
+   "query": "[C@@H](F)(Cl)Br",
+   "mol": "[C@H](F)(Cl)Br",
+   "expect": {
+    "ignored": "match:1",
+    "enforced": "match:0"
+   }
+  },
+  {
+   "id": "unspecified_mol",
+   "op": "match",
+   "query": "[C@H](F)(Cl)Br",
+   "mol": "FC(Cl)Br",
+   "expect": {
+    "ignored": "match:1",
+    "enforced": "match:0"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": []
+ },
+ "processing": "RDKit adapter option use_chirality=True switches to enforced.",
+ "fuzz": {
+  "avoid": [
+   "prim.chiral",
+   "mol.stereo"
+  ]
+ }
+}

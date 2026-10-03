@@ -1,0 +1,87 @@
+{
+ "flag": "match.ring_count_basis",
+ "summary": "`R<n>` ring-membership count basis on cage systems",
+ "values": {
+  "sssr": "SSSR (cubane has 5 rings, R3 on 4 atoms)",
+  "symmetric": "symmetrized SSSR / relevant cycles (all 8 atoms R3)"
+ },
+ "cases": [
+  {
+   "id": "R3_cubane",
+   "op": "match",
+   "query": "[R3]",
+   "orderings": 6,
+   "mol": "C12C3C4C1C5C2C3C45",
+   "expect": {
+    "sssr": "match:4",
+    "symmetric": "match:8"
+   }
+  },
+  {
+   "id": "R2_bicyclo222",
+   "op": "match",
+   "query": "[R2]",
+   "orderings": 6,
+   "mol": "C1CC2CCC1CC2",
+   "note": "SSSR keeps 2 of 3 equivalent rings",
+   "expect": {
+    "sssr": "match:4",
+    "symmetric": "match:6"
+   }
+  },
+  {
+   "id": "R3_adamantane",
+   "op": "match",
+   "query": "[R3]",
+   "orderings": 6,
+   "mol": "C1C2CC3CC1CC(C2)C3",
+   "expect": {
+    "sssr": "match:1",
+    "symmetric": "match:4"
+   }
+  },
+  {
+   "id": "R1_adamantane",
+   "op": "match",
+   "query": "[R1]",
+   "orderings": 6,
+   "mol": "C1C2CC3CC1CC(C2)C3",
+   "expect": {
+    "sssr": "match:3",
+    "symmetric": "match:0"
+   }
+  },
+  {
+   "id": "R2_norbornane",
+   "op": "match",
+   "query": "[R2]",
+   "orderings": 6,
+   "mol": "C1CC2CC1C2",
+   "expect": {
+    "sssr": "match:3",
+    "symmetric": "match:4"
+   }
+  },
+  {
+   "id": "R2_naphthalene_control",
+   "op": "match",
+   "query": "[R2]",
+   "orderings": 6,
+   "mol": "c1ccc2ccccc2c1",
+   "expect": {
+    "sssr": "match:2",
+    "symmetric": "match:2"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": []
+ },
+ "fuzz": {
+  "avoid": [
+   "prim.ring_count_R",
+   "mol.cage"
+  ]
+ }
+}

@@ -1,0 +1,42 @@
+{
+ "flag": "match.or_with_any_atom",
+ "summary": "Bare `*` inside a comma-OR",
+ "values": {
+  "correct": "[*,#7] matches any atom",
+  "drops_any": "`*` dropped: [*,#7] == [#7] (CDK SmartsPattern in BT jar, gate path)"
+ },
+ "cases": [
+  {
+   "id": "star_or_n_on_ethane",
+   "op": "match",
+   "query": "[*,#7]",
+   "mol": "CC",
+   "expect": {
+    "correct": "match:2",
+    "drops_any": "match:0"
+   }
+  },
+  {
+   "id": "star_or_h_on_methane",
+   "op": "match",
+   "query": "[*,#1]",
+   "mol": "C",
+   "expect": {
+    "correct": "match:1",
+    "drops_any": "match:0"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "BioTransformer gate parity work (AMBIT.md G1)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md"
+  ]
+ },
+ "processing": "Engine config: pyref Profile.or_drops_any",
+ "fuzz": {
+  "avoid": [
+   "prim.or_any"
+  ]
+ }
+}

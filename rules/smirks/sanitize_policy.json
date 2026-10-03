@@ -1,0 +1,54 @@
+{
+ "flag": "smirks.sanitize_policy",
+ "summary": "Lib-native sanitize on valence-invalid products",
+ "values": {
+  "drops_invalid": "ether and neutral iminium dropped (RDKit SanitizeMol)",
+  "keeps_hypervalent_n": "ether dropped, neutral 4-valent N kept (chematic)",
+  "keeps_all": "nothing dropped (Open Babel)",
+  "untyped": "Ambit dummies survive",
+  "unsupported": "no sanitizer"
+ },
+ "cases": [
+  {
+   "id": "ether_S",
+   "op": "apply",
+   "query": "[C:1][O:2]>>[C:1]=[O:2]",
+   "mol": "COC",
+   "view": "sanitized",
+   "expect": {
+    "drops_invalid": "products:",
+    "keeps_hypervalent_n": "products:",
+    "keeps_all": "products:C=O=C",
+    "untyped": "re:products:.*\\*.*",
+    "unsupported": "unsupported"
+   }
+  },
+  {
+   "id": "iminium_S",
+   "op": "apply",
+   "query": "[C:1][N:2]>>[C:1]=[N:2]",
+   "mol": "CN(C)C",
+   "view": "sanitized",
+   "expect": {
+    "drops_invalid": "products:",
+    "keeps_hypervalent_n": "products:C=N(C)C",
+    "keeps_all": "re:products:.+",
+    "untyped": "re:products:.*\\*.*",
+    "unsupported": "unsupported"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smirks/README.md section 10, Compatibility strategy"
+  ]
+ },
+ "processing": "Layer S: each engine's own sanitizer only (smirks_apply.sanitize_product).",
+ "fuzz": {
+  "avoid": [
+   "edit.bond_order_valence",
+   "view.sanitized"
+  ]
+ }
+}

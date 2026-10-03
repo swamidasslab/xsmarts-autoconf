@@ -1,0 +1,31 @@
+{
+ "flag": "syntax.aromatic_selenium",
+ "summary": "aromatic `se` in brackets",
+ "values": {
+  "supported": "parses and matches (core OpenSMARTS)",
+  "rejected": "parse error"
+ },
+ "cases": [
+  {
+   "id": "aromatic_selenium",
+   "op": "match",
+   "query": "[se]",
+   "mol": "c1cc[se]c1",
+   "expect": {
+    "supported": "match:1",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smarts_dialects.md"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "prim.aromatic_se"
+  ]
+ }
+}

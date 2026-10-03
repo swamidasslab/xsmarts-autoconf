@@ -1,0 +1,31 @@
+{
+ "flag": "syntax.hetero_neighbors_z",
+ "summary": "RDKit `z` heteroatom-neighbor count",
+ "values": {
+  "supported": "parses and matches (RDKit-only extension)",
+  "rejected": "parse error"
+ },
+ "cases": [
+  {
+   "id": "hetero_neighbors_z",
+   "op": "match",
+   "query": "[Cz1]",
+   "mol": "CO",
+   "expect": {
+    "supported": "match:1",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smarts_dialects.md"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "prim.z"
+  ]
+ }
+}

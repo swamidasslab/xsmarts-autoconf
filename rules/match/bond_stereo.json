@@ -1,0 +1,87 @@
+{
+ "flag": "match.bond_stereo",
+ "summary": "Directional bonds `/` `\\` in queries",
+ "values": {
+  "ignored": "cis/trans ignored",
+  "enforced": "must agree; unspecified mol fails",
+  "branch_direction_inverted": "enforced, but a `/` `\\` inside a branch on the first stereo atom is read inverted (chematic 1.0.30): C(/F)=C/F (cis) matches trans"
+ },
+ "cases": [
+  {
+   "id": "trans_vs_cis",
+   "op": "match",
+   "query": "F/C=C/F",
+   "fixed_spelling": true,
+   "mol": "F/C=C\\F",
+   "expect": {
+    "ignored": "match:1",
+    "enforced": "match:0",
+    "branch_direction_inverted": "match:0"
+   }
+  },
+  {
+   "id": "trans_vs_unspecified",
+   "op": "match",
+   "query": "F/C=C/F",
+   "mol": "FC=CF",
+   "expect": {
+    "ignored": "match:1",
+    "enforced": "match:0",
+    "branch_direction_inverted": "match:0"
+   }
+  },
+  {
+   "id": "trans_vs_cis_branch_spelling",
+   "op": "match",
+   "query": "F/C=C/F",
+   "fixed_spelling": true,
+   "mol": "C(/F)=C/F",
+   "note": "same molecule as F/C=C\\F",
+   "expect": {
+    "ignored": "match:1",
+    "enforced": "match:0",
+    "branch_direction_inverted": "match:1"
+   }
+  },
+  {
+   "id": "cis_all_spellings",
+   "op": "match",
+   "query": "F/C=C/F",
+   "spellings": [
+    "C(/F)=C/F",
+    "F\\C=C/F",
+    "C(\\F)=C\\F"
+   ],
+   "mol": "F/C=C\\F",
+   "note": "order-dependence surfaced explicitly: all four spell the cis isomer",
+   "expect": {
+    "ignored": "match:1",
+    "enforced": "match:0",
+    "branch_direction_inverted": "match:0 / match:1"
+   }
+  },
+  {
+   "id": "trans_vs_trans_branch_spelling",
+   "op": "match",
+   "query": "F/C=C/F",
+   "fixed_spelling": true,
+   "mol": "C(/F)=C\\F",
+   "note": "same molecule as F/C=C/F",
+   "expect": {
+    "ignored": "match:1",
+    "enforced": "match:1",
+    "branch_direction_inverted": "match:0"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "autoconf stability check 2026-10-03: chematic result changed under reordered SMILES",
+  "refs": []
+ },
+ "fuzz": {
+  "avoid": [
+   "bond.stereo",
+   "mol.stereo"
+  ]
+ }
+}

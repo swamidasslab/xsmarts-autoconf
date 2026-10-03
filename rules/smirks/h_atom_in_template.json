@@ -1,0 +1,70 @@
+{
+ "flag": "smirks.h_atom_in_template",
+ "summary": "Graph `[H]` in a SMIRKS reactant",
+ "values": {
+  "explicit_only": "matches only with AddHs; H refilled",
+  "explicit_only_no_refill": "with AddHs, deleting H leaves [CH3] (Ambit)",
+  "implicit_matchable": "matches implicit H (Open Babel)"
+ },
+ "cases": [
+  {
+   "id": "CH_delete_implicit",
+   "op": "apply",
+   "query": "[C:1][H]>>[C:1]",
+   "mol": "C",
+   "expect": {
+    "explicit_only": "products:",
+    "explicit_only_no_refill": "products:",
+    "implicit_matchable": "*"
+   }
+  },
+  {
+   "id": "CH_delete_explicit",
+   "op": "apply",
+   "query": "[C:1][H]>>[C:1]",
+   "mol": "C",
+   "explicit_h": true,
+   "expect": {
+    "explicit_only": "products:C",
+    "explicit_only_no_refill": "products:[CH3]",
+    "implicit_matchable": "*"
+   }
+  },
+  {
+   "id": "OH_deprotonate_implicit",
+   "op": "apply",
+   "query": "[O:1][H]>>[O-:1]",
+   "mol": "CCO",
+   "expect": {
+    "explicit_only": "products:",
+    "explicit_only_no_refill": "products:",
+    "implicit_matchable": "products:CC[O-]"
+   }
+  },
+  {
+   "id": "OH_deprotonate_explicit",
+   "op": "apply",
+   "query": "[O:1][H]>>[O-:1]",
+   "mol": "CCO",
+   "explicit_h": true,
+   "expect": {
+    "explicit_only": "products:CC[O-]",
+    "explicit_only_no_refill": "products:CC[O-]",
+    "implicit_matchable": "*"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smirks/README.md Explicit H",
+   "docs/xenosmarts/AMBIT.md A9"
+  ]
+ },
+ "processing": "explicit_h toggles AddHs on the reactant before apply.",
+ "fuzz": {
+  "avoid": [
+   "edit.h_atom"
+  ]
+ }
+}

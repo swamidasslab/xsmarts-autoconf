@@ -40,6 +40,38 @@ class Case:
     """apply only: ``products`` (raw edit set), ``sanitized`` (lib-native
     sanitize, rejects dropped) or ``count`` (number of outcomes, with dups)."""
     note: str = ""
+    orderings: int = 0
+    """Also observe on this many deterministic re-orderings of ``mol`` and
+    report the set of outcomes (``a / b``). Use for perception with several
+    valid answers (non-unique SSSR, enumeration order): the observation stays
+    deterministic without introspecting the library's molecule object."""
+    spellings: tuple[str, ...] = ()
+    """Explicit alternative spellings of ``mol`` to observe as well (result is
+    the outcome set, like ``orderings``). Name the spellings that surface a
+    known order dependence so it is checked every run, not by chance."""
+    fixed_spelling: bool = False
+    """The SMILES spelling is the point of the case; stability checks must
+    not reorder it."""
+
+
+def reorderings(smiles: str, n: int) -> list[str]:
+    """Up to ``n`` systematic equivalent spellings of ``smiles`` (stereo kept):
+    the SMILES rooted at each atom in turn (atom 0 first, then 1, ...), then
+    the reversed atom numbering. Deterministic and order-targeted, so
+    start-atom / traversal-order dependence surfaces reproducibly."""
+    from rdkit import Chem
+
+    m = Chem.MolFromSmiles(smiles)
+    if m is None or n <= 0:
+        return []
+    cands = [Chem.MolToSmiles(m, rootedAtAtom=i, canonical=False) for i in range(m.GetNumAtoms())]
+    rev = Chem.RenumberAtoms(m, list(reversed(range(m.GetNumAtoms()))))
+    cands.append(Chem.MolToSmiles(rev, canonical=False))
+    out = []
+    for c in cands:
+        if c != smiles and c not in out:
+            out.append(c)
+    return out[:n]
 
 
 @dataclass
@@ -126,6 +158,17 @@ class Adapter:
         return f"{self.name}[{opts}]"
 
     def observe(self, case: Case) -> Observation:
+        if (case.orderings or case.spellings) and case.mol:
+            from dataclasses import replace
+
+            mols = [case.mol, *case.spellings, *reorderings(case.mol, case.orderings)]
+            obs = [self._observe1(replace(case, mol=m, orderings=0, spellings=()))
+                   for m in dict.fromkeys(mols)]
+            texts = sorted({o.text for o in obs})
+            return Observation(case, " / ".join(texts), " | ".join(o.detail for o in obs if o.detail))
+        return self._observe1(case)
+
+    def _observe1(self, case: Case) -> Observation:
         try:
             text, detail = self._run(case)
         except Unsupported as e:

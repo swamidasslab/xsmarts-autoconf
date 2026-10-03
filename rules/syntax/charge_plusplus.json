@@ -1,0 +1,42 @@
+{
+ "flag": "syntax.charge_plusplus",
+ "summary": "`++` / `--`: formal charge +-2 (Daylight) vs And(+1,+1)",
+ "values": {
+  "charge2": "`++` is Charge(+2)",
+  "and_plus1": "`++` parsed as +1 & +1, i.e. charge +1 (chematic <=1.0.28)"
+ },
+ "cases": [
+  {
+   "id": "pp_on_n2plus",
+   "op": "match",
+   "query": "[N++]",
+   "mol": "C[N+2]",
+   "expect": {
+    "charge2": "match:1",
+    "and_plus1": "match:0"
+   }
+  },
+  {
+   "id": "pp_on_n1plus",
+   "op": "match",
+   "query": "[N++]",
+   "mol": "C[NH3+]",
+   "expect": {
+    "charge2": "match:0",
+    "and_plus1": "match:1"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "chematic <=1.0.28; fixed in 1.0.30",
+  "refs": [
+   "docs/chematic/issues/001-plusplus-charge-and.md",
+   "docs/smarts_dialects.md"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "prim.charge_plusplus"
+  ]
+ }
+}

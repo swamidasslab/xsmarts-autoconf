@@ -1,0 +1,31 @@
+{
+ "flag": "syntax.aliphatic_any_A",
+ "summary": "`A` aliphatic any atom",
+ "values": {
+  "supported": "parses and matches (core OpenSMARTS)",
+  "rejected": "parse error"
+ },
+ "cases": [
+  {
+   "id": "aliphatic_any_A",
+   "op": "match",
+   "query": "[A]",
+   "mol": "c1ccccc1C",
+   "expect": {
+    "supported": "match:1",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smarts_dialects.md"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "prim.aliphatic_A"
+  ]
+ }
+}

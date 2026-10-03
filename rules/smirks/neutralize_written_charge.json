@@ -1,0 +1,34 @@
+{
+ "flag": "smirks.neutralize_written_charge",
+ "summary": "Reactant `[N+:1]` -> product `[N:1]`",
+ "values": {
+  "neutralized": "charge set to 0",
+  "inherited": "product charge unwritten -> reactant charge kept (RDKit)",
+  "untyped": "Ambit untyped"
+ },
+ "cases": [
+  {
+   "id": "Nplus_to_N",
+   "op": "apply",
+   "query": "[N+:1]>>[N:1]",
+   "mol": "C[NH3+]",
+   "expect": {
+    "neutralized": "products:CN",
+    "inherited": "products:C[NH3+]",
+    "untyped": "re:products:.*\\*.*"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md A13"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.neutralize",
+   "mol.charged"
+  ]
+ }
+}

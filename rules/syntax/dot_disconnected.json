@@ -1,0 +1,31 @@
+{
+ "flag": "syntax.dot_disconnected",
+ "summary": "Disconnected `.` query without grouping",
+ "values": {
+  "supported": "C.O matches methanol (no component constraint)",
+  "rejected": "parse error (Open Babel)"
+ },
+ "cases": [
+  {
+   "id": "dot_on_methanol",
+   "op": "match",
+   "query": "C.O",
+   "mol": "CO",
+   "expect": {
+    "supported": "match:1",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smarts_dialects.md"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "syntax.dot"
+  ]
+ }
+}

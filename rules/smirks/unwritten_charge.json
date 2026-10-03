@@ -1,0 +1,36 @@
+{
+ "flag": "smirks.unwritten_charge",
+ "summary": "`[N:1]>>[N:1]` on a charged reactant atom",
+ "values": {
+  "inherited": "charge kept",
+  "reset": "charge cleared to 0 (chematic)",
+  "labels": "charge kept, H lost ([C][N+], Ambit implicit-H)",
+  "rejected": "identity rejected"
+ },
+ "cases": [
+  {
+   "id": "N_keep_on_ammonium",
+   "op": "apply",
+   "query": "[N:1]>>[N:1]",
+   "mol": "C[NH3+]",
+   "expect": {
+    "inherited": "products:C[NH3+]",
+    "reset": "products:CN",
+    "labels": "products:[C][N+]",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md A13"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.identity",
+   "mol.charged"
+  ]
+ }
+}

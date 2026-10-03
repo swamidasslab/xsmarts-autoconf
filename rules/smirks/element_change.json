@@ -1,0 +1,37 @@
+{
+ "flag": "smirks.element_change",
+ "summary": "Mapped atom changes element `[C:1]>>[N:1]`",
+ "values": {
+  "applied": "element rewritten (RDKit)",
+  "ignored": "no-op, element kept (chematic)",
+  "corrupt": "applied with wrong H ([NH3][NH3], Open Babel)",
+  "rejected": "rule rejected: map atom types inconsistent (Ambit A4)"
+ },
+ "cases": [
+  {
+   "id": "C_to_N",
+   "op": "apply",
+   "query": "[C:1]>>[N:1]",
+   "mol": "CC",
+   "explicit_h": true,
+   "expect": {
+    "applied": "products:CN",
+    "ignored": "products:CC",
+    "corrupt": "products:[NH3][NH3]",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smirks/README.md section 2",
+   "docs/xenosmarts/AMBIT.md A4"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.element_change"
+  ]
+ }
+}

@@ -1,0 +1,48 @@
+{
+ "flag": "smirks.identity_labels",
+ "summary": "Identity apply product labels with implicit vs explicit H",
+ "values": {
+  "organic": "products written as organic SMILES either way",
+  "labels_need_explicit_h": "without AddHs products lose implicit H ([C][C]; Ambit)",
+  "rejected": "identity transform rejected (Open Babel Init fails when left==right)"
+ },
+ "cases": [
+  {
+   "id": "ident_implicit",
+   "op": "apply",
+   "query": "[C:1]>>[C:1]",
+   "mol": "CC",
+   "expect": {
+    "organic": "products:CC",
+    "labels_need_explicit_h": "products:[C][C]",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "ident_explicit",
+   "op": "apply",
+   "query": "[C:1]>>[C:1]",
+   "mol": "CC",
+   "explicit_h": true,
+   "expect": {
+    "organic": "products:CC",
+    "labels_need_explicit_h": "products:CC",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smirks/README.md section 1",
+   "docs/smirks/cdk_ob_deltas.md"
+  ]
+ },
+ "processing": "CDK: run with explicit_h=True for readable products (convertImplicitToExplicitHydrogens before apply).",
+ "fuzz": {
+  "avoid": [
+   "op.apply_implicit_h",
+   "edit.identity"
+  ]
+ }
+}

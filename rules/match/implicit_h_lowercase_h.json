@@ -1,0 +1,29 @@
+{
+ "flag": "match.implicit_h_lowercase_h",
+ "summary": "Bare `h` (implicit H, default at least one)",
+ "values": {
+  "at_least_one": "[Ch] matches CH3",
+  "no_match": "[Ch] does not match implicit-H methyl (chematic, Open Babel)"
+ },
+ "cases": [
+  {
+   "id": "h_bare_ethane",
+   "op": "match",
+   "query": "[Ch]",
+   "mol": "CC",
+   "expect": {
+    "at_least_one": "match:2",
+    "no_match": "match:0"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": []
+ },
+ "fuzz": {
+  "avoid": [
+   "prim.implicit_h"
+  ]
+ }
+}

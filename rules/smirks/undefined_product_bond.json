@@ -1,0 +1,34 @@
+{
+ "flag": "smirks.undefined_product_bond",
+ "summary": "Product bond with query order `=,:` on mapped atoms",
+ "values": {
+  "first_alternative": "first alternative applied (C=C)",
+  "skipped": "bond edit skipped, rest applied (Ambit A6b / OB)",
+  "rejected": "rule rejected"
+ },
+ "cases": [
+  {
+   "id": "undef_order",
+   "op": "apply",
+   "query": "[C:1]-[C:2]>>[C:1]=,:[C:2]",
+   "mol": "CC",
+   "expect": {
+    "first_alternative": "products:C=C",
+    "skipped": "products:CC",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md A6, A6b"
+  ]
+ },
+ "processing": "CDK adapter raises on SMIRKSManager errors; BioTransformer ignores A6b errors and applies (adapter policy).",
+ "fuzz": {
+  "avoid": [
+   "edit.undefined_bond"
+  ]
+ }
+}

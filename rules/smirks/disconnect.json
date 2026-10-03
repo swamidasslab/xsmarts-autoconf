@@ -1,0 +1,33 @@
+{
+ "flag": "smirks.disconnect",
+ "summary": "Product `.` splits components `[C:1][C:2]>>[C:1].[C:2]`",
+ "values": {
+  "split": "C.C",
+  "labels": "[C].[C] (Ambit implicit-H)",
+  "rejected": "Open Babel Init fails"
+ },
+ "cases": [
+  {
+   "id": "split_ethane",
+   "op": "apply",
+   "query": "[C:1][C:2]>>[C:1].[C:2]",
+   "mol": "CC",
+   "expect": {
+    "split": "products:C.C",
+    "labels": "products:[C].[C]",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smirks/README.md section 8"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.disconnect"
+  ]
+ }
+}

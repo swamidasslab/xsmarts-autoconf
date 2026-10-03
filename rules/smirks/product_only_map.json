@@ -1,0 +1,31 @@
+{
+ "flag": "smirks.product_only_map",
+ "summary": "Map number only on the product side `[C:1]>>[C:1][N:2]`",
+ "values": {
+  "created": "atom created as if unmapped",
+  "rejected": "map index not valid"
+ },
+ "cases": [
+  {
+   "id": "product_only_N",
+   "op": "apply",
+   "query": "[C:1]>>[C:1][N:2]",
+   "mol": "CC",
+   "expect": {
+    "created": "products:CCN",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md A3"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.product_only_map"
+  ]
+ }
+}

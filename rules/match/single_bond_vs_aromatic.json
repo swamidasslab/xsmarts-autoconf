@@ -1,0 +1,31 @@
+{
+ "flag": "match.single_bond_vs_aromatic",
+ "summary": "Explicit `-` against an aromatic bond",
+ "values": {
+  "excludes_aromatic": "Daylight: `-` never matches aromatic",
+  "includes_aromatic": "`-` matches Kekule single of aromatic ring"
+ },
+ "cases": [
+  {
+   "id": "single_on_benzene",
+   "op": "match",
+   "query": "c-c",
+   "mol": "c1ccccc1",
+   "expect": {
+    "excludes_aromatic": "match:0",
+    "includes_aromatic": "match:+"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": []
+ },
+ "processing": "Engine config: pyref Profile.single_excludes_aromatic",
+ "fuzz": {
+  "avoid": [
+   "bond.explicit_single",
+   "mol.aromatic"
+  ]
+ }
+}

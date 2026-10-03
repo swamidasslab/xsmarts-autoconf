@@ -1,0 +1,75 @@
+{
+ "flag": "syntax.hybridization",
+ "summary": "`^n` hybridization digits: which digits parse and what they match",
+ "values": {
+  "zero_to_five": "RDKit: ^0..^5 (S..SP3D2); ^7 rejected; bare ^ rejected",
+  "lenient_digits": "chematic 1.0.30: accepts ^0..^7, bare ^ rejected",
+  "openbabel_bare": "Open Babel: bare ^ means ^1 (SP); ^0 accepted",
+  "cdk_one_based_untyped": "CDK SmartsPattern: ^0 rejected; ^3 does not match unless atoms are hybridization-typed",
+  "unsupported": "parses but matching raises (no perceived hybridization)"
+ },
+ "cases": [
+  {
+   "id": "hyb_digit0",
+   "op": "parse",
+   "query": "[C^0]",
+   "expect": {
+    "zero_to_five": "ok",
+    "lenient_digits": "ok",
+    "openbabel_bare": "ok",
+    "cdk_one_based_untyped": "error",
+    "unsupported": "*"
+   }
+  },
+  {
+   "id": "hyb_digit7",
+   "op": "parse",
+   "query": "[C^7]",
+   "expect": {
+    "zero_to_five": "error",
+    "lenient_digits": "ok",
+    "openbabel_bare": "ok",
+    "cdk_one_based_untyped": "ok",
+    "unsupported": "*"
+   }
+  },
+  {
+   "id": "hyb_sp3_ethane",
+   "op": "match",
+   "query": "[C^3]",
+   "mol": "CC",
+   "expect": {
+    "zero_to_five": "match:2",
+    "lenient_digits": "match:2",
+    "openbabel_bare": "match:2",
+    "cdk_one_based_untyped": "match:0",
+    "unsupported": "error"
+   }
+  },
+  {
+   "id": "hyb_bare_ethyne",
+   "op": "match",
+   "query": "[C^]",
+   "mol": "C#C",
+   "expect": {
+    "zero_to_five": "error",
+    "lenient_digits": "error",
+    "openbabel_bare": "match:2",
+    "cdk_one_based_untyped": "error",
+    "unsupported": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smarts_dialects.md",
+   "scripts/smarts_grammar/hyb.py"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "prim.hybridization"
+  ]
+ }
+}

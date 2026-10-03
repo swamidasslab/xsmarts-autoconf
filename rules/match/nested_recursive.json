@@ -1,0 +1,42 @@
+{
+ "flag": "match.nested_recursive",
+ "summary": "Recursive SMARTS nested inside a recursive SMARTS (match path)",
+ "values": {
+  "evaluated": "nested $() evaluated normally",
+  "always_true": "nested $() counts as true (Ambit matcher, AMBIT.md A7b)"
+ },
+ "cases": [
+  {
+   "id": "nested_absent",
+   "op": "match",
+   "query": "[C;$(C[$(O)])]",
+   "mol": "CC",
+   "expect": {
+    "evaluated": "match:0",
+    "always_true": "match:1"
+   }
+  },
+  {
+   "id": "nested_present",
+   "op": "match",
+   "query": "[C;$(C[$(O)])]",
+   "mol": "CO",
+   "expect": {
+    "evaluated": "match:1",
+    "always_true": "match:1"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md"
+  ]
+ },
+ "processing": "Engine config: pyref Profile.nested_recursive_true",
+ "fuzz": {
+  "avoid": [
+   "prim.recursive_nested"
+  ]
+ }
+}

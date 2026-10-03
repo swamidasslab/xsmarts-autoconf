@@ -1,0 +1,36 @@
+{
+ "flag": "smirks.product_plusplus",
+ "summary": "`++` on product side equals `+2`",
+ "values": {
+  "same_as_plus2": "C[NH2+2] / C[NH4+2] like +2",
+  "untyped": "Ambit untyped"
+ },
+ "cases": [
+  {
+   "id": "N_pp",
+   "op": "apply",
+   "query": "[N:1]>>[N++:1]",
+   "mol": "CN",
+   "expect": {
+    "same_as_plus2": [
+     "products:C[NH2+2]",
+     "products:C[NH4+2]",
+     "products:C[N+2]"
+    ],
+    "untyped": "re:products:.*\\*.*"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smirks/rdkit_rules.md E03-E05"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.charge_high",
+   "prim.charge_plusplus"
+  ]
+ }
+}

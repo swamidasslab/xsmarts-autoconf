@@ -1,0 +1,34 @@
+{
+ "flag": "smirks.delete_mapped_by_omission",
+ "summary": "Mapped reactant atom omitted from products `[C:1]-[O:2]>>[C:1]`",
+ "values": {
+  "deleted": "atom deleted, H refilled",
+  "deleted_no_refill": "deleted, radical left ([CH2]C, Open Babel)",
+  "rejected": "map index not valid (Ambit A3)"
+ },
+ "cases": [
+  {
+   "id": "drop_O",
+   "op": "apply",
+   "query": "[C:1]-[O:2]>>[C:1]",
+   "mol": "CCO",
+   "expect": {
+    "deleted": "products:CC",
+    "deleted_no_refill": "products:[CH2]C",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smirks/README.md section 5",
+   "docs/xenosmarts/AMBIT.md A3"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.delete_mapped"
+  ]
+ }
+}

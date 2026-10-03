@@ -1,0 +1,51 @@
+{
+ "flag": "smirks.edits_with_explicit_h",
+ "summary": "Bond-order / add-atom edits when the reactant has explicit H",
+ "values": {
+  "h_aware": "H removed/refilled correctly (RDKit)",
+  "empty": "edits produce nothing with AddHs (chematic)",
+  "h_not_adjusted": "explicit H kept, valence exceeded (Open Babel)",
+  "untyped": "Ambit dummies"
+ },
+ "cases": [
+  {
+   "id": "CC_to_CdC_X",
+   "op": "apply",
+   "query": "[C:1]-[C:2]>>[C:1]=[C:2]",
+   "mol": "CC",
+   "explicit_h": true,
+   "expect": {
+    "h_aware": "products:C=C",
+    "empty": "products:",
+    "h_not_adjusted": "products:[CH3]=[CH3]",
+    "untyped": "re:products:.*\\*.*"
+   }
+  },
+  {
+   "id": "ethanol_oxid_X",
+   "op": "apply",
+   "query": "[C:1][O:2]>>[C:1]=[O:2]",
+   "mol": "CCO",
+   "explicit_h": true,
+   "expect": {
+    "h_aware": "products:CC=O",
+    "empty": "products:",
+    "h_not_adjusted": "re:products:.*\\[.H.*",
+    "untyped": "re:products:.*\\*.*"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smirks/README.md AddHs matrix",
+   "docs/smirks/chematic_deltas.md"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.bond_order",
+   "cond.explicit_h"
+  ]
+ }
+}

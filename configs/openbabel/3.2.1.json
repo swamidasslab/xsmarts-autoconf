@@ -1,0 +1,471 @@
+{
+ "adapter": "openbabel",
+ "label": "openbabel",
+ "version": "3.2.1",
+ "options": {},
+ "generated": "2026-10-03",
+ "rules_digest": "549f34cfd6694640",
+ "flags": {
+  "match.aromaticity_exocyclic_carbonyl": {
+   "value": "daylight_like",
+   "observed": {
+    "pyranone_c": "match:5",
+    "tropone_c": "match:7",
+    "benzene_control": "match:6"
+   }
+  },
+  "match.atom_chirality": {
+   "value": "enforced",
+   "observed": {
+    "opposite": "match:0",
+    "unspecified_mol": "match:0"
+   }
+  },
+  "match.bond_stereo": {
+   "value": "ignored",
+   "observed": {
+    "trans_vs_cis": "match:1",
+    "trans_vs_unspecified": "match:1",
+    "trans_vs_cis_branch_spelling": "match:1",
+    "cis_all_spellings": "match:1",
+    "trans_vs_trans_branch_spelling": "match:1"
+   }
+  },
+  "match.degree_with_explicit_h": {
+   "value": "counts_h_atoms",
+   "observed": {
+    "CD1_explicit": "match:0",
+    "CD1_implicit": "match:2"
+   }
+  },
+  "match.double_bond_vs_aromatic": {
+   "value": "excludes_aromatic",
+   "observed": {
+    "double_on_benzene": "match:0",
+    "double_on_kekule_benzene": "match:0"
+   }
+  },
+  "match.h_atom_query": {
+   "value": "implicit_matchable",
+   "observed": {
+    "CH_implicit": "match:4",
+    "CH_explicit": "match:4",
+    "hash1_explicit": "match:4"
+   }
+  },
+  "match.h_count_with_explicit_h": {
+   "value": "counts_h_atoms",
+   "observed": {
+    "CH3_explicit": "match:2"
+   }
+  },
+  "match.implicit_h_lowercase_h": {
+   "value": "no_match",
+   "observed": {
+    "h_bare_ethane": "match:0"
+   }
+  },
+  "match.nested_recursive": {
+   "value": "evaluated",
+   "observed": {
+    "nested_absent": "match:0",
+    "nested_present": "match:1"
+   }
+  },
+  "match.or_with_any_atom": {
+   "value": "correct",
+   "observed": {
+    "star_or_n_on_ethane": "match:2",
+    "star_or_h_on_methane": "match:1"
+   }
+  },
+  "match.proton": {
+   "value": "no_match",
+   "observed": {
+    "proton": "match:0"
+   }
+  },
+  "match.ring_count_basis": {
+   "value": "sssr",
+   "observed": {
+    "R3_cubane": "match:4",
+    "R2_bicyclo222": "match:4",
+    "R3_adamantane": "match:1",
+    "R1_adamantane": "match:3",
+    "R2_norbornane": "match:3",
+    "R2_naphthalene_control": "match:2"
+   }
+  },
+  "match.ring_size_semantics": {
+   "value": "any_ring",
+   "observed": {
+    "r6_hydrindane": "match:6",
+    "r5_hydrindane": "match:5",
+    "r6_indane_like_spiro": "match:6"
+   }
+  },
+  "match.single_bond_vs_aromatic": {
+   "value": "excludes_aromatic",
+   "observed": {
+    "single_on_benzene": "match:0"
+   }
+  },
+  "match.unspecified_isotope": {
+   "value": "natural_is_unspecified",
+   "observed": {
+    "12C_on_methane": "match:0"
+   }
+  },
+  "smirks.add_atom_with_explicit_h": {
+   "value": "rejected",
+   "observed": {
+    "addCl_X": "error"
+   },
+   "errors": {
+    "addCl_X": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.add_unmapped_atom": {
+   "value": "rejected",
+   "observed": {
+    "methylate_O": "error"
+   },
+   "errors": {
+    "methylate_O": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.aromatic_product": {
+   "value": "rejected",
+   "observed": {
+    "benzene_identity": "error",
+    "hydroxylate_benzene": "error"
+   },
+   "errors": {
+    "benzene_identity": "ValueError: OBChemTsfm.Init failed",
+    "hydroxylate_benzene": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.charge_plus2_hcount": {
+   "value": "valence_reduced",
+   "observed": {
+    "N_plus2": "products:C[NH2+2]"
+   }
+  },
+  "smirks.delete_mapped_by_omission": {
+   "value": "deleted_no_refill",
+   "observed": {
+    "drop_O": "products:[CH2]C"
+   }
+  },
+  "smirks.disconnect": {
+   "value": "rejected",
+   "observed": {
+    "split_ethane": "error"
+   },
+   "errors": {
+    "split_ethane": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.edits_with_explicit_h": {
+   "value": "h_not_adjusted",
+   "observed": {
+    "CC_to_CdC_X": "products:[CH3]=[CH3]",
+    "ethanol_oxid_X": "products:C[CH2]=[OH]"
+   }
+  },
+  "smirks.element_change": {
+   "value": "corrupt",
+   "observed": {
+    "C_to_N": "products:[NH3][NH3]"
+   }
+  },
+  "smirks.fragmented_reactant": {
+   "value": "rejected",
+   "observed": {
+    "frag_template": "error"
+   },
+   "errors": {
+    "frag_template": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.h_atom_in_template": {
+   "value": "implicit_matchable",
+   "observed": {
+    "CH_delete_implicit": "error",
+    "CH_delete_explicit": "error",
+    "OH_deprotonate_implicit": "products:CC[O-]",
+    "OH_deprotonate_explicit": "products:CC[OH-]"
+   },
+   "errors": {
+    "CH_delete_implicit": "ValueError: OBChemTsfm.Init failed",
+    "CH_delete_explicit": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.hcount_query_explicit_h": {
+   "value": "rejected",
+   "observed": {
+    "CH3_identity_X": "error"
+   },
+   "errors": {
+    "CH3_identity_X": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.identity_labels": {
+   "value": "rejected",
+   "observed": {
+    "ident_implicit": "error",
+    "ident_explicit": "error"
+   },
+   "errors": {
+    "ident_implicit": "ValueError: OBChemTsfm.Init failed",
+    "ident_explicit": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.nested_recursive": {
+   "value": "rejected",
+   "observed": {
+    "nested_absent_apply": "error"
+   },
+   "errors": {
+    "nested_absent_apply": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.neutralize_written_charge": {
+   "value": "neutralized",
+   "observed": {
+    "Nplus_to_N": "products:CN"
+   }
+  },
+  "smirks.outcome_multiplicity": {
+   "value": "single_application",
+   "observed": {
+    "bond_order_count": "outcomes:1",
+    "ring_open_count": "error",
+    "star_identity_count": "error"
+   },
+   "errors": {
+    "ring_open_count": "ValueError: OBChemTsfm.Init failed",
+    "star_identity_count": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.product_h_atom_added": {
+   "value": "rejected",
+   "observed": {
+    "protonate_alkoxide": "error"
+   },
+   "errors": {
+    "protonate_alkoxide": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.product_h_pin": {
+   "value": "rejected",
+   "observed": {
+    "pin_CH2": "error",
+    "pin_CH2_X": "error"
+   },
+   "errors": {
+    "pin_CH2": "ValueError: OBChemTsfm.Init failed",
+    "pin_CH2_X": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.product_only_map": {
+   "value": "rejected",
+   "observed": {
+    "product_only_N": "error"
+   },
+   "errors": {
+    "product_only_N": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.product_plusplus": {
+   "value": "same_as_plus2",
+   "observed": {
+    "N_pp": "products:C[NH2+2]"
+   }
+  },
+  "smirks.recursive_in_reactant": {
+   "value": "rejected",
+   "observed": {
+    "rec_on_map": "error"
+   },
+   "errors": {
+    "rec_on_map": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.sanitize_policy": {
+   "value": "keeps_all",
+   "observed": {
+    "ether_S": "products:C=O=C",
+    "iminium_S": "products:C=N(=C)=C"
+   }
+  },
+  "smirks.star_retype": {
+   "value": "corrupt",
+   "observed": {
+    "acetyl_star": "products:[*H]CC"
+   }
+  },
+  "smirks.undefined_product_bond": {
+   "value": "skipped",
+   "observed": {
+    "undef_order": "products:CC"
+   }
+  },
+  "smirks.unmapped_reactant_deleted": {
+   "value": "rejected",
+   "observed": {
+    "drop_unmapped_O": "error",
+    "drop_unmapped_O_X": "error",
+    "drop_unmapped_N": "error"
+   },
+   "errors": {
+    "drop_unmapped_O": "ValueError: OBChemTsfm.Init failed",
+    "drop_unmapped_O_X": "ValueError: OBChemTsfm.Init failed",
+    "drop_unmapped_N": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.unwritten_charge": {
+   "value": "rejected",
+   "observed": {
+    "N_keep_on_ammonium": "error"
+   },
+   "errors": {
+    "N_keep_on_ammonium": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.valence_invalid_raw": {
+   "value": "hypervalent",
+   "observed": {
+    "ether_trap": "products:C=O=C"
+   }
+  },
+  "syntax.aliphatic_any_A": {
+   "value": "supported",
+   "observed": {
+    "aliphatic_any_A": "match:1"
+   }
+  },
+  "syntax.aliphatic_hetero_neighbors_Z": {
+   "value": "rejected",
+   "observed": {
+    "aliphatic_hetero_neighbors_Z": "error"
+   },
+   "errors": {
+    "aliphatic_hetero_neighbors_Z": "ValueError: OBSmartsPattern.Init False"
+   }
+  },
+  "syntax.aromatic_selenium": {
+   "value": "supported",
+   "observed": {
+    "aromatic_selenium": "match:1"
+   }
+  },
+  "syntax.cdk_hash_X": {
+   "value": "rejected",
+   "observed": {
+    "cdk_hash_X": "error"
+   },
+   "errors": {
+    "cdk_hash_X": "ValueError: OBSmartsPattern.Init False"
+   }
+  },
+  "syntax.charge_plusplus": {
+   "value": "charge2",
+   "observed": {
+    "pp_on_n2plus": "match:1",
+    "pp_on_n1plus": "match:0"
+   }
+  },
+  "syntax.component_grouping": {
+   "value": "ignored",
+   "observed": {
+    "separate_groups_same_component": "match:1",
+    "same_group_two_components": "error"
+   },
+   "errors": {
+    "same_group_two_components": "ValueError: OBSmartsPattern.Init False"
+   }
+  },
+  "syntax.dative_bond": {
+   "value": "rejected",
+   "observed": {
+    "dative_parse": "error"
+   },
+   "errors": {
+    "dative_parse": "ValueError: OBSmartsPattern.Init False"
+   }
+  },
+  "syntax.dot_disconnected": {
+   "value": "rejected",
+   "observed": {
+    "dot_on_methanol": "error"
+   },
+   "errors": {
+    "dot_on_methanol": "ValueError: OBSmartsPattern.Init False"
+   }
+  },
+  "syntax.hetero_neighbors_z": {
+   "value": "rejected",
+   "observed": {
+    "hetero_neighbors_z": "error"
+   },
+   "errors": {
+    "hetero_neighbors_z": "ValueError: OBSmartsPattern.Init False"
+   }
+  },
+  "syntax.hybridization": {
+   "value": "openbabel_bare",
+   "observed": {
+    "hyb_digit0": "ok",
+    "hyb_digit7": "ok",
+    "hyb_sp3_ethane": "match:2",
+    "hyb_bare_ethyne": "match:2"
+   }
+  },
+  "syntax.insaturation_i": {
+   "value": "rejected",
+   "observed": {
+    "i1_ethene": "error"
+   },
+   "errors": {
+    "i1_ethene": "ValueError: OBSmartsPattern.Init False"
+   }
+  },
+  "syntax.periodic_group_G": {
+   "value": "rejected",
+   "observed": {
+    "periodic_group_G": "error"
+   },
+   "errors": {
+    "periodic_group_G": "ValueError: OBSmartsPattern.Init False"
+   }
+  },
+  "syntax.range_counts": {
+   "value": "rejected",
+   "observed": {
+    "range_counts": "error"
+   },
+   "errors": {
+    "range_counts": "ValueError: OBSmartsPattern.Init False"
+   }
+  },
+  "syntax.ring_size_k": {
+   "value": "rejected",
+   "observed": {
+    "ring_size_k": "error"
+   },
+   "errors": {
+    "ring_size_k": "ValueError: OBSmartsPattern.Init False"
+   }
+  },
+  "syntax.unclosed_ring": {
+   "value": "rejected",
+   "observed": {
+    "unclosed": "error"
+   },
+   "errors": {
+    "unclosed": "ValueError: OBSmartsPattern.Init False"
+   }
+  }
+ }
+}

@@ -1,0 +1,60 @@
+{
+ "flag": "smirks.unmapped_reactant_deleted",
+ "summary": "Unmapped reactant atom `[C:1]O>>[C:1]`",
+ "values": {
+  "deleted": "deleted, H refilled (also with AddHs)",
+  "deleted_h_orphaned": "with AddHs the O's H atom is left as a fragment (pyref)",
+  "labels_h_orphaned": "implicit-H run gives [C][C]; AddHs run orphans the H (Ambit)",
+  "rejected": "rule rejected"
+ },
+ "cases": [
+  {
+   "id": "drop_unmapped_O",
+   "op": "apply",
+   "query": "[C:1]O>>[C:1]",
+   "mol": "CCO",
+   "expect": {
+    "deleted": "products:CC",
+    "deleted_h_orphaned": "products:CC",
+    "labels_h_orphaned": "products:[C][C]",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "drop_unmapped_O_X",
+   "op": "apply",
+   "query": "[C:1]O>>[C:1]",
+   "mol": "CCO",
+   "explicit_h": true,
+   "expect": {
+    "deleted": "products:CC",
+    "deleted_h_orphaned": "re:products:.*\\[H.*",
+    "labels_h_orphaned": "re:products:.*\\[H.*",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "drop_unmapped_N",
+   "op": "apply",
+   "query": "[C:1]N>>[C:1]",
+   "mol": "CCCN",
+   "expect": {
+    "deleted": "products:CCC",
+    "deleted_h_orphaned": "products:CCC",
+    "labels_h_orphaned": "products:[C][C][C]",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/xenosmarts/AMBIT.md A9"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.unmapped_reactant"
+  ]
+ }
+}

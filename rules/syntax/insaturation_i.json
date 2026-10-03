@@ -1,0 +1,33 @@
+{
+ "flag": "syntax.insaturation_i",
+ "summary": "CDK/CACTVS `i<n>` insaturation",
+ "values": {
+  "supported": "i1 matches atoms with one pi bond",
+  "parsed_no_match": "parses, matches nothing (chematic)",
+  "rejected": "parse error"
+ },
+ "cases": [
+  {
+   "id": "i1_ethene",
+   "op": "match",
+   "query": "[Ci1]",
+   "mol": "C=C",
+   "expect": {
+    "supported": "match:2",
+    "parsed_no_match": "match:0",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smarts_dialects.md"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "prim.insaturation"
+  ]
+ }
+}

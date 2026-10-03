@@ -1,0 +1,30 @@
+{
+ "flag": "syntax.dative_bond",
+ "summary": "RDKit dative bonds `->` / `<-` in SMARTS",
+ "values": {
+  "supported": "parses",
+  "rejected": "parse error"
+ },
+ "cases": [
+  {
+   "id": "dative_parse",
+   "op": "parse",
+   "query": "N->[Fe]",
+   "expect": {
+    "supported": "ok",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smarts_dialects.md"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "bond.dative"
+  ]
+ }
+}

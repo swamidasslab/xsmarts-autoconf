@@ -1,0 +1,51 @@
+{
+ "flag": "smirks.product_h_pin",
+ "summary": "Product H count `[C:1]>>[CH2:1]`",
+ "values": {
+  "authoritative": "product H sets the count ([CH2]C); with AddHs H atoms add on top (C[CH5])",
+  "rejected_empty": "no outcomes (chematic)",
+  "ignored": "product H ignored",
+  "labels": "ignored; Ambit labels",
+  "rejected": "template rejected (Open Babel Init)"
+ },
+ "cases": [
+  {
+   "id": "pin_CH2",
+   "op": "apply",
+   "query": "[C:1]>>[CH2:1]",
+   "mol": "CC",
+   "expect": {
+    "authoritative": "products:[CH2]C",
+    "rejected_empty": "products:",
+    "ignored": "products:CC",
+    "labels": "products:[C][C]",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "pin_CH2_X",
+   "op": "apply",
+   "query": "[C:1]>>[CH2:1]",
+   "mol": "CC",
+   "explicit_h": true,
+   "expect": {
+    "authoritative": "products:C[CH5]",
+    "rejected_empty": "products:",
+    "ignored": "products:CC",
+    "labels": "products:CC",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "2026-10-03 autoconf discovery matrix (rdkit 2026.03.6, chematic 1.0.30, openbabel 3.2.1, cdk 2.7.1+ambit bt-jar)",
+  "refs": [
+   "docs/smirks/README.md section 11"
+  ]
+ },
+ "fuzz": {
+  "avoid": [
+   "edit.h_pin"
+  ]
+ }
+}
