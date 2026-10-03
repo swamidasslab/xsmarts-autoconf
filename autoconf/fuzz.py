@@ -49,9 +49,12 @@ def avoid_for(flags: set[str], rules: dict[str, Rule]) -> list[frozenset]:
     return sorted(out, key=lambda c: (len(c), sorted(c)))
 
 
-def explain(features: frozenset, rules: dict[str, Rule]) -> list[str]:
-    """Rules with an avoid conjunction fully present in this example."""
-    return sorted(f for f, r in rules.items() if any(c <= features for c in r.avoid))
+def explain(features: frozenset, rules: dict[str, Rule], flags=None) -> list[str]:
+    """Rules (among ``flags``, default all) with an avoid conjunction fully
+    present in this example. Pass the pair's divergent flags: an empty
+    result then means the finding is new behavior."""
+    pool = rules if flags is None else {f: rules[f] for f in flags if f in rules}
+    return sorted(f for f, r in pool.items() if any(c <= features for c in r.avoid))
 
 
 def _adapter(spec) -> Adapter:
@@ -81,6 +84,7 @@ def fuzz_pair(a, b, *, max_examples=300, flips: dict | None = None, seed=None,
     rules = {r.flag: r for r in load_rules()}
     va = dict(va if va is not None else _config_values(None, A))
     vb = vb if vb is not None else _config_values(None, B)
+    true_div = divergent(va, vb)
     va.update(flips or {})
     known = divergent(va, vb)
     avoid = avoid_for(known, rules)
@@ -106,7 +110,7 @@ def fuzz_pair(a, b, *, max_examples=300, flips: dict | None = None, seed=None,
         "observed": {A.label(): oa.text, B.label(): ob.text},
         "detail": {A.label(): oa.detail[:200], B.label(): ob.detail[:200]},
         "features": sorted(feats),
-        "explained_by": explain(feats, rules),
+        "explained_by": explain(feats, rules, true_div),
     }
     out = {"pair": [A.label(), B.label()], "known_divergent": len(known), "avoid": [sorted(c) for c in avoid],
            "finding": finding, "seconds": round(time.time() - t0, 2)}

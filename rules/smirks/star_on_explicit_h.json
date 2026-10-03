@@ -1,0 +1,55 @@
+{
+ "flag": "smirks.star_on_explicit_h",
+ "summary": "Mapped `*` on a substrate with explicit H atoms",
+ "values": {
+  "h_atoms_when_explicit": "`*` reaches H atoms only after AddHs; H substituted (RDKit)",
+  "explicit_edits_empty": "nothing with AddHs (chematic)",
+  "always_explicit": "substrate is always explicit-H: `*` edits H atoms even in a plain run (BioTransformer)",
+  "h_atoms_no_refill": "H atoms reached with AddHs, H count not refilled (pyref)",
+  "untyped": "Ambit dummies",
+  "rejected": "transform rejected"
+ },
+ "cases": [
+  {
+   "id": "star_chlorinate_X",
+   "op": "apply",
+   "query": "[*:1]>>[*:1]Cl",
+   "mol": "C",
+   "explicit_h": true,
+   "expect": {
+    "h_atoms_when_explicit": "products:CCl|C[H]Cl",
+    "explicit_edits_empty": "products:",
+    "always_explicit": "products:C[H]Cl",
+    "h_atoms_no_refill": "products:C[H]Cl|[CH4]Cl",
+    "untyped": "re:products:.*\\*.*",
+    "rejected": "error"
+   }
+  },
+  {
+   "id": "star_chlorinate",
+   "op": "apply",
+   "query": "[*:1]>>[*:1]Cl",
+   "mol": "C",
+   "expect": {
+    "h_atoms_when_explicit": "products:CCl",
+    "explicit_edits_empty": "products:CCl",
+    "always_explicit": "products:C[H]Cl",
+    "h_atoms_no_refill": "products:CCl",
+    "untyped": "re:products:.*\\*.*",
+    "rejected": "error"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "fuzz cdk vs biotransformer 2026-10-03",
+  "refs": []
+ },
+ "fuzz": {
+  "avoid": [
+   [
+    "prim.star_mapped",
+    "op.apply"
+   ]
+  ]
+ }
+}

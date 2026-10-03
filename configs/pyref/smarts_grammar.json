@@ -4,7 +4,7 @@
  "version": "smarts_grammar",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "6819fe8544ed6b48",
+ "rules_digest": "3763e977f720f2fb",
  "flags": {
   "match.aromaticity_exocyclic_carbonyl": {
    "value": "daylight_like",
@@ -246,6 +246,13 @@
     "ident_explicit": "products:CC"
    }
   },
+  "smirks.multi_site_application": {
+   "value": "per_site",
+   "observed": {
+    "diol_deprotonate": "products:[O-]CCO",
+    "diol_oxidation_two_sites": "products:*=*(C)CO|*=[*H]C(C)O"
+   }
+  },
   "smirks.nested_recursive": {
    "value": "evaluated",
    "observed": {
@@ -263,7 +270,11 @@
    "observed": {
     "bond_order_count": "outcomes:1",
     "ring_open_count": "outcomes:1",
+    "symmetric_delete_products": "error",
     "star_identity_count": "outcomes:3"
+   },
+   "errors": {
+    "symmetric_delete_products": "AmbitParseError: Reactant Map Index 2 is not valid product map index!"
    }
   },
   "smirks.product_h_atom_added": {
@@ -305,6 +316,19 @@
    "observed": {
     "ether_S": "unsupported",
     "iminium_S": "unsupported"
+   }
+  },
+  "smirks.sanitizer": {
+   "value": "n/a",
+   "observed": {
+    "identity_sanitized": "unsupported"
+   }
+  },
+  "smirks.star_on_explicit_h": {
+   "value": "h_atoms_no_refill",
+   "observed": {
+    "star_chlorinate_X": "products:C[H]Cl|[CH4]Cl",
+    "star_chlorinate": "products:CCl"
    }
   },
   "smirks.star_retype": {
@@ -363,7 +387,7 @@
     "aromatic_selenium": "error"
    },
    "errors": {
-    "aromatic_selenium": "ParseError: unismarts SMARTS parse failed: No terminal matches 'e' in the current parser context, at line 1 col 3\n\n[se]\n  ^\nExpected one of: \n\t* X\n\t* opensmarts__PLUSPLUS\n\t* V\n\t* \"d\"\n\t* R\n\t* opensmarts__IMPLICIT_HCOUNT\n\t* G\n\t* D\n\t* opensmarts__SYMBOL\n\t* \"#x\"\n\t* BARE_HYB\n\t* opensmarts__PLUS\n\t* H\n\t* S"
+    "aromatic_selenium": "ParseError: unismarts SMARTS parse failed: No terminal matches 'e' in the current parser context, at line 1 col 3\n\n[se]\n  ^\nExpected one of: \n\t* AMPERSAND\n\t* opensmarts__IMPLICIT_HCOUNT\n\t* H\n\t* \"A\"\n\t* opensmarts__TOTAL_HCOUNT\n\t* BANG\n\t* COLON\n\t* \"d\"\n\t* Z\n\t* R\n\t* HYBRID\n\t* \"$(\"\n\t* D\n\t* \"x\"\n\t* A\n\t* op"
    }
   },
   "syntax.cdk_hash_X": {

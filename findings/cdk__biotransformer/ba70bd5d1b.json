@@ -1,0 +1,31 @@
+{
+ "found": "2026-10-03",
+ "versions": {
+  "cdk": "2.7.1+ambit(bt-jar)",
+  "biotransformer": "2.7.1+biotransformer(fat-jar)"
+ },
+ "case": {
+  "op": "apply",
+  "query": "[*:1]>>[*:1]C",
+  "mol": "CC",
+  "explicit_h": true,
+  "view": "products"
+ },
+ "observed": {
+  "cdk": "products:[C][*H3][CH3]|[C][*][CH2][CH3]",
+  "biotransformer": "products:C[CH3]C.C[H]CC"
+ },
+ "detail": {
+  "cdk": "[C][*H3]C | [C][*H3]C | [C]*CC | [C]*CC | [C]*CC | [C]*CC | [C]*CC | [C]*CC",
+  "biotransformer": "C[CH3]C + [H](C)CC"
+ },
+ "features": [
+  "cond.explicit_h",
+  "edit.star_retype",
+  "op.apply"
+ ],
+ "explained_by": [
+  "smirks.star_retype"
+ ],
+ "status": "explained"
+}

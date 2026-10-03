@@ -70,7 +70,7 @@ MOLS = [
 RATOMS = [
     ("[C:{m}]", F()), ("[O:{m}]", F()), ("[N:{m}]", F()), ("[#6:{m}]", F()),
     ("[CH3:{m}]", F({"prim.hcount"})), ("[c:{m}]", F({"edit.aromatic"})), ("[cH:{m}]", F({"edit.aromatic", "prim.hcount"})),
-    ("[N+:{m}]", F({"prim.charge", "mol.charged"})), ("[*:{m}]", F()),
+    ("[N+:{m}]", F({"prim.charge", "mol.charged"})), ("[*:{m}]", F({"prim.star_mapped"})),
     ("[C;$(CO):{m}]", F({"prim.recursive"})), ("[C;$(C[$(O)]):{m}]", F({"prim.recursive", "prim.recursive_nested"})),
 ]
 
@@ -147,6 +147,36 @@ def _pick(items):
     return st.sampled_from(items) if items else st.nothing()
 
 
+def site_features(smirks: str, smiles: str, explicit_h: bool) -> set[str]:
+    """Derived (not recipe) features: how the reactant template hits the
+    molecule, computed once with RDKit as a neutral reference.
+
+    ``sites.multiple``: more than one matched atom set (engines differ on
+    per-site outcomes vs all-sites-in-place vs flattened).
+    ``sites.ordered_multiple``: the same atom set matched in several orders
+    (symmetric pattern; engines differ on ordered vs atom-set mappings)."""
+    from rdkit import Chem, RDLogger
+    from rdkit.Chem import AllChem
+
+    RDLogger.DisableLog("rdApp.*")
+    try:
+        rxn = AllChem.ReactionFromSmarts(smirks)
+        m = Chem.MolFromSmiles(smiles)
+        if explicit_h:
+            m = Chem.AddHs(m)
+        out = set()
+        for t in rxn.GetReactants():
+            uniq = len(m.GetSubstructMatches(t, uniquify=True, maxMatches=1000))
+            ordered = len(m.GetSubstructMatches(t, uniquify=False, maxMatches=1000))
+            if uniq > 1:
+                out.add("sites.multiple")
+            if ordered > uniq:
+                out.add("sites.ordered_multiple")
+        return out
+    except Exception:  # noqa: BLE001
+        return set()
+
+
 @st.composite
 def match_case(draw, avoid: frozenset, conj=()):
     atoms, bonds, mols = _allowed(ATOMS, avoid), _allowed(BONDS, avoid), _allowed(MOLS, avoid)
@@ -190,9 +220,11 @@ def apply_case(draw, avoid: frozenset, conj=()):
     xh = can_explicit and (not can_implicit or draw(st.booleans()))
     feats = set(ef | af | bf | mf | vf) | {"op.apply"}
     feats |= {"cond.explicit_h"} if xh else {"op.apply_implicit_h"}
+    smirks = build(a, b)
+    feats |= site_features(smirks, mol, xh)
     if feats & avoid or _blocked(feats, conj):
         draw(st.nothing())  # combined recipe hit an avoided feature / conjunction
-    return Case("fuzz", "apply", build(a, b), mol, xh, view), frozenset(feats)
+    return Case("fuzz", "apply", smirks, mol, xh, view), frozenset(feats)
 
 
 def example(avoid, ops=("match", "apply")):
@@ -211,4 +243,5 @@ def all_features() -> frozenset:
     for items in (ATOMS, BONDS, MOLS, RATOMS, EDITS, VIEWS):
         for it in items:
             out |= _feats(it)
-    return frozenset(out | {"cond.explicit_h", "op.apply_implicit_h", "op.match", "op.apply", "syntax.dot"})
+    return frozenset(out | {"cond.explicit_h", "op.apply_implicit_h", "op.match", "op.apply", "syntax.dot",
+                            "sites.multiple", "sites.ordered_multiple"})

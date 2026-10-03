@@ -4,7 +4,7 @@
  "version": "3.2.1",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "6819fe8544ed6b48",
+ "rules_digest": "3763e977f720f2fb",
  "flags": {
   "match.aromaticity_exocyclic_carbonyl": {
    "value": "daylight_like",
@@ -280,6 +280,13 @@
     "ident_explicit": "ValueError: OBChemTsfm.Init failed"
    }
   },
+  "smirks.multi_site_application": {
+   "value": "all_sites_in_place",
+   "observed": {
+    "diol_deprotonate": "products:[O-]CC[O-]",
+    "diol_oxidation_two_sites": "products:CC(=O)C=O"
+   }
+  },
   "smirks.nested_recursive": {
    "value": "rejected",
    "observed": {
@@ -300,6 +307,7 @@
    "observed": {
     "bond_order_count": "outcomes:1",
     "ring_open_count": "error",
+    "symmetric_delete_products": "products:[CH3].[OH]",
     "star_identity_count": "error"
    },
    "errors": {
@@ -356,6 +364,26 @@
    "observed": {
     "ether_S": "products:C=O=C",
     "iminium_S": "products:C=N(=C)=C"
+   }
+  },
+  "smirks.sanitizer": {
+   "value": "native",
+   "observed": {
+    "identity_sanitized": "error"
+   },
+   "errors": {
+    "identity_sanitized": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.star_on_explicit_h": {
+   "value": "rejected",
+   "observed": {
+    "star_chlorinate_X": "error",
+    "star_chlorinate": "error"
+   },
+   "errors": {
+    "star_chlorinate_X": "ValueError: OBChemTsfm.Init failed",
+    "star_chlorinate": "ValueError: OBChemTsfm.Init failed"
    }
   },
   "smirks.star_retype": {

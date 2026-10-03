@@ -1,0 +1,33 @@
+{
+ "flag": "smirks.sanitizer",
+ "summary": "Lib-native product sanitizer available",
+ "values": {
+  "native": "engine has a sanitize step",
+  "unsupported": "no sanitizer (pyref)"
+ },
+ "cases": [
+  {
+   "id": "identity_sanitized",
+   "op": "apply",
+   "query": "[C:1]>>[C:1]",
+   "mol": "CC",
+   "view": "sanitized",
+   "expect": {
+    "native": [
+     "re:products:.*",
+     "error"
+    ],
+    "unsupported": "unsupported"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "fuzz rdkit vs pyref 2026-10-03",
+  "refs": []
+ },
+ "fuzz": {
+  "avoid": [
+   "view.sanitized"
+  ]
+ }
+}

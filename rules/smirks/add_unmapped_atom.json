@@ -29,8 +29,7 @@
  },
  "fuzz": {
   "avoid": [
-   "edit.add_atom",
-   "op.apply_implicit_h"
+   "edit.add_atom"
   ]
  }
 }

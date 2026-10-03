@@ -4,7 +4,7 @@
  "version": "1.0.30",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "6819fe8544ed6b48",
+ "rules_digest": "3763e977f720f2fb",
  "flags": {
   "match.aromaticity_exocyclic_carbonyl": {
    "value": "daylight_like",
@@ -240,6 +240,13 @@
     "ident_explicit": "products:CC"
    }
   },
+  "smirks.multi_site_application": {
+   "value": "per_site",
+   "observed": {
+    "diol_deprotonate": "products:[O-]CCO",
+    "diol_oxidation_two_sites": "products:CC(=O)CO|CC(O)C=O"
+   }
+  },
   "smirks.nested_recursive": {
    "value": "rejected",
    "observed": {
@@ -260,6 +267,7 @@
    "observed": {
     "bond_order_count": "outcomes:1",
     "ring_open_count": "outcomes:1",
+    "symmetric_delete_products": "products:C",
     "star_identity_count": "outcomes:2"
    }
   },
@@ -302,6 +310,19 @@
    "observed": {
     "ether_S": "products:",
     "iminium_S": "products:C=N(C)C"
+   }
+  },
+  "smirks.sanitizer": {
+   "value": "native",
+   "observed": {
+    "identity_sanitized": "products:CC"
+   }
+  },
+  "smirks.star_on_explicit_h": {
+   "value": "explicit_edits_empty",
+   "observed": {
+    "star_chlorinate_X": "products:",
+    "star_chlorinate": "products:CCl"
    }
   },
   "smirks.star_retype": {

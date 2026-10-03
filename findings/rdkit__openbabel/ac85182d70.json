@@ -1,0 +1,32 @@
+{
+ "found": "2026-10-03",
+ "versions": {
+  "rdkit": "2026.03.6",
+  "openbabel": "3.2.1"
+ },
+ "case": {
+  "op": "apply",
+  "query": "[C:1]>>[C+2:1]",
+  "mol": "CC",
+  "explicit_h": true,
+  "view": "products"
+ },
+ "observed": {
+  "rdkit": "products:[CH+2]C",
+  "openbabel": "products:[CH3+2][CH3+2]"
+ },
+ "detail": {
+  "rdkit": "[CH+2]C | [CH+2]C",
+  "openbabel": "[CH3+2][CH3+2]"
+ },
+ "features": [
+  "cond.explicit_h",
+  "edit.charge_high",
+  "op.apply"
+ ],
+ "explained_by": [
+  "smirks.charge_plus2_hcount",
+  "smirks.product_plusplus"
+ ],
+ "status": "explained"
+}

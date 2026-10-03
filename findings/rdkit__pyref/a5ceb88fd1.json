@@ -1,0 +1,33 @@
+{
+ "found": "2026-10-03",
+ "versions": {
+  "rdkit": "2026.03.6",
+  "pyref": "smarts_grammar"
+ },
+ "case": {
+  "op": "apply",
+  "query": "[C:1]>>[C:1]",
+  "mol": "CC",
+  "explicit_h": false,
+  "view": "sanitized"
+ },
+ "observed": {
+  "rdkit": "products:CC",
+  "pyref": "unsupported"
+ },
+ "detail": {
+  "rdkit": "CC | CC",
+  "pyref": ""
+ },
+ "features": [
+  "edit.identity",
+  "op.apply",
+  "op.apply_implicit_h",
+  "view.sanitized"
+ ],
+ "explained_by": [
+  "smirks.add_unmapped_atom",
+  "smirks.identity_labels"
+ ],
+ "status": "explained"
+}

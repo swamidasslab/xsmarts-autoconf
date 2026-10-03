@@ -1,0 +1,45 @@
+{
+ "flag": "smirks.multi_site_application",
+ "summary": "Template that matches several sites of one molecule",
+ "values": {
+  "per_site": "one outcome per site (RDKit, chematic, Ambit, pyref)",
+  "all_sites_in_place": "every site transformed in one product (Open Babel)",
+  "flattened_h_kept": "sites merged into one fragment set, explicit H kept (BioTransformer)"
+ },
+ "cases": [
+  {
+   "id": "diol_deprotonate",
+   "op": "apply",
+   "query": "[O:1]>>[O-:1]",
+   "mol": "OCCO",
+   "expect": {
+    "per_site": "re:products:[^|]*",
+    "all_sites_in_place": "products:[O-]CC[O-]",
+    "flattened_h_kept": "products:OCC[OH-]"
+   }
+  },
+  {
+   "id": "diol_oxidation_two_sites",
+   "op": "apply",
+   "query": "[O:1][C:2]>>[O:1]=[C:2]",
+   "mol": "OCC(C)O",
+   "expect": {
+    "per_site": "re:products:[^|]+\\|[^|]+",
+    "all_sites_in_place": "products:CC(=O)C=O",
+    "flattened_h_kept": "re:products:[^|]*"
+   }
+  }
+ ],
+ "provenance": {
+  "discovered": "fuzz rdkit vs openbabel 2026-10-03",
+  "refs": []
+ },
+ "fuzz": {
+  "avoid": [
+   [
+    "sites.multiple",
+    "op.apply"
+   ]
+  ]
+ }
+}

@@ -1,0 +1,33 @@
+{
+ "found": "2026-10-03",
+ "versions": {
+  "rdkit": "2026.03.6",
+  "chematic": "1.0.30"
+ },
+ "case": {
+  "op": "apply",
+  "query": "[C:1][C:2]>>[C:1]",
+  "mol": "CCO",
+  "explicit_h": false,
+  "view": "products"
+ },
+ "observed": {
+  "rdkit": "products:C|CO",
+  "chematic": "products:C"
+ },
+ "detail": {
+  "rdkit": "C | CO",
+  "chematic": "C"
+ },
+ "features": [
+  "edit.delete_mapped",
+  "op.apply",
+  "op.apply_implicit_h"
+ ],
+ "explained_by": [
+  "smirks.add_unmapped_atom",
+  "smirks.delete_mapped_by_omission",
+  "smirks.identity_labels"
+ ],
+ "status": "explained"
+}
