@@ -208,6 +208,7 @@ def site_features(smirks: str, smiles: str, explicit_h: bool) -> frozenset[str]:
     per-site outcomes vs all-sites-in-place vs flattened).
     ``sites.ordered_multiple``: the same atom set matched in several orders
     (symmetric pattern; engines differ on ordered vs atom-set mappings).
+    ``edit.mapped_aromatic_nh``: a mapped atom lands on an aromatic N-H.
     ``outcome.valence_invalid``: some raw RDKit product fails SanitizeMol
     (engines differ on keep / drop / rewrite of invalid products)."""
     from rdkit import Chem, RDLogger
@@ -221,6 +222,12 @@ def site_features(smirks: str, smiles: str, explicit_h: bool) -> frozenset[str]:
             m = Chem.AddHs(m)
         out = set()
         for t in rxn.GetReactants():
+            mapped = [a.GetIdx() for a in t.GetAtoms() if a.GetAtomMapNum()]
+            for hit in m.GetSubstructMatches(t, maxMatches=50):
+                for qi in mapped:
+                    at = m.GetAtomWithIdx(hit[qi])
+                    if at.GetAtomicNum() == 7 and at.GetIsAromatic() and at.GetTotalNumHs() > 0:
+                        out.add("edit.mapped_aromatic_nh")
             uniq = len(m.GetSubstructMatches(t, uniquify=True, maxMatches=1000))
             ordered = len(m.GetSubstructMatches(t, uniquify=False, maxMatches=1000))
             if uniq > 1:
@@ -446,4 +453,5 @@ def all_features() -> frozenset:
     return frozenset(out | {"cond.explicit_h", "op.apply_implicit_h", "op.match", "op.apply", "syntax.dot",
                             "sites.multiple", "sites.ordered_multiple", "outcome.valence_invalid",
                             "syntax.smirks_reactant_logic", "syntax.component_group", "syntax.unclosed_ring",
+                            "edit.mapped_aromatic_nh",
                             "gen.mol_first"})

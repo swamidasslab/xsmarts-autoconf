@@ -4,7 +4,7 @@
  "version": "3.2.1",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "3c57d23bca41d486",
+ "rules_digest": "e1a0afabb93e00a9",
  "flags": {
   "match.aromatic_valence": {
    "value": "kekule_total",
@@ -45,7 +45,7 @@
     "ring_single_benzene": "match:0",
     "single_and_ring_benzene": "match:0",
     "double_and_ring_benzene": "match:0",
-    "plain_single_control": "match:0"
+    "ring_bond_control": "match:6"
    }
   },
   "match.degree_with_explicit_h": {
@@ -67,7 +67,8 @@
    "value": "excludes_aromatic",
    "observed": {
     "double_on_benzene": "match:0",
-    "double_on_kekule_benzene": "match:0"
+    "double_on_kekule_benzene": "match:0",
+    "double_control_ethene": "match:1"
    }
   },
   "match.h_atom_query": {
@@ -132,7 +133,8 @@
   "match.single_bond_vs_aromatic": {
    "value": "excludes_aromatic",
    "observed": {
-    "single_on_benzene": "match:0"
+    "single_on_benzene": "match:0",
+    "single_any_atoms_benzene": "match:0"
    }
   },
   "match.substituted_aromatic_perception": {
@@ -359,6 +361,17 @@
    "errors": {
     "ident_implicit": "ValueError: OBChemTsfm.Init failed",
     "ident_explicit": "ValueError: OBChemTsfm.Init failed"
+   }
+  },
+  "smirks.mapped_aromatic_nh": {
+   "value": "rejected",
+   "observed": {
+    "pyrrole_n_identity": "error",
+    "pyrrole_c_identity_control": "error"
+   },
+   "errors": {
+    "pyrrole_n_identity": "ValueError: OBChemTsfm.Init failed",
+    "pyrrole_c_identity_control": "ValueError: OBChemTsfm.Init failed"
    }
   },
   "smirks.multi_site_application": {

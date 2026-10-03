@@ -162,13 +162,17 @@ def flipcheck(a, b, *, max_examples=300, flags=None, va=None, vb=None, verbose=T
         fd = res["finding"]
         still = {frozenset(c) for c in res["avoid"]}
         masked = all(any(o <= c for o in still) for c in rules[f].avoid)
-        row = {"flag": f, "seconds": res["seconds"], "masked": masked,
+        row = {"flag": f, "seconds": res["seconds"], "masked": masked, "found": bool(fd),
                "rediscovered": bool(fd) and f in fd["explained_by"],
                "example": fd and fd["case"], "observed": fd and fd["observed"],
                "explained_by": fd and fd["explained_by"]}
         rows.append(row)
         if verbose:
-            tag = "MASKED" if masked else ("ok" if row["rediscovered"] else "MISS")
+            # MISS: something else surfaced first (baseline not clean for this flip);
+            # UNREACHED: nothing found - the divergence needs features another
+            # still-divergent flag avoids (effective masking) or is rare.
+            tag = ("MASKED" if masked else "ok" if row["rediscovered"]
+                   else "MISS" if fd else "UNREACHED")
             ex = fd and f"{fd['case']['query']} on {fd['case']['mol']}"
             print(f"{tag:6s} {f:42s} {res['seconds']:6.1f}s  {ex}")
     return rows
