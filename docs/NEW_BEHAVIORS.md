@@ -114,6 +114,23 @@ fuzzer (finding JSON under `findings/`).
 - **Environment, not a library:** at 18:01 on 2026-10-03, `scripts/smarts_grammar/grammars/opensmarts.lark` was modified and `build_querymol('c=c', ...)` now returns zero atoms. pyref results after that time are invalid; `tests/test_autoconf.py::test_committed_config_reproduces[pyref/...]` flags it.
 - BioTransformer drops ethene from `[C:1]-[C:2]>>[C:1]=[C:2]` on ethane (no product; likely the validity filter). It's folded into `smirks.edits_with_explicit_h` and `smirks.outcome_multiplicity` as accepted observations, not isolated.
 
+## Found by grammar tweaks (2026-10-04, not yet rules)
+
+`xsmarts-autoconf tweak A B` (2000 tweaks per pair, seed 1; `docs/results/tweak/`). Each is one tweak of a query that both libraries matched identically before it.
+
+- **`r0` with explicit H** (rdkit vs chematic): `[O&r0]` on `CC(=O)[O-]` with explicit H: RDKit 2, chematic 0.
+- **`k0` / `!k0`** (rdkit vs chematic): `[C;!k0]` on a spiro bicycle: RDKit 0, chematic 10; `$([k0])` matches ring atoms in RDKit only.
+- **`@SP1` alone** (rdkit vs openbabel, rdkit vs cdk): `[@SP1]` on `C[C@H](N)O` with explicit H: RDKit matches all 11 atoms, Open Babel and CDK 0.
+- **Ranged ring size `r{-1}`** (rdkit vs cdk): `[P,r{-1}]-[O]` on phosphoric acid with explicit H: RDKit 6, CDK 3.
+- **Negated range `!X{2-}`** (rdkit vs cdk): `[C;!X{2-}]` on `ClCCBr`: RDKit 0, CDK 2.
+
+Acceptance mismatches (the library rejects what its dialect grammar accepts):
+- **RDKit:** rejects `@?` and `@@?`.
+- **Both RDKit and chematic:** reject a lone atom map `[:0]`.
+- **chematic:** rejects bare `D`, `X`, `x` and `v` with no count, which `chematic.lark` allows.
+
+## For the feature prober
+
 ## For the feature prober
 
 The machine-readable source of truth is `rules/**.json` (flag, values, cases,

@@ -1,0 +1,476 @@
+{
+ "pair": [
+  "rdkit",
+  "chematic"
+ ],
+ "families": [
+  "rdkit",
+  "chematic"
+ ],
+ "seconds": 7.9,
+ "tweaks_tried": 2000,
+ "distinct_tweaks": 233,
+ "findings": [
+  {
+   "tweak": "atom.and_low implicit_h_default",
+   "differing": 23,
+   "tried": 45,
+   "example": {
+    "query": "[C;h]",
+    "base": "[C]",
+    "mol": "[13CH3]C",
+    "explicit_h": false,
+    "rdkit": "match:2",
+    "chematic": "match:0"
+   },
+   "known_by": [
+    "match.implicit_h_lowercase_h"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.and_high implicit_h_default",
+   "differing": 7,
+   "tried": 17,
+   "example": {
+    "query": "[C;A&h]-[C]",
+    "base": "[C;A]-[C]",
+    "mol": "C1CCCCC1",
+    "explicit_h": false,
+    "rdkit": "match:6",
+    "chematic": "match:0"
+   },
+   "known_by": [
+    "match.implicit_h_lowercase_h"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "bond.and bond:down",
+   "differing": 6,
+   "tried": 8,
+   "example": {
+    "query": "[C]-;\\[N;v4;H0]",
+    "base": "[C]-[N;v4;H0]",
+    "mol": "C[N+](C)(C)C",
+    "explicit_h": false,
+    "rdkit": "match:4",
+    "chematic": "match:0"
+   },
+   "known_by": [
+    "match.directional_bond"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.recursive implicit_h_default",
+   "differing": 5,
+   "tried": 5,
+   "example": {
+    "query": "[C;H3;v4;$([h])]",
+    "base": "[C;H3;v4]",
+    "mol": "[13CH3]C",
+    "explicit_h": false,
+    "rdkit": "match:2",
+    "chematic": "match:0"
+   },
+   "known_by": [
+    "match.implicit_h_lowercase_h"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "bond.replace bond:up",
+   "differing": 3,
+   "tried": 3,
+   "example": {
+    "query": "[C]/[C;#6]",
+    "base": "[C]-[C;#6]",
+    "mol": "CCO",
+    "explicit_h": false,
+    "rdkit": "match:1",
+    "chematic": "match:0"
+   },
+   "known_by": [
+    "match.bond_stereo",
+    "match.directional_bond"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.and_high ring_size:n",
+   "differing": 3,
+   "tried": 14,
+   "example": {
+    "query": "[O&r0]",
+    "base": "[O]",
+    "mol": "CC(=O)[O-]",
+    "explicit_h": true,
+    "rdkit": "match:2",
+    "chematic": "match:0"
+   },
+   "known_by": [],
+   "covered_by_agreeing": [
+    "match.ring_size_semantics"
+   ]
+  },
+  {
+   "tweak": "atom.and_not ring_size_k:n",
+   "differing": 2,
+   "tried": 5,
+   "example": {
+    "query": "[C;!k0]",
+    "base": "[C]",
+    "mol": "C1CCC2(C1)CCCCC2",
+    "explicit_h": false,
+    "rdkit": "match:0",
+    "chematic": "match:10"
+   },
+   "known_by": [],
+   "covered_by_agreeing": [
+    "syntax.ring_size_k"
+   ]
+  },
+  {
+   "tweak": "atom.and_high valence:n",
+   "differing": 2,
+   "tried": 3,
+   "example": {
+    "query": "[c;#6;r6&v4]",
+    "base": "[c;#6;r6]",
+    "mol": "C1=CC=CC=C1",
+    "explicit_h": false,
+    "rdkit": "match:6",
+    "chematic": "match:0"
+   },
+   "known_by": [
+    "match.aromatic_valence"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.and_not implicit_h_default",
+   "differing": 2,
+   "tried": 9,
+   "example": {
+    "query": "[C;!h]",
+    "base": "[C]",
+    "mol": "CC(=O)[O-]",
+    "explicit_h": false,
+    "rdkit": "match:1",
+    "chematic": "match:2"
+   },
+   "known_by": [
+    "match.implicit_h_lowercase_h"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.recursive isotope:n",
+   "differing": 2,
+   "tried": 2,
+   "example": {
+    "query": "[c;R1;$([6])]",
+    "base": "[c;R1]",
+    "mol": "O=C1C=CC=CC=C1",
+    "explicit_h": false,
+    "rdkit": "match:0",
+    "chematic": "match:7"
+   },
+   "known_by": [
+    "match.unspecified_isotope"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.recursive ring_size_k:n",
+   "differing": 2,
+   "tried": 4,
+   "example": {
+    "query": "[C;H2;$([k0])]-[C;A;H2]",
+    "base": "[C;H2]-[C;A;H2]",
+    "mol": "C1CCCCC1",
+    "explicit_h": false,
+    "rdkit": "match:6",
+    "chematic": "match:0"
+   },
+   "known_by": [],
+   "covered_by_agreeing": [
+    "syntax.ring_size_k"
+   ]
+  },
+  {
+   "tweak": "atom.recursive valence:n",
+   "differing": 2,
+   "tried": 5,
+   "example": {
+    "query": "[c]:[c;$([v4])]",
+    "base": "[c]:[c]",
+    "mol": "Cc1ccccc1",
+    "explicit_h": false,
+    "rdkit": "match:6",
+    "chematic": "match:0"
+   },
+   "known_by": [
+    "match.aromatic_valence"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.and_low hybridization:^3",
+   "differing": 1,
+   "tried": 4,
+   "example": {
+    "query": "[P;$(*~[O]);v5;^3]",
+    "base": "[P;$(*~[O]);v5]",
+    "mol": "OP(=O)(O)O",
+    "explicit_h": false,
+    "rdkit": "match:1",
+    "chematic": "match:0"
+   },
+   "known_by": [
+    "syntax.hybridization"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.recursive symbol:H",
+   "differing": 1,
+   "tried": 1,
+   "example": {
+    "query": "[C;#6;A;$([H])]=[C]",
+    "base": "[C;#6;A]=[C]",
+    "mol": "C=CC=O",
+    "explicit_h": false,
+    "rdkit": "match:0",
+    "chematic": "match:1"
+   },
+   "known_by": [
+    "match.h_atom_query",
+    "match.proton",
+    "smirks.product_h_atom_added"
+   ],
+   "covered_by_agreeing": [
+    "match.atom_chirality",
+    "products.validity_filter",
+    "smirks.aromatic_product",
+    "smirks.equivalent_h_mappings",
+    "smirks.h_atom_in_template"
+   ]
+  },
+  {
+   "tweak": "atom.replace implicit_h_default",
+   "differing": 1,
+   "tried": 2,
+   "example": {
+    "query": "[C;h]",
+    "base": "[C;v4]",
+    "mol": "[13CH3]C",
+    "explicit_h": false,
+    "rdkit": "match:2",
+    "chematic": "match:0"
+   },
+   "known_by": [
+    "match.implicit_h_lowercase_h"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "bond.or bond:down",
+   "differing": 1,
+   "tried": 2,
+   "example": {
+    "query": "[C]=,\\[C]",
+    "base": "[C]=[C]",
+    "mol": "C=CC=O",
+    "explicit_h": true,
+    "rdkit": "match:2",
+    "chematic": "match:1"
+   },
+   "known_by": [
+    "match.directional_bond"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "bond.replace bond:down",
+   "differing": 1,
+   "tried": 1,
+   "example": {
+    "query": "[C;A;H2]\\[C;X4]",
+    "base": "[C;A;H2]-[C;X4]",
+    "mol": "C1CC1",
+    "explicit_h": true,
+    "rdkit": "match:3",
+    "chematic": "match:0"
+   },
+   "known_by": [
+    "match.directional_bond"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.and_low isotope:n",
+   "differing": 1,
+   "tried": 2,
+   "example": {
+    "query": "[C]-[C;6]",
+    "base": "[C]-[C]",
+    "mol": "[13CH3]C",
+    "explicit_h": false,
+    "rdkit": "match:0",
+    "chematic": "match:1"
+   },
+   "known_by": [
+    "match.unspecified_isotope"
+   ],
+   "covered_by_agreeing": []
+  }
+ ],
+ "acceptance_mismatch": [
+  {
+   "library": "chematic",
+   "tag": "aliphatic_any",
+   "count": 1,
+   "example": "[O;A:1]>>[O:1]~C"
+  },
+  {
+   "library": "chematic",
+   "tag": "aromatic_any",
+   "count": 4,
+   "example": "[N;a:1]>>[N:1]"
+  },
+  {
+   "library": "chematic",
+   "tag": "atom_class:n",
+   "count": 169,
+   "example": "[:0]"
+  },
+  {
+   "library": "chematic",
+   "tag": "bond:dative_left",
+   "count": 2,
+   "example": "[O;H0;X2]-;<-[C]"
+  },
+  {
+   "library": "chematic",
+   "tag": "bond:dative_right",
+   "count": 31,
+   "example": "[C]->[C]"
+  },
+  {
+   "library": "chematic",
+   "tag": "bond:down",
+   "count": 2,
+   "example": "[C:1][C:2]=;\\[O:3]>>[C:1]=[C:2]=[O:3]"
+  },
+  {
+   "library": "chematic",
+   "tag": "bond:down_or_unspec",
+   "count": 10,
+   "example": "[C]-;\\?[C]"
+  },
+  {
+   "library": "chematic",
+   "tag": "bond:quadruple",
+   "count": 9,
+   "example": "[N]-,$[C]"
+  },
+  {
+   "library": "chematic",
+   "tag": "bond:up_or_unspec",
+   "count": 22,
+   "example": "[c]/?[c]"
+  },
+  {
+   "library": "chematic",
+   "tag": "charge:- n",
+   "count": 1,
+   "example": "[n;-5:1]>>[n:1]"
+  },
+  {
+   "library": "chematic",
+   "tag": "chiral:@?",
+   "count": 1,
+   "example": "[O;@?]=[C;A;R0]"
+  },
+  {
+   "library": "chematic",
+   "tag": "chiral:@@?",
+   "count": 5,
+   "example": "[@@?]"
+  },
+  {
+   "library": "chematic",
+   "tag": "chiral:@THn",
+   "count": 9,
+   "example": "[c;@TH2]"
+  },
+  {
+   "library": "chematic",
+   "tag": "connectivity",
+   "count": 12,
+   "example": "[C;X]"
+  },
+  {
+   "library": "chematic",
+   "tag": "degree",
+   "count": 186,
+   "example": "[D]"
+  },
+  {
+   "library": "chematic",
+   "tag": "ring_connectivity",
+   "count": 21,
+   "example": "[C,x]"
+  },
+  {
+   "library": "chematic",
+   "tag": "ring_membership:n",
+   "count": 3,
+   "example": "[O&R4:1]=[O:2]>>[O:1]-[O:2]"
+  },
+  {
+   "library": "chematic",
+   "tag": "symbol:aliphatic",
+   "count": 3,
+   "example": "[!N:1]>>[N:1]C"
+  },
+  {
+   "library": "chematic",
+   "tag": "valence",
+   "count": 16,
+   "example": "[v]"
+  },
+  {
+   "library": "rdkit",
+   "tag": "atom_class:n",
+   "count": 169,
+   "example": "[:0]"
+  },
+  {
+   "library": "rdkit",
+   "tag": "bond:down_or_unspec",
+   "count": 10,
+   "example": "[C]-;\\?[C]"
+  },
+  {
+   "library": "rdkit",
+   "tag": "bond:up_or_unspec",
+   "count": 22,
+   "example": "[c]/?[c]"
+  },
+  {
+   "library": "rdkit",
+   "tag": "chiral:@?",
+   "count": 1,
+   "example": "[O;@?]=[C;A;R0]"
+  },
+  {
+   "library": "rdkit",
+   "tag": "chiral:@@?",
+   "count": 5,
+   "example": "[@@?]"
+  }
+ ]
+}

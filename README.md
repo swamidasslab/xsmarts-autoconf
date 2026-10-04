@@ -149,6 +149,23 @@ are all handled by the base class. Register the class in `ADAPTERS`
 - Findings are shrunk to a minimal example, written as readable JSON, and attributed to rules. An empty attribution means **NEW**.
 - `xsmarts-autoconf flipcheck A B` is the self-test. It pretends A has B's value for each divergent flag; the fuzzer must rediscover it.
 
+### Grammar tweaks
+
+`xsmarts-autoconf tweak A B` finds differences without anyone first declaring what the syntax means:
+
+1. The molecule-first generator builds a query that both libraries match identically.
+2. The query is parsed with each library's dialect grammar (`xsmarts/grammars/<dialect>.lark`).
+3. Hypothesis picks one atom or bond and applies a single change the grammar allows:
+   - for an atom: AND, OR or AND-NOT a primitive, replace or negate an existing primitive, or add a recursive `$()`;
+   - for a bond: insert, replace, AND, OR or negate.
+4. New primitives come from the grammar's own `atom_primitive` / `bond_primitive` alternatives.
+
+When the libraries then disagree, the tweak's tag (operation plus grammar alternative, such as `atom.and_not ring_size_k:n`) names the syntax whose meaning differs. A tag that an existing rule covers, and on which the two libraries are known to differ, is reported as known. Anything else is **NEW** and is a candidate for a rule. The command also reports **acceptance mismatches**, where a library rejects a tweak its own dialect grammar accepts. That means either the grammar or the library is wrong.
+
+This is why **dialect grammars are worth contributing**. A grammar for a library's SMARTS flavor is explored automatically, and the library's real behavior is checked against it. `tests/test_tweak.py` checks that every grammar alternative, combined with every operation, gives a query that re-parses in every dialect.
+
+### Round trip
+
 ### Round trip
 
 Engines that can be configured from flags (`pyref`, `xenosmarts`) are checked with
@@ -197,6 +214,7 @@ describing the behavior: the library, version, SMARTS or SMIRKS, molecule, and w
 - **New flags.** Found a library doing something surprising? Add a rule file with the smallest cases that separate the behaviors, a value per behavior, provenance (library, version, where you saw it) and `fuzz.avoid` tags. Run `xsmarts-autoconf matrix` and `xsmarts-autoconf stability`, then `update` and commit the configs for the versions you have.
 - **Configs for other versions.** Install an older or newer version of a library, run `xsmarts-autoconf update <lib>`, and open a pull request with the new `data/configs/<lib>/<version>.json`. This is how the version history grows.
 - **New harnesses.** Adapters for other toolkits (Indigo, OpenEye, ChemAxon, Ambit standalone, CDK from Maven, Java and JS libraries...) are a small class each; see above. Generators and feature tags in `gen.py` are welcome too.
+- **Dialect grammars.** Add or correct `src/xsmarts_autoconf/xsmarts/grammars/<dialect>.lark` for a library's SMARTS flavor and map the adapter to it in `tweak.DIALECT`. `xsmarts-autoconf tweak` then explores that syntax and reports where the library and its grammar disagree.
 - **Fuzz findings.** Run `xsmarts-autoconf sweep A B` on pairs you care about. Each `NEW` finding is a candidate flag.
 
 Please keep flags about *observable behavior*: one question per flag, the

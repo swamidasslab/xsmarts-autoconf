@@ -12,6 +12,7 @@ Adapters default to every library that is installed and importable.
   target CONFIG --like CONFIG [--out F]  tests moving one library to another's behavior
   fuzz A B | sweep A B | flipcheck A B   differential fuzzer (see README)
   roundtrip [--blinded N]                configurable-engine round trip
+  tweak A B [-n N] [--seed S] [--out F]   grammar-consistent single tweaks of matching queries
 """
 
 from __future__ import annotations
@@ -66,6 +67,12 @@ def main(argv=None) -> int:
     p = sub.add_parser("target")
     p.add_argument("config")
     p.add_argument("--like", required=True)
+    p.add_argument("--out")
+    p = sub.add_parser("tweak")
+    p.add_argument("a")
+    p.add_argument("b")
+    p.add_argument("-n", "--max-examples", type=int, default=2000)
+    p.add_argument("--seed", type=int)
     p.add_argument("--out")
     for name in ("fuzz", "sweep", "flipcheck"):
         p = sub.add_parser(name)
@@ -196,6 +203,14 @@ def main(argv=None) -> int:
         rows = flipcheck(args.a, args.b, max_examples=args.max_examples, flags=flags)
         return 0 if all(r["rediscovered"] or r["masked"] for r in rows) else 1
 
+    if args.cmd == "tweak":
+        from .tweak import probe
+
+        res = probe(args.a, args.b, max_examples=args.max_examples, seed=args.seed)
+        if args.out:
+            with open(args.out, "w") as fh:
+                json.dump(res, fh, indent=1)
+        return 0
     if args.cmd == "roundtrip":
         from .roundtrip import ENGINES, blinded, unblinded
 

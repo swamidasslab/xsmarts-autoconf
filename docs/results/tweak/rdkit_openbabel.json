@@ -1,0 +1,244 @@
+{
+ "pair": [
+  "rdkit",
+  "openbabel"
+ ],
+ "families": [
+  "rdkit",
+  "openbabel"
+ ],
+ "seconds": 7.5,
+ "tweaks_tried": 2000,
+ "distinct_tweaks": 219,
+ "findings": [
+  {
+   "tweak": "atom.and_low implicit_h_default",
+   "differing": 19,
+   "tried": 50,
+   "example": {
+    "query": "[N;h]",
+    "base": "[N]",
+    "mol": "OCCN",
+    "explicit_h": false,
+    "rdkit": "match:1",
+    "openbabel": "match:0"
+   },
+   "known_by": [
+    "match.implicit_h_lowercase_h"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.and_high implicit_h_default",
+   "differing": 7,
+   "tried": 19,
+   "example": {
+    "query": "[C;v4&h]",
+    "base": "[C;v4]",
+    "mol": "N#CC",
+    "explicit_h": false,
+    "rdkit": "match:1",
+    "openbabel": "match:0"
+   },
+   "known_by": [
+    "match.implicit_h_lowercase_h"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "bond.and bond:up",
+   "differing": 4,
+   "tried": 5,
+   "example": {
+    "query": "[n;H0;a]:;/[c]",
+    "base": "[n;H0;a]:[c]",
+    "mol": "c1ccncc1",
+    "explicit_h": false,
+    "rdkit": "match:2",
+    "openbabel": "match:0"
+   },
+   "known_by": [
+    "match.directional_bond"
+   ],
+   "covered_by_agreeing": [
+    "match.bond_stereo"
+   ]
+  },
+  {
+   "tweak": "atom.replace chiral:@SPn",
+   "differing": 2,
+   "tried": 2,
+   "example": {
+    "query": "[@SP1]",
+    "base": "[O]",
+    "mol": "C[C@H](N)O",
+    "explicit_h": true,
+    "rdkit": "match:11",
+    "openbabel": "match:0"
+   },
+   "known_by": [],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.and_not implicit_h_default",
+   "differing": 2,
+   "tried": 4,
+   "example": {
+    "query": "[C;!h]",
+    "base": "[C]",
+    "mol": "CC(=O)[O-]",
+    "explicit_h": false,
+    "rdkit": "match:1",
+    "openbabel": "match:2"
+   },
+   "known_by": [
+    "match.implicit_h_lowercase_h"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "bond.replace bond:up",
+   "differing": 1,
+   "tried": 2,
+   "example": {
+    "query": "[n]/[c;#6]",
+    "base": "[n]:[c;#6]",
+    "mol": "c1ccncc1",
+    "explicit_h": false,
+    "rdkit": "match:2",
+    "openbabel": "match:0"
+   },
+   "known_by": [
+    "match.directional_bond"
+   ],
+   "covered_by_agreeing": [
+    "match.bond_stereo"
+   ]
+  },
+  {
+   "tweak": "atom.and_high chiral:@@",
+   "differing": 1,
+   "tried": 1,
+   "example": {
+    "query": "[c]-[C&@@]",
+    "base": "[c]-[C]",
+    "mol": "Cc1ccccc1",
+    "explicit_h": false,
+    "rdkit": "match:1",
+    "openbabel": "match:0"
+   },
+   "known_by": [
+    "match.atom_chirality"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.replace implicit_h_default",
+   "differing": 1,
+   "tried": 4,
+   "example": {
+    "query": "[h]",
+    "base": "[C]",
+    "mol": "CC",
+    "explicit_h": false,
+    "rdkit": "match:2",
+    "openbabel": "match:0"
+   },
+   "known_by": [
+    "match.implicit_h_lowercase_h"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.replace chiral:@@",
+   "differing": 1,
+   "tried": 1,
+   "example": {
+    "query": "[C]-[@@;D4;+]",
+    "base": "[C]-[N;D4;+]",
+    "mol": "C[N+](C)(C)C",
+    "explicit_h": false,
+    "rdkit": "match:4",
+    "openbabel": "match:0"
+   },
+   "known_by": [
+    "match.atom_chirality"
+   ],
+   "covered_by_agreeing": []
+  }
+ ],
+ "acceptance_mismatch": [
+  {
+   "library": "openbabel",
+   "tag": "atom_class:n",
+   "count": 191,
+   "example": "[:0]"
+  },
+  {
+   "library": "openbabel",
+   "tag": "bond:dative_left",
+   "count": 6,
+   "example": "[C;X4]-;<-[C]"
+  },
+  {
+   "library": "openbabel",
+   "tag": "bond:dative_right",
+   "count": 24,
+   "example": "[C]->[C]"
+  },
+  {
+   "library": "openbabel",
+   "tag": "bond:down_or_unspec",
+   "count": 9,
+   "example": "[C]\\?[C]"
+  },
+  {
+   "library": "openbabel",
+   "tag": "bond:up_or_unspec",
+   "count": 9,
+   "example": "[c]/?[c]"
+  },
+  {
+   "library": "openbabel",
+   "tag": "chiral:@@?",
+   "count": 1,
+   "example": "[c;!@@?]:[c;D2]"
+  },
+  {
+   "library": "openbabel",
+   "tag": "chiral:@THn",
+   "count": 7,
+   "example": "[n,@TH1]"
+  },
+  {
+   "library": "rdkit",
+   "tag": "atom_class:n",
+   "count": 198,
+   "example": "[:0]"
+  },
+  {
+   "library": "rdkit",
+   "tag": "bond:down_or_unspec",
+   "count": 9,
+   "example": "[C]\\?[C]"
+  },
+  {
+   "library": "rdkit",
+   "tag": "bond:up_or_unspec",
+   "count": 9,
+   "example": "[c]/?[c]"
+  },
+  {
+   "library": "rdkit",
+   "tag": "chiral:@?",
+   "count": 4,
+   "example": "[C,@?]"
+  },
+  {
+   "library": "rdkit",
+   "tag": "chiral:@@?",
+   "count": 1,
+   "example": "[c;!@@?]:[c;D2]"
+  }
+ ]
+}

@@ -1,0 +1,205 @@
+{
+ "pair": [
+  "rdkit",
+  "cdk"
+ ],
+ "families": [
+  "rdkit",
+  "cdk"
+ ],
+ "seconds": 8.0,
+ "tweaks_tried": 2000,
+ "distinct_tweaks": 227,
+ "findings": [
+  {
+   "tweak": "atom.replace chiral:@SPn",
+   "differing": 2,
+   "tried": 2,
+   "example": {
+    "query": "[@SP1]",
+    "base": "[O]",
+    "mol": "C[C@H](N)O",
+    "explicit_h": true,
+    "rdkit": "match:11",
+    "cdk": "match:0"
+   },
+   "known_by": [],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.and_not chiral:@",
+   "differing": 2,
+   "tried": 2,
+   "example": {
+    "query": "[c;!@]",
+    "base": "[c]",
+    "mol": "O=C1C=COC=C1",
+    "explicit_h": false,
+    "rdkit": "match:0",
+    "cdk": "match:5"
+   },
+   "known_by": [
+    "match.atom_chirality"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.and_low chiral:@SPn",
+   "differing": 1,
+   "tried": 1,
+   "example": {
+    "query": "[O;v2;A;@SP1]=[S;R0;#16]",
+    "base": "[O;v2;A]=[S;R0;#16]",
+    "mol": "CS(=O)(=O)O",
+    "explicit_h": true,
+    "rdkit": "match:2",
+    "cdk": "match:0"
+   },
+   "known_by": [],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.or ranged_query:r{}",
+   "differing": 1,
+   "tried": 1,
+   "example": {
+    "query": "[P,r{-1}]-[O]",
+    "base": "[P]-[O]",
+    "mol": "OP(=O)(O)O",
+    "explicit_h": true,
+    "rdkit": "match:6",
+    "cdk": "match:3"
+   },
+   "known_by": [],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.and_not ranged_query:X{}",
+   "differing": 1,
+   "tried": 3,
+   "example": {
+    "query": "[C;!X{2-}]",
+    "base": "[C]",
+    "mol": "ClCCBr",
+    "explicit_h": false,
+    "rdkit": "match:0",
+    "cdk": "match:2"
+   },
+   "known_by": [],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.replace hybridization:^3",
+   "differing": 1,
+   "tried": 1,
+   "example": {
+    "query": "[^3]-[C;X4]",
+    "base": "[C]-[C;X4]",
+    "mol": "CCO",
+    "explicit_h": false,
+    "rdkit": "match:2",
+    "cdk": "match:0"
+   },
+   "known_by": [
+    "syntax.hybridization"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.and_not chiral:@@",
+   "differing": 1,
+   "tried": 1,
+   "example": {
+    "query": "[C;v4;!@@]-[C]",
+    "base": "[C;v4]-[C]",
+    "mol": "CC(=O)[O-]",
+    "explicit_h": false,
+    "rdkit": "match:0",
+    "cdk": "match:1"
+   },
+   "known_by": [
+    "match.atom_chirality"
+   ],
+   "covered_by_agreeing": []
+  },
+  {
+   "tweak": "atom.and_low hybridization:^3",
+   "differing": 1,
+   "tried": 3,
+   "example": {
+    "query": "[O;#8;^3]",
+    "base": "[O;#8]",
+    "mol": "OP(=O)(O)O",
+    "explicit_h": false,
+    "rdkit": "match:3",
+    "cdk": "match:0"
+   },
+   "known_by": [
+    "syntax.hybridization"
+   ],
+   "covered_by_agreeing": []
+  }
+ ],
+ "acceptance_mismatch": [
+  {
+   "library": "cdk",
+   "tag": "atom_class:n",
+   "count": 182,
+   "example": "[:0]"
+  },
+  {
+   "library": "cdk",
+   "tag": "bond:dative_left",
+   "count": 17,
+   "example": "[C]-,<-[C]"
+  },
+  {
+   "library": "cdk",
+   "tag": "bond:dative_right",
+   "count": 37,
+   "example": "[C]->[C]"
+  },
+  {
+   "library": "cdk",
+   "tag": "chiral:@THn",
+   "count": 4,
+   "example": "[F;#9]-[@TH2]"
+  },
+  {
+   "library": "cdk",
+   "tag": "ranged_query:-{}",
+   "count": 7,
+   "example": "[C;D1;H3&-{-1}]"
+  },
+  {
+   "library": "cdk",
+   "tag": "ring_size:n",
+   "count": 9,
+   "example": "[r2]"
+  },
+  {
+   "library": "rdkit",
+   "tag": "atom_class:n",
+   "count": 182,
+   "example": "[:0]"
+  },
+  {
+   "library": "rdkit",
+   "tag": "bond:down_or_unspec",
+   "count": 12,
+   "example": "[c;a]\\?[c;H1]"
+  },
+  {
+   "library": "rdkit",
+   "tag": "bond:up_or_unspec",
+   "count": 9,
+   "example": "[C;H2;r5]/?[C]"
+  },
+  {
+   "library": "rdkit",
+   "tag": "chiral:@@?",
+   "count": 2,
+   "example": "[C;$([@@?])]-[C]"
+  }
+ ]
+}
