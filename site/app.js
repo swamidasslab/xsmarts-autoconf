@@ -63,11 +63,11 @@ function rowInfo(rule) {
   return { cells, color: present.length ? worst : "gray", differs: distinct > 1, distinct, red: n("red"), orange: n("orange") };
 }
 
-// Newest config of every other library, colored for this flag.
+// Newest config of every library not selected, colored for this flag.
 function othersInfo(rule) {
-  const self = BY_ID[state.libs[0]].adapter;
+  const selected = new Set(state.libs.map((id) => BY_ID[id].adapter));
   const newest = {};
-  for (const c of DATA.configs) if (c.adapter !== self && c.flags[rule.flag]) newest[c.adapter] = c;
+  for (const c of DATA.configs) if (!selected.has(c.adapter) && c.flags[rule.flag]) newest[c.adapter] = c;
   const list = Object.values(newest).map((c) => {
     const value = c.flags[rule.flag].value;
     return { id: c.id, adapter: c.adapter, value, color: color(rule.flag, value) };
@@ -134,16 +134,18 @@ function render() {
   const counts = { red: 0, orange: 0, green: 0, gray: 0 };
   let shown = 0;
   const body = [];
-  let rows = DATA.rules.map((rule, i) => ({ rule, i, info: rowInfo(rule), others: single ? othersInfo(rule) : null }));
+  let rows = DATA.rules.map((rule, i) => ({ rule, i, info: rowInfo(rule), others: othersInfo(rule) }));
   if (single) {
     // One library: its own severity first. Within a severity, rows where the other libraries
     // comply better (lower score: red 2, orange 1, green 0) rank higher, then more of them green.
     rows.sort((a, b) => RANK[b.info.color] - RANK[a.info.color] || a.others.score - b.others.score
       || b.others.green - a.others.green || a.i - b.i);
   } else {
-    // Comparing: most distinct values first, then severity score (red 2, orange 1, green 0), then most red.
+    // Comparing: most distinct values first, then the selected columns' severity score
+    // (red 2, orange 1, green 0), then the same compliance tie-breaks as a single library.
     const score = (x) => 2 * x.red + x.orange;
-    rows.sort((a, b) => b.info.distinct - a.info.distinct || score(b.info) - score(a.info) || b.info.red - a.info.red || a.i - b.i);
+    rows.sort((a, b) => b.info.distinct - a.info.distinct || score(b.info) - score(a.info)
+      || a.others.score - b.others.score || b.others.green - a.others.green || a.i - b.i);
   }
   for (const { rule, info, others } of rows) {
     if (!TABS[state.tab].areas.includes(rule.area)) continue;
