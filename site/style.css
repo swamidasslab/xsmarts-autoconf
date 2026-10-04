@@ -80,3 +80,19 @@ footer { margin-top: 24px; color: var(--muted); font-size: .88em; }
 td.others { min-width: 14em; }
 td.others .cell { margin: 2px 2px 0 0; font-family: inherit; }
 .cell.same { text-decoration: underline; text-underline-offset: 3px; }
+.topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-top: 24px; }
+.topbar h1 { margin: 0; }
+.gh { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 8px; font-weight: 600;
+  background: var(--fg); color: var(--bg); text-decoration: none; }
+.gh:hover { opacity: .85; }
+.lede { margin-top: 6px; }
+.contribute { max-width: 1400px; margin: 32px auto 0; padding-top: 16px; border-top: 1px solid var(--line); }
+.contribute h2 { margin: 0 0 6px; font-size: 1.25rem; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin: 12px 0; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.card h3 { margin: 0 0 6px; font-size: 1rem; }
+.card ol { margin: 0; padding-left: 1.2em; font-size: .92em; }
+.card li { margin: 4px 0; }
+.button { display: inline-block; padding: 6px 14px; border-radius: 8px; background: var(--link); color: #fff; text-decoration: none; font-weight: 600; margin-right: 8px; }
+.button.secondary { background: none; color: var(--link); border: 1px solid var(--link); }
+.contribute { scroll-margin-top: 16px; }

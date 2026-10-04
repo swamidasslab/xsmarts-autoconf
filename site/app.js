@@ -1,10 +1,10 @@
 // SMARTS Library Parity: renders data.json (built by `xsmarts-autoconf site`).
-// State lives in the query string: ?libs=a@v,b@v&tab=smarts&q=&colors=red,orange&diff=1&open=flag
+// State lives in the query string: ?libs=a@v,b@v&tab=smirks&q=&colors=red,orange&diff=1&open=flag
 "use strict";
 
 const RANK = { red: 3, orange: 2, gray: 1, green: 0 };
 // Rule areas per tab: SMARTS (query parsing and matching) vs SMIRKS (transforms and their products).
-const TABS = { smarts: { areas: ["match", "syntax"] }, smirks: { areas: ["smirks", "products"] } };
+const TABS = { all: { areas: ["match", "syntax", "smirks", "products"] }, smarts: { areas: ["match", "syntax"] }, smirks: { areas: ["smirks", "products"] } };
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -15,7 +15,7 @@ function readState() {
   const ids = (p.get("libs") || "").split(",").filter((id) => BY_ID[id]);
   return {
     libs: ids.length ? ids : defaultLibs(),
-    tab: TABS[p.get("tab")] ? p.get("tab") : "smarts",
+    tab: TABS[p.get("tab")] ? p.get("tab") : "all",
     q: p.get("q") || "",
     colors: new Set((p.get("colors") || "red,orange,green,gray").split(",")),
     diff: p.get("diff") === "1",
@@ -26,7 +26,7 @@ function readState() {
 function writeState() {
   const p = new URLSearchParams();
   p.set("libs", state.libs.join(","));
-  p.set("tab", state.tab);
+  if (state.tab !== "all") p.set("tab", state.tab);
   if (state.q) p.set("q", state.q);
   const c = [...state.colors].sort((a, b) => RANK[b] - RANK[a]).join(",");
   if (c !== "red,orange,gray,green") p.set("colors", c);
