@@ -1,0 +1,31 @@
+// Bond-expression subgrammar (LALR(1)).
+// Parses the BOND terminal text from opensmarts.lark into a typed tree.
+
+start: bond_lowand
+
+?bond_lowand: bond_lowand ";" bond_or      -> bond_low_and
+            | bond_or
+
+?bond_or: bond_or "," bond_highand         -> bond_or_op
+        | bond_highand
+
+?bond_highand: bond_highand "&" bond_not    -> bond_high_and
+             | bond_highand bond_not       -> bond_impl_and
+             | bond_not
+
+?bond_not: "!" bond_not                    -> bond_not_op
+         | bond_primitive
+
+?bond_primitive: "->"                      -> dative_right
+               | "<-"                      -> dative_left
+               | "/?"                      -> up_or_unspec
+               | "\\?"                     -> down_or_unspec
+               | "-"                       -> single
+               | "="                       -> double
+               | "#"                       -> triple
+               | "$"                       -> quadruple
+               | ":"                       -> aromatic
+               | "~"                       -> any_bond
+               | "@"                       -> ring_bond
+               | "/"                       -> up
+               | "\\"                      -> down

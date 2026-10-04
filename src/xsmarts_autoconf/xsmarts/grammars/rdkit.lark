@@ -1,0 +1,30 @@
+// RDKit SMARTS — LALR(1)
+// OpenSMARTS + RDKit extensions (hybridization, z/Z/d/k, ranges, dative bonds).
+
+%import .opensmarts (start, atom_primitive, bracket_atom, atom_expression)
+
+%extend atom_primitive: hybridization
+                      | hetero_neighbors
+                      | aliphatic_hetero_neighbors
+                      | non_h_degree
+                      | ring_size_k
+                      | ranged_query
+
+hybridization: HYBRID
+
+// Left-factored ("z" NUMBER? | "z" RANGE) so every choice is LL(1);
+// same Lark tree (optional NUMBER or RANGE token).
+hetero_neighbors: "z" (NUMBER | RANGE)?
+
+aliphatic_hetero_neighbors: "Z" (NUMBER | RANGE)?
+
+non_h_degree: "d" (NUMBER | RANGE)?
+
+ring_size_k: "k" (NUMBER | RANGE)?
+
+ranged_query: RANGED_ATOM_QUERY
+
+HYBRID: /\^[0-5]/
+RANGED_ATOM_QUERY: /[DhxXRrvzZk]\{(?:[0-9]+-[0-9]*|-[0-9]+)\}|[+-]\{(?:[0-9]+-[0-9]*|-[0-9]+)\}/
+RANGE: /\{(?:[0-9]+-[0-9]*|-[0-9]+)\}/
+NUMBER: /[0-9]+/

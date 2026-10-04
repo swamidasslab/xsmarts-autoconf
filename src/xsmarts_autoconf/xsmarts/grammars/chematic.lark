@@ -1,0 +1,22 @@
+// Chematic SMARTS — LALR(1)
+// Tracks chematic **1.0.28** (see docs/chematic/README.md). Re-validate on bump.
+//
+// OpenSMARTS core + chematic extensions: hybridization ^0..^5, ring-size kN
+// (any-ring, distinct from rN). No RDKit z/Z/d/ranges, no CDK #X/G/i.
+//
+// Known chematic 1.0.28 charge quirk (mirrored in QueryMol for this family):
+//   ``++`` / ``--`` parse as AND of two ±1 charges, not a single ±2.
+//   Upstream draft: docs/chematic/issues/001-plusplus-charge-and.md
+
+%import .opensmarts (start, atom_primitive, bracket_atom, atom_expression)
+
+%extend atom_primitive: hybridization
+                      | ring_size_k
+
+hybridization: HYBRID
+
+// Digit required — chematic rejects bare ``[k]``.
+ring_size_k: "k" NUMBER
+
+HYBRID: /\^[0-5]/
+NUMBER: /[0-9]+/

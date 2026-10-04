@@ -1,0 +1,65 @@
+// SMILES — LALR(1), and LL(1) so the generated Rust parser never backtracks.
+//
+// OpenSMILES plus the extensions chematic accepts: `~` bonds, dative `->` /
+// `<-`, `%(nnn)` ring labels, bare `se` / `as`. Bare `*` (OpenSMILES) is
+// accepted too.
+//
+// The parser records SMILES *as written* (SmilesMol): bracket vs organic-
+// subset atoms (H count known vs to be perceived), aromaticity as written,
+// bond symbols as written (including "none"), each end of a ring closure,
+// and the written neighbour order around stereocentres. Conventions such as
+// "an unwritten bond between two aromatic atoms is aromatic" and all
+// chemistry (valence, implicit H, aromaticity) belong to later stages.
+// Unclosed ring closures are recorded, not rejected.
+
+// Optional CXSMILES trailer: whitespace then |...|. The `$a;b;...$` atom
+// labels (e.g. `_R1`, `_AP1` on `*` atoms) are split per atom; other CX
+// fields are kept raw for later stages.
+start: smiles CX_TRAILER?
+
+smiles: mol ("." mol)*
+
+mol: first_atom _branching_chain
+
+_branching_chain: chain? (branch chain?)*
+
+branch: open _branching_chain close
+
+chain: bond_atom+
+
+bond_atom: bond? (atom | ring)
+
+first_atom: atom
+
+bond: BOND
+ring: RING
+open: OPEN
+close: CLOSE
+
+atom: bracket_atom
+    | ORGANIC
+
+bracket_atom: "[" isotope? BRACKET_SYMBOL chiral? hcount? charge? atom_class? "]"
+
+isotope: NUMBER
+chiral: CHIRAL
+hcount: HCOUNT
+charge: CHARGE
+atom_class: ":" NUMBER
+
+OPEN: "("
+CLOSE: ")"
+
+// Organic subset (implicit H) and aromatic organic subset; bare `*`.
+ORGANIC: /Cl|Br|se|as|[BCNOSPFI]|[bcnosp]|\*/
+
+// Any element (two-letter first), aromatic forms, or `*`.
+BRACKET_SYMBOL: /He|Li|Be|Ne|Na|Mg|Al|Si|Cl|Ar|Ca|Sc|Ti|Cr|Mn|Fe|Co|Ni|Cu|Zn|Ga|Ge|As|Se|Br|Kr|Rb|Sr|Zr|Nb|Mo|Tc|Ru|Rh|Pd|Ag|Cd|In|Sn|Sb|Te|Xe|Cs|Ba|Hf|Ta|Re|Os|Ir|Pt|Au|Hg|Tl|Pb|Bi|Po|At|Rn|Fr|Ra|Rf|Db|Sg|Bh|Hs|Mt|Ds|Rg|Cn|Nh|Fl|Mc|Lv|Ts|Og|La|Ce|Pr|Nd|Pm|Sm|Eu|Gd|Tb|Dy|Ho|Er|Tm|Yb|Lu|Ac|Th|Pa|Np|Pu|Am|Cm|Bk|Cf|Es|Fm|Md|No|Lr|[HBCNOFPSKVYIWU]|se|as|te|[bcnosp]|\*/
+
+CHIRAL: /@@|@(?:TH|AL|SP|TB|OH)[0-9]{1,2}|@/
+HCOUNT: /H[0-9]?/
+CHARGE: /\+\+|--|[+-][0-9]{0,2}/
+BOND: /->|<-|[-=#$:\/\\~]/
+RING: /%\([0-9]+\)|%[0-9]{2}|[0-9]/
+NUMBER: /[0-9]+/
+CX_TRAILER: /[ \t]+\|[^|]*\|/

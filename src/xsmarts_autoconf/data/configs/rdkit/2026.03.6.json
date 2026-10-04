@@ -1,0 +1,692 @@
+{
+ "adapter": "rdkit",
+ "label": "rdkit",
+ "version": "2026.03.6",
+ "options": {},
+ "generated": "2026-10-03",
+ "rules_digest": "6c530e61e71f8019",
+ "flags": {
+  "match.aromatic_valence": {
+   "value": "kekule_total",
+   "rule_hash": "f22833fd90b2",
+   "observed": {
+    "benzene_v4": "match:6",
+    "benzene_v3": "match:0",
+    "pyrrole_n_v3": "match:1"
+   }
+  },
+  "match.aromaticity_exocyclic_carbonyl": {
+   "value": "daylight_like",
+   "rule_hash": "779950970b7e",
+   "observed": {
+    "pyranone_c": "match:5",
+    "tropone_c": "match:7",
+    "benzene_control": "match:6"
+   }
+  },
+  "match.atom_chirality": {
+   "value": "ignored",
+   "rule_hash": "2e23559f75f5",
+   "observed": {
+    "opposite": "match:1",
+    "unspecified_mol": "match:1"
+   }
+  },
+  "match.bond_stereo": {
+   "value": "ignored",
+   "rule_hash": "40b60661c873",
+   "observed": {
+    "trans_vs_cis": "match:1",
+    "trans_vs_unspecified": "match:1",
+    "trans_vs_cis_branch_spelling": "match:1",
+    "cis_all_spellings": "match:1",
+    "trans_vs_trans_branch_spelling": "match:1"
+   }
+  },
+  "match.compound_bond_kekule": {
+   "value": "aromatic_aware",
+   "rule_hash": "1f72d44fc1fc",
+   "observed": {
+    "ring_single_benzene": "match:0",
+    "single_and_ring_benzene": "match:0",
+    "double_and_ring_benzene": "match:0",
+    "ring_bond_control": "match:6"
+   }
+  },
+  "match.count_semantics": {
+   "value": "unique_atom_sets",
+   "rule_hash": "e3a74ea5e89d",
+   "observed": {
+    "ethane_CC": "match:1",
+    "benzene_ring6": "match:1",
+    "asymmetric_control": "match:1"
+   }
+  },
+  "match.degree_with_explicit_h": {
+   "value": "counts_h_atoms",
+   "rule_hash": "75eb360f8529",
+   "observed": {
+    "CD1_explicit": "match:0",
+    "CD1_implicit": "match:2"
+   }
+  },
+  "match.directional_bond": {
+   "value": "single_or_aromatic",
+   "rule_hash": "cce278593444",
+   "observed": {
+    "slash_benzene": "match:6",
+    "slash_ethane": "match:1",
+    "backslash_benzene": "match:6"
+   }
+  },
+  "match.double_bond_vs_aromatic": {
+   "value": "excludes_aromatic",
+   "rule_hash": "2fe966b008b1",
+   "observed": {
+    "double_on_benzene": "match:0",
+    "double_on_kekule_benzene": "match:0",
+    "double_control_ethene": "match:1"
+   }
+  },
+  "match.h_atom_query": {
+   "value": "explicit_only",
+   "rule_hash": "3c2193db3e4d",
+   "observed": {
+    "CH_implicit": "match:0",
+    "CH_explicit": "match:4",
+    "hash1_explicit": "match:4"
+   }
+  },
+  "match.h_count_with_explicit_h": {
+   "value": "counts_h_atoms",
+   "rule_hash": "55c69992fe26",
+   "observed": {
+    "CH3_explicit": "match:2"
+   }
+  },
+  "match.implicit_h_lowercase_h": {
+   "value": "at_least_one",
+   "rule_hash": "085bd549c90f",
+   "observed": {
+    "h_bare_ethane": "match:2"
+   }
+  },
+  "match.nested_recursive": {
+   "value": "evaluated",
+   "rule_hash": "d372192e170c",
+   "observed": {
+    "nested_absent": "match:0",
+    "nested_present": "match:1"
+   }
+  },
+  "match.or_with_any_atom": {
+   "value": "correct",
+   "rule_hash": "3c73b5d110c6",
+   "observed": {
+    "star_or_n_on_ethane": "match:2",
+    "star_or_h_on_methane": "match:1"
+   }
+  },
+  "match.proton": {
+   "value": "matches",
+   "rule_hash": "c0abe8f70031",
+   "observed": {
+    "proton": "match:1"
+   }
+  },
+  "match.ring_count_basis": {
+   "value": "symmetric",
+   "rule_hash": "8baff95154c0",
+   "observed": {
+    "R3_cubane": "match:8",
+    "R2_bicyclo222": "match:6",
+    "R3_adamantane": "match:4",
+    "R1_adamantane": "match:0",
+    "R2_norbornane": "match:4",
+    "R2_naphthalene_control": "match:2"
+   }
+  },
+  "match.ring_size_semantics": {
+   "value": "smallest_ring",
+   "rule_hash": "abecb354806d",
+   "observed": {
+    "r6_hydrindane": "match:4",
+    "r5_hydrindane": "match:5",
+    "r6_indane_like_spiro": "match:5"
+   }
+  },
+  "match.single_bond_vs_aromatic": {
+   "value": "excludes_aromatic",
+   "rule_hash": "f3c4b810d863",
+   "observed": {
+    "single_on_benzene": "match:0",
+    "single_any_atoms_benzene": "match:0"
+   }
+  },
+  "match.substituted_aromatic_perception": {
+   "value": "ok",
+   "rule_hash": "053efe3aded3",
+   "observed": {
+    "toluene_any": "match:7",
+    "pyridine_any": "match:6",
+    "benzene_control": "match:6"
+   }
+  },
+  "match.unspecified_isotope": {
+   "value": "natural_is_unspecified",
+   "rule_hash": "9fd28a1d8dac",
+   "observed": {
+    "12C_on_methane": "match:0",
+    "13C_on_labeled_ethane": "match:1"
+   }
+  },
+  "products.byproduct_filter": {
+   "value": "kept",
+   "rule_hash": "56ba93acc97d",
+   "observed": {
+    "dehydroxylation_water": "products:CC.O",
+    "deamination_nh3": "products:CC.N",
+    "dechlorination_hcl": "products:CC.Cl",
+    "o_demethylation_hcho": "products:C=O.CCO",
+    "methanol_control": "products:CCO.CO"
+   }
+  },
+  "products.fragment_objects": {
+   "value": "per_template_component",
+   "rule_hash": "6a7504b69d60",
+   "observed": {
+    "ester_hydrolysis": "objects:CC(=O)O + CCO",
+    "chain_scission_sites": "objects:C + CCC|CC + CC",
+    "ether_both_sides_same": "objects:CC + CC"
+   }
+  },
+  "products.grouped_product_component": {
+   "value": "one_object",
+   "rule_hash": "93168a048af4",
+   "observed": {
+    "grouped_cleavage": "objects:CC.O"
+   }
+  },
+  "products.new_double_bond_h": {
+   "value": "h_adjusted",
+   "rule_hash": "68af52ff3e4e",
+   "observed": {
+    "n_deethylation_aldehyde": "products:CC=O.CNC",
+    "decarboxylation_co2": "products:CCC.O=C=O"
+   }
+  },
+  "products.spectator_components": {
+   "value": "dropped",
+   "rule_hash": "e24ba11de768",
+   "observed": {
+    "amine_with_butane": "objects:C[NH3+]",
+    "ethanol_with_water": "products:CCO"
+   }
+  },
+  "products.validity_filter": {
+   "value": "kept",
+   "rule_hash": "b9ca7ca671ca",
+   "observed": {
+    "hydroperoxide": "products:CCOO",
+    "ketene": "products:C=C=O",
+    "thiol_cleavage_h2s": "products:CC.S",
+    "gem_diol_kept": "products:CC(O)O"
+   }
+  },
+  "smirks.add_atom_with_explicit_h": {
+   "value": "h_aware",
+   "rule_hash": "39b25cc45842",
+   "observed": {
+    "addCl_X": "products:CCCl"
+   }
+  },
+  "smirks.add_unmapped_atom": {
+   "value": "added",
+   "rule_hash": "9e9b989f084b",
+   "observed": {
+    "methylate_O": "products:CCOC"
+   }
+  },
+  "smirks.aromatic_output_form": {
+   "value": "aromatic",
+   "rule_hash": "8fb745bf2aae",
+   "observed": {
+    "toluene_methyl_identity": "products:Cc1ccccc1"
+   }
+  },
+  "smirks.aromatic_product": {
+   "value": "aromatic_preserved",
+   "rule_hash": "5931506294a1",
+   "observed": {
+    "benzene_identity": "products:c1ccccc1",
+    "hydroxylate_benzene": "products:Oc1ccccc1"
+   }
+  },
+  "smirks.bond_order_decrease_retyping": {
+   "value": "retyped",
+   "rule_hash": "101dc69714b2",
+   "observed": {
+    "acetaldehyde_reduction": "products:CCO",
+    "nitrile_reduction": "products:CC=N"
+   }
+  },
+  "smirks.charge_hcount": {
+   "value": "valence_rule",
+   "rule_hash": "6eaf56989826",
+   "observed": {
+    "carbocation": "products:[CH2+]C",
+    "carbanion": "products:[CH2-]C",
+    "oxonium": "products:CC[OH2+]",
+    "alkoxide": "products:CC[O-]"
+   }
+  },
+  "smirks.charge_plus2_hcount": {
+   "value": "valence_reduced",
+   "rule_hash": "75cc4243c794",
+   "observed": {
+    "N_plus2": "products:C[NH2+2]"
+   }
+  },
+  "smirks.colon_product_bond": {
+   "value": "aromatic_flag_set",
+   "rule_hash": "2adbd6eb902e",
+   "observed": {
+    "colon_on_ethane": "products:cc"
+   }
+  },
+  "smirks.delete_mapped_by_omission": {
+   "value": "deleted",
+   "rule_hash": "7d3ce3d1fd0e",
+   "observed": {
+    "drop_O": "products:CC"
+   }
+  },
+  "smirks.disconnect": {
+   "value": "split",
+   "rule_hash": "c1977adcf9f5",
+   "observed": {
+    "split_ethane": "products:C.C"
+   }
+  },
+  "smirks.edits_with_explicit_h": {
+   "value": "h_aware",
+   "rule_hash": "98f175e17319",
+   "observed": {
+    "CC_to_CdC_X": "products:C=C",
+    "ethanol_oxid_X": "products:CC=O"
+   }
+  },
+  "smirks.element_change": {
+   "value": "applied",
+   "rule_hash": "225638e2ec81",
+   "observed": {
+    "C_to_N": "products:CN"
+   }
+  },
+  "smirks.equivalent_h_mappings": {
+   "value": "per_h_atom",
+   "rule_hash": "7e0572d6df23",
+   "observed": {
+    "ethanol_oxidation_H_X": "outcomes:2",
+    "methane_chlorination_H_X": "outcomes:4"
+   }
+  },
+  "smirks.explicit_h_apply": {
+   "value": "h_aware",
+   "rule_hash": "285d66ad9ffb",
+   "observed": {
+    "deprotonate_X": "products:CC[O-]",
+    "cleave_X": "products:CC.O",
+    "methylate_X": "products:CCOC"
+   }
+  },
+  "smirks.fragmented_reactant": {
+   "value": "intermolecular_pair",
+   "rule_hash": "5468c4641b70",
+   "observed": {
+    "frag_template": "products:COCO"
+   }
+  },
+  "smirks.h_atom_in_template": {
+   "value": "explicit_only",
+   "rule_hash": "04e46171a0e6",
+   "observed": {
+    "CH_delete_implicit": "products:",
+    "CH_delete_explicit": "products:C",
+    "OH_deprotonate_implicit": "products:",
+    "OH_deprotonate_explicit": "products:CC[O-]"
+   }
+  },
+  "smirks.hcount_query_explicit_h": {
+   "value": "pin_adds_h",
+   "rule_hash": "679cebee9dc5",
+   "observed": {
+    "CH3_identity_X": "products:C[CH6]"
+   }
+  },
+  "smirks.identity_labels": {
+   "value": "organic",
+   "rule_hash": "d780123bf4f6",
+   "observed": {
+    "ident_implicit": "products:CC",
+    "ident_explicit": "products:CC"
+   }
+  },
+  "smirks.mapped_aromatic_nh": {
+   "value": "preserved",
+   "rule_hash": "6b23773125cf",
+   "observed": {
+    "pyrrole_n_identity": "products:c1cc[nH]c1",
+    "pyrrole_c_identity_control": "products:c1cc[nH]c1"
+   }
+  },
+  "smirks.multi_site_application": {
+   "value": "per_site",
+   "rule_hash": "e4c44e929054",
+   "observed": {
+    "diol_deprotonate": "products:[O-]CCO",
+    "diol_oxidation_two_sites": "products:CC(=O)CO|CC(O)C=O"
+   }
+  },
+  "smirks.nested_recursive": {
+   "value": "evaluated",
+   "rule_hash": "34eb2562e280",
+   "observed": {
+    "nested_absent_apply": "products:"
+   }
+  },
+  "smirks.neutralize_written_charge": {
+   "value": "inherited",
+   "rule_hash": "87366978d40b",
+   "observed": {
+    "Nplus_to_N": "products:C[NH3+]"
+   }
+  },
+  "smirks.new_bond_query_order": {
+   "value": "query_bond_copied",
+   "rule_hash": "0e07233b0381",
+   "observed": {
+    "add_methyl_any_bond": "products:CC~C"
+   }
+  },
+  "smirks.outcome_multiplicity": {
+   "value": "all_mappings",
+   "rule_hash": "a24a7cb2de4e",
+   "observed": {
+    "bond_order_count": "outcomes:2",
+    "ring_open_count": "outcomes:8",
+    "star_identity_count": "outcomes:3"
+   }
+  },
+  "smirks.product_h_atom_added": {
+   "value": "h_dropped",
+   "rule_hash": "464c15cc4b7a",
+   "observed": {
+    "protonate_alkoxide": "products:CC[O-]"
+   }
+  },
+  "smirks.product_h_pin": {
+   "value": "authoritative",
+   "rule_hash": "3d9b3453d332",
+   "observed": {
+    "pin_CH2": "products:[CH2]C",
+    "pin_CH2_X": "products:C[CH5]"
+   }
+  },
+  "smirks.product_only_map": {
+   "value": "created",
+   "rule_hash": "009aff19d493",
+   "observed": {
+    "product_only_N": "products:CCN"
+   }
+  },
+  "smirks.product_plusplus": {
+   "value": "same_as_plus2",
+   "rule_hash": "162a440f69ec",
+   "observed": {
+    "N_pp": "products:C[NH2+2]"
+   }
+  },
+  "smirks.reactant_aromaticity": {
+   "value": "daylight_perceived",
+   "rule_hash": "8ecf10792878",
+   "observed": {
+    "kekule_benzene_aliphatic_C": "products:",
+    "pyranone_aliphatic_C": "products:",
+    "pyranone_aromatic_spelling": "products:",
+    "tropone_aliphatic_C": "products:"
+   }
+  },
+  "smirks.reactant_query_syntax": {
+   "value": "full_smarts",
+   "rule_hash": "5bb343b4e6f0",
+   "observed": {
+    "and_low": "products:CC#N",
+    "connectivity_X": "products:CC",
+    "or_list": "products:CC",
+    "plain_control": "products:C=C"
+   }
+  },
+  "smirks.recursive_in_reactant": {
+   "value": "supported",
+   "rule_hash": "8ba417a6c874",
+   "observed": {
+    "rec_on_map": "products:CCO"
+   }
+  },
+  "smirks.sanitize_policy": {
+   "value": "drops_invalid",
+   "rule_hash": "6f26f7be2433",
+   "observed": {
+    "ether_S": "products:",
+    "iminium_S": "products:"
+   }
+  },
+  "smirks.sanitizer": {
+   "value": "native",
+   "rule_hash": "ff43f6f67bd9",
+   "observed": {
+    "identity_sanitized": "products:CC"
+   }
+  },
+  "smirks.site_choice_order_dependence": {
+   "value": "order_independent",
+   "rule_hash": "36aba4f21d5a",
+   "observed": {
+    "symmetric_delete": "products:C|CO",
+    "two_site_oxidation": "products:CC(=O)CO|CC(O)C=O"
+   }
+  },
+  "smirks.star_on_explicit_h": {
+   "value": "h_atoms_when_explicit",
+   "rule_hash": "198916c0462c",
+   "observed": {
+    "star_chlorinate_X": "products:CCl|C[H]Cl",
+    "star_chlorinate": "products:CCl"
+   }
+  },
+  "smirks.star_retype": {
+   "value": "keeps_reactant_atom",
+   "rule_hash": "c8e65000d26b",
+   "observed": {
+    "acetyl_star": "products:CCOC(C)=O"
+   }
+  },
+  "smirks.stereo_carried": {
+   "value": "preserved",
+   "rule_hash": "bfce0fa887f4",
+   "observed": {
+    "map_on_methyl_R": "products:C[C@H](N)O",
+    "map_on_methyl_S": "products:C[C@@H](N)O",
+    "map_on_hydroxyl_control": "products:C[C@H](N)O"
+   }
+  },
+  "smirks.undefined_order_both_sides": {
+   "value": "first_alternative",
+   "rule_hash": "d1c8cdd8357e",
+   "observed": {
+    "undef_both": "products:C=C"
+   }
+  },
+  "smirks.undefined_product_bond": {
+   "value": "first_alternative",
+   "rule_hash": "b3d4532e78bc",
+   "observed": {
+    "undef_order": "products:C=C"
+   }
+  },
+  "smirks.unmapped_reactant_deleted": {
+   "value": "deleted",
+   "rule_hash": "c8389eac370a",
+   "observed": {
+    "drop_unmapped_O": "products:CC",
+    "drop_unmapped_O_X": "products:CC",
+    "drop_unmapped_N": "products:CCC"
+   }
+  },
+  "smirks.unwritten_charge": {
+   "value": "inherited",
+   "rule_hash": "fcd1b3f60d6a",
+   "observed": {
+    "N_keep_on_ammonium": "products:C[NH3+]"
+   }
+  },
+  "smirks.valence_invalid_raw": {
+   "value": "kept_raw",
+   "rule_hash": "5bbb87cdfecf",
+   "observed": {
+    "ether_trap": "products:C=OC"
+   }
+  },
+  "syntax.aliphatic_any_A": {
+   "value": "supported",
+   "rule_hash": "41665837a576",
+   "observed": {
+    "aliphatic_any_A": "match:1"
+   }
+  },
+  "syntax.aliphatic_hetero_neighbors_Z": {
+   "value": "supported",
+   "rule_hash": "4e9f1cc3764a",
+   "observed": {
+    "aliphatic_hetero_neighbors_Z": "match:1"
+   }
+  },
+  "syntax.aromatic_selenium": {
+   "value": "supported",
+   "rule_hash": "6dfaea780fae",
+   "observed": {
+    "aromatic_selenium": "match:1"
+   }
+  },
+  "syntax.cdk_hash_X": {
+   "value": "rejected",
+   "rule_hash": "b6b6dbdcefa0",
+   "observed": {
+    "cdk_hash_X": "error"
+   },
+   "errors": {
+    "cdk_hash_X": "ValueError: MolFromSmarts returned None"
+   }
+  },
+  "syntax.charge_plusplus": {
+   "value": "charge2",
+   "rule_hash": "aba70a1e4d41",
+   "observed": {
+    "pp_on_n2plus": "match:1",
+    "pp_on_n1plus": "match:0"
+   }
+  },
+  "syntax.component_grouping": {
+   "value": "rejected",
+   "rule_hash": "bca789193d36",
+   "observed": {
+    "separate_groups_same_component": "error",
+    "same_group_two_components": "error"
+   },
+   "errors": {
+    "separate_groups_same_component": "ValueError: MolFromSmarts returned None",
+    "same_group_two_components": "ValueError: MolFromSmarts returned None"
+   }
+  },
+  "syntax.dative_bond": {
+   "value": "supported",
+   "rule_hash": "5b07b345d217",
+   "observed": {
+    "dative_parse": "ok"
+   }
+  },
+  "syntax.dot_disconnected": {
+   "value": "supported",
+   "rule_hash": "e5aef92cf84f",
+   "observed": {
+    "dot_on_methanol": "match:1"
+   }
+  },
+  "syntax.hetero_neighbors_z": {
+   "value": "supported",
+   "rule_hash": "4adf3efc80e5",
+   "observed": {
+    "hetero_neighbors_z": "match:1"
+   }
+  },
+  "syntax.hybridization": {
+   "value": "zero_to_five",
+   "rule_hash": "574ad820c0f7",
+   "observed": {
+    "hyb_digit0": "ok",
+    "hyb_digit7": "error",
+    "hyb_sp3_ethane": "match:2",
+    "hyb_bare_ethyne": "error"
+   },
+   "errors": {
+    "hyb_digit7": "ValueError: MolFromSmarts returned None",
+    "hyb_bare_ethyne": "ValueError: MolFromSmarts returned None"
+   }
+  },
+  "syntax.insaturation_i": {
+   "value": "rejected",
+   "rule_hash": "931336e0534c",
+   "observed": {
+    "i1_ethene": "error"
+   },
+   "errors": {
+    "i1_ethene": "ValueError: MolFromSmarts returned None"
+   }
+  },
+  "syntax.periodic_group_G": {
+   "value": "rejected",
+   "rule_hash": "7c357d6432e3",
+   "observed": {
+    "periodic_group_G": "error"
+   },
+   "errors": {
+    "periodic_group_G": "ValueError: MolFromSmarts returned None"
+   }
+  },
+  "syntax.range_counts": {
+   "value": "supported",
+   "rule_hash": "5685ea0b7aea",
+   "observed": {
+    "range_counts": "match:3"
+   }
+  },
+  "syntax.ring_size_k": {
+   "value": "supported",
+   "rule_hash": "6347d6d9f099",
+   "observed": {
+    "ring_size_k": "match:6"
+   }
+  },
+  "syntax.unclosed_ring": {
+   "value": "rejected",
+   "rule_hash": "5a2980fe87f9",
+   "observed": {
+    "unclosed": "error"
+   },
+   "errors": {
+    "unclosed": "ValueError: MolFromSmarts returned None"
+   }
+  }
+ }
+}

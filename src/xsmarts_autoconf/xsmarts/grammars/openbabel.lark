@@ -1,0 +1,18 @@
+// Open Babel SMARTS — LALR(1)
+// OpenSMARTS core + hybridization ``^`` / ``^1``..``^6`` (OB GetHyb:
+// 1=sp, 2=sp2, 3=sp3, 4=sq.planar, 5=trig.bipy, 6=octahedral).
+// Bare ``^`` means ``^1``. Out-of-range digits (``^0``, ``^7``+) rejected
+// in the builder. No RDKit z/Z/d/k/ranges/dative, no CDK #X/G/i.
+// Digits are OB SMARTS numbers (not remapped to RDKit/CDK meanings).
+
+%import .opensmarts (start, atom_primitive, bracket_atom, atom_expression)
+
+%extend atom_primitive: hybridization
+
+hybridization: HYBRID
+             | BARE_HYB
+
+// Longest-match: ``^3`` / ``^0`` are HYBRID (range checked in builder),
+// not BARE_HYB + isotope.
+HYBRID: /\^[0-9]+/
+BARE_HYB: /\^/

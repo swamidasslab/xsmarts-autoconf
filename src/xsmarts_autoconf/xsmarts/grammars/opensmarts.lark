@@ -1,0 +1,127 @@
+// OpenSMARTS — LALR(1)
+//
+// Chain/branch shape from xenosite-transformer smiled LALR pattern:
+//   mol → first_atom + _branching_chain
+//   bond_atom → bond? (atom | ring)
+// Bond expressions are one terminal. Bracket atoms are nested (for `$()`).
+// Unbracketed atoms allow the full element table (not organic-subset only).
+
+// Reaction form: reactants>agents>products (agents may be empty: ">>").
+// Components within a role are "."-separated mols. Daylight component-level
+// grouping "(A.B)" is parsed; the grouping constraint itself is not recorded.
+start: reaction
+
+reaction: role (">" role? ">" role?)?
+
+role: _component ("." _component)*
+
+_component: mol
+         | "(" mol ("." mol)* ")"
+
+mol: first_atom _branching_chain
+
+_branching_chain: chain? (branch chain?)*
+
+branch: open _branching_chain close
+
+chain: bond_atom+
+
+bond_atom: bond? (atom | ring)
+
+first_atom: atom
+
+bond: BOND
+ring: RING
+
+atom: bracket_atom
+    | SYMBOL
+
+bracket_atom: "[" atom_expression "]"
+
+// Precedence: ! > implicit/& > , > ;
+atom_expression: atom_lowand
+
+?atom_lowand: atom_lowand ";" atom_or      -> atom_low_and
+            | atom_or
+
+?atom_or: atom_or "," atom_highand         -> atom_or_op
+        | atom_highand
+
+?atom_highand: atom_highand "&" atom_not   -> atom_high_and
+             | atom_highand atom_not       -> atom_impl_and
+             | atom_not
+
+?atom_not: "!" atom_not                    -> atom_not_op
+         | atom_primitive
+         | recursive_smarts
+
+recursive_smarts: "$(" reaction ")"
+
+?atom_primitive: isotope
+               | SYMBOL
+               | atomic_number
+               | "a"                       -> aromatic_any
+               | "A"                       -> aliphatic_any
+               | degree
+               | valence
+               | connectivity
+               | total_hcount
+               | implicit_hcount
+               | ring_membership
+               | ring_size
+               | ring_connectivity
+               | charge
+               | chiral
+               | atom_class
+
+isotope: NUMBER
+atomic_number: "#" NUMBER
+degree: "D" NUMBER?
+valence: "v" NUMBER?
+connectivity: "X" NUMBER?
+// Digit form is one terminal so [CH2] binds as H2, not H + isotope 2.
+// Bare [H] is SYMBOL hydrogen; [CH] post-processed to C & H1 in QueryMol.
+total_hcount: TOTAL_HCOUNT
+implicit_hcount: IMPLICIT_HCOUNT
+               | "h"                       -> implicit_h_default
+ring_membership: "R" NUMBER?
+ring_size: "r" NUMBER?
+ring_connectivity: "x" NUMBER?
+
+// Named charge terminals so bare +/- survive in the parse tree (not dropped
+// as anonymous literals), becoming Charge constraints rather than lost tokens.
+charge: PLUSPLUS
+      | MINUSMINUS
+      | PLUS NUMBER?
+      | MINUS NUMBER?
+
+PLUSPLUS: "++"
+MINUSMINUS: "--"
+PLUS: "+"
+MINUS: "-"
+
+chiral: CHIRAL
+atom_class: ":" NUMBER
+
+open: OPEN
+close: CLOSE
+
+OPEN: "("
+CLOSE: ")"
+
+// Bond expression terminal: primitives + ! / & ; , / juxtaposition.
+// Primitives: - = # $ : ~ @ / \ /? \? -> <-
+BOND: /(!?(?:\/\?|\\\?|->|<-|[=#:$~@\/\\-]))(?:(?:[&;,])?(!?(?:\/\?|\\\?|->|<-|[=#:$~@\/\\-])))*/
+
+// Full periodic table (two-letter before one-letter) + aromatic + '*'.
+SYMBOL: /He|Li|Be|Ne|Na|Mg|Al|Si|Cl|Ar|Ca|Sc|Ti|Cr|Mn|Fe|Co|Ni|Cu|Zn|Ga|Ge|As|Se|Br|Kr|Rb|Sr|Zr|Nb|Mo|Tc|Ru|Rh|Pd|Ag|Cd|In|Sn|Sb|Te|Xe|Cs|Ba|Hf|Ta|Re|Os|Ir|Pt|Au|Hg|Tl|Pb|Bi|Po|At|Rn|Fr|Ra|Rf|Db|Sg|Bh|Hs|Mt|Ds|Rg|Cn|Nh|Fl|Mc|Lv|Ts|Og|La|Ce|Pr|Nd|Pm|Sm|Eu|Gd|Tb|Dy|Ho|Er|Tm|Yb|Lu|Ac|Th|Pa|Np|Pu|Am|Cm|Bk|Cf|Es|Fm|Md|No|Lr|[HBCNOFPSKVYIWU]|[bcnosp]|\*/
+
+// Higher priority than SYMBOL so H2/h2 are count constraints, not H + isotope.
+TOTAL_HCOUNT.3: /H[0-9]/
+IMPLICIT_HCOUNT.3: /h[0-9]/
+
+CHIRAL: /@@\??|@(?:TH|AL|SP|TB|OH)\d{1,2}\??|@(?:TH|AL|SP|TB|OH)\?|@\??/
+
+RING: /%[0-9]{2}|[0-9]/
+NUMBER: /[0-9]+/
+DIGIT: /[0-9]/

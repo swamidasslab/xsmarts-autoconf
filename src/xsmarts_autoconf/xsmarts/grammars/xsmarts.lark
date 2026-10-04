@@ -1,0 +1,53 @@
+// XSMARTS — LALR(1) superset of every supported SMARTS / SMIRKS dialect
+// (OpenSMARTS core + RDKit + CDK + chematic + Open Babel extensions).
+//
+// Any string accepted by one of the dialect grammars is accepted here and
+// builds the same QueryMol, with one deliberate exception: hybridization
+// ``^n`` digits whose meaning differs between dialects (docs/smarts_dialects.md,
+// hyb.py) stay unbound until QueryMol.bind_hybridization(dialect).
+//
+// The parser does no chemistry validation; unclosed ring closures are
+// recorded on QueryMol.open_rings rather than rejected.
+//
+// Every choice is LL(1) (left-factored) so the generated Rust parser never
+// backtracks.
+
+%import .opensmarts (start, atom_primitive, bracket_atom, atom_expression)
+
+%extend atom_primitive: hybridization
+                      | hetero_neighbors
+                      | aliphatic_hetero_neighbors
+                      | non_h_degree
+                      | ring_size_k
+                      | ranged_query
+                      | hetero_any
+                      | periodic_group
+                      | insaturation
+
+// RDKit/chematic ^0-^5, CDK ^1-^8, Open Babel ^1-^6 and bare ^.
+hybridization: HYBRID
+             | BARE_HYB
+
+// RDKit
+hetero_neighbors: "z" (NUMBER | RANGE)?
+aliphatic_hetero_neighbors: "Z" (NUMBER | RANGE)?
+non_h_degree: "d" (NUMBER | RANGE)?
+// RDKit (bare k allowed) and chematic (digit required)
+ring_size_k: "k" (NUMBER | RANGE)?
+
+// CDK
+hetero_any: "#X"
+          | "#x"
+periodic_group: "G" NUMBER
+              | "#G" NUMBER -> periodic_group_hashed
+insaturation: "i" (NUMBER | RANGE)?
+
+// RDKit + CDK {lo-hi} count ranges (union of both letter sets).
+ranged_query: RANGED_ATOM_QUERY
+
+// Longest match: ^12 is HYBRID (digit checked when binding), not BARE_HYB + isotope.
+HYBRID: /\^[0-9]+/
+BARE_HYB: /\^/
+RANGED_ATOM_QUERY: /[DhxXRrvzZkG]\{(?:[0-9]+-[0-9]*|-[0-9]+)\}|[+-]\{(?:[0-9]+-[0-9]*|-[0-9]+)\}/
+RANGE: /\{(?:[0-9]+-[0-9]*|-[0-9]+)\}/
+NUMBER: /[0-9]+/

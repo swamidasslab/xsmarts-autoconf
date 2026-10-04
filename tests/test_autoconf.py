@@ -1,4 +1,5 @@
-"""Autoconf self-tests. Run: ../.venv/bin/python -m pytest tests -q"""
+"""xsmarts-autoconf self-tests. Every library-dependent test skips when that
+library is not installed. Run: python -m pytest -q"""
 
 from __future__ import annotations
 
@@ -9,21 +10,28 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "src"))
 
-from autoconf.adapter import Case, canon  # noqa: E402
-from autoconf.adapters import ADAPTERS, make  # noqa: E402
-from autoconf.rules import load_rules, satisfies  # noqa: E402
-from autoconf.run import CONFIG_DIR, autoconf, values  # noqa: E402
+from xsmarts_autoconf.adapter import canon  # noqa: E402
+from xsmarts_autoconf.adapters import ADAPTERS, make  # noqa: E402
+from xsmarts_autoconf.rules import DATA, load_rules, satisfies  # noqa: E402
+from xsmarts_autoconf.run import CONFIG_DIR, autoconf, check, values  # noqa: E402
 
 RULES = load_rules()
 
 
+_AVAIL: dict[str, bool] = {}
+
+
 def _available(name: str) -> bool:
-    try:
-        return make(name).observe(Case("probe", "match", "C", "C")).text == "match:1"
-    except Exception:  # noqa: BLE001
-        return False
+    if name not in _AVAIL:
+        _AVAIL[name] = make(name).available()[0]
+    return _AVAIL[name]
+
+
+def _need(*names):
+    return pytest.mark.skipif(not all(_available(n) for n in names),
+                              reason=f"needs {', '.join(names)}")
 
 
 # ------------------------------------------------------------------ catalog
@@ -49,7 +57,7 @@ def test_rule_has_provenance_and_fuzz_tags(rule):
 
 
 def test_avoid_features_exist_in_generator():
-    from autoconf.gen import all_features
+    from xsmarts_autoconf.gen import all_features
 
     known = all_features()
     for r in RULES:
@@ -64,6 +72,7 @@ def test_satisfies_patterns():
     assert satisfies("re:products:.*\\*.*", "products:*=C")
 
 
+@_need("rdkit")
 def test_canon_keeps_h_labels():
     assert canon("[C][C]") == "[C][C]"
     assert canon("C(C)O") == "CCO"
@@ -72,32 +81,24 @@ def test_canon_keeps_h_labels():
 # ------------------------------------------------------------------ configs reproduce
 
 
-def _committed():
-    for p in sorted(CONFIG_DIR.glob("*/*.json")):
-        yield p
-
-
-@pytest.mark.parametrize("path", list(_committed()), ids=lambda p: f"{p.parent.name}/{p.stem}")
-def test_committed_config_reproduces(path):
-    """Regression guard: the installed library still behaves as its committed
-    config says. A version bump changes the file name, so a mismatch here
-    means the same version changed behavior or a rule changed."""
-    cfg = json.loads(path.read_text())
-    name = cfg["adapter"]
-    if name not in ADAPTERS or not _available(name):
-        pytest.skip(f"{name} unavailable")
-    ad = make(name, **cfg["options"])
-    if ad.version() != cfg["version"]:
-        pytest.skip(f"installed {ad.version()} != config {cfg['version']}")
-    now = values(autoconf(ad))
-    want = values(cfg)
-    diff = {f: (want.get(f), now.get(f)) for f in now if want.get(f) != now.get(f)}
-    assert not diff, f"behavior changed (config, now): {diff}"
+@pytest.mark.parametrize("name", list(ADAPTERS))
+def test_installed_version_matches_config(name):
+    """For whatever version of each library is installed: its checked-in
+    config must exist, be current with the rules, and still reproduce.
+    ``changed`` = same rule, different result (library behavior changed);
+    ``stale``/``missing`` = run ``xsmarts-autoconf update`` and commit."""
+    if not _available(name):
+        pytest.skip(f"{name} not installed")
+    r = check(make(name))
+    assert r["status"] == "ok", (
+        f"{name} {r['version']}: {r['status']} changed={r.get('changed')} "
+        f"stale={len(r.get('stale', []))} -> run `xsmarts-autoconf update {name}`")
 
 
 # ------------------------------------------------------------------ key options
 
 
+@_need("rdkit")
 def test_rdkit_use_chirality_option_flips_flag():
     rule = [r for r in RULES if r.flag == "match.atom_chirality"]
     assert values(autoconf(make("rdkit"), rule))["match.atom_chirality"] == "ignored"
@@ -107,16 +108,16 @@ def test_rdkit_use_chirality_option_flips_flag():
 # ------------------------------------------------------------------ round trip
 
 
-@pytest.mark.skipif(not _available("xenosmarts"), reason="xenosmarts not built")
+@_need("xenosmarts")
 def test_xenosmarts_round_trip_unblinded():
-    from autoconf.roundtrip import unblinded
+    from xsmarts_autoconf.roundtrip import unblinded
 
     assert unblinded(["xenosmarts"], verbose=False)
 
 
-@pytest.mark.skipif(not _available("xenosmarts"), reason="xenosmarts not built")
+@_need("xenosmarts")
 def test_xenosmarts_round_trip_blinded():
-    from autoconf.roundtrip import blinded
+    from xsmarts_autoconf.roundtrip import blinded
 
     assert blinded(8, ["xenosmarts"], verbose=False)
 
@@ -124,13 +125,13 @@ def test_xenosmarts_round_trip_blinded():
 # ------------------------------------------------------------------ fuzzer
 
 
-@pytest.mark.skipif(not (_available("rdkit") and _available("chematic")), reason="needs rdkit + chematic")
+@_need("rdkit", "chematic")
 @pytest.mark.parametrize("flag", ["match.unspecified_isotope", "match.implicit_h_lowercase_h",
                                   "smirks.reactant_aromaticity"])
 def test_fuzzer_rediscovers_wrong_flag(flag):
     """Key fuzzer property: claim chematic behaves like rdkit on ``flag`` and
     the fuzzer must find an example carrying that flag's features."""
-    from autoconf.fuzz import flipcheck
+    from xsmarts_autoconf.fuzz import flipcheck
 
     rows = []
     for seed in range(3):  # deterministic; any of three fixed seeds
@@ -140,10 +141,10 @@ def test_fuzzer_rediscovers_wrong_flag(flag):
     pytest.fail(f"not rediscovered: {rows}")
 
 
-@pytest.mark.parametrize("path", sorted((ROOT / "findings").rglob("*.json")), ids=lambda p: p.stem)
+@pytest.mark.parametrize("path", sorted((DATA / "findings").rglob("*.json")), ids=lambda p: p.stem)
 def test_findings_replay(path):
     """Recorded findings still reproduce on the recorded versions."""
-    from autoconf.fuzz import _adapter, replay
+    from xsmarts_autoconf.fuzz import _adapter, replay
 
     rec = json.loads(path.read_text())
     for label, ver in rec["versions"].items():

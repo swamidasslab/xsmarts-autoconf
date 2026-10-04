@@ -1,0 +1,29 @@
+// CDK SMARTS (FLAVOR_LOOSE / FLAVOR_CDK) — LALR(1)
+// OpenSMARTS + CDK extensions: #X, G/#G, hybridization ^1..^8, CACTVS ranges,
+// optional i (insaturation).
+
+%import .opensmarts (start, atom_primitive, bracket_atom, atom_expression)
+
+%extend atom_primitive: hetero_any
+                      | periodic_group
+                      | hybridization
+                      | insaturation
+                      | ranged_query
+
+hetero_any: "#X"
+          | "#x"
+
+periodic_group: "G" NUMBER
+              | "#G" NUMBER -> periodic_group_hashed
+
+hybridization: HYBRID
+
+// Left-factored so every choice is LL(1); same Lark tree.
+insaturation: "i" (NUMBER | RANGE)?
+
+ranged_query: RANGED_ATOM_QUERY
+
+HYBRID: /\^[1-8]/
+RANGED_ATOM_QUERY: /[DhxXRrvG]\{(?:[0-9]+-[0-9]*|-[0-9]+)\}|[+-]\{(?:[0-9]+-[0-9]*|-[0-9]+)\}/
+RANGE: /\{(?:[0-9]+-[0-9]*|-[0-9]+)\}/
+NUMBER: /[0-9]+/

@@ -1,0 +1,38 @@
+[project]
+name = "xsmarts-autoconf"
+version = "0.1.0"
+description = "Autoconf-style probing of SMARTS / SMIRKS behavior across cheminformatics libraries, with a differential fuzzer"
+readme = "README.md"
+authors = [{ name = "S. Joshua Swamidass", email = "swamidass@gmail.com" }]
+requires-python = ">=3.10"
+keywords = ["SMARTS", "SMIRKS", "cheminformatics", "RDKit", "CDK", "Open Babel", "fuzzing"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Chemistry",
+]
+# Deliberately unpinned: the point is to probe whatever versions are installed.
+dependencies = ["lark", "hypothesis"]
+
+[project.optional-dependencies]
+rdkit = ["rdkit"]
+chematic = ["chematic"]
+openbabel = ["openbabel"]
+java = ["jpype1"]          # CDK / Ambit / BioTransformer (also needs the jar; see README)
+all = ["rdkit", "chematic", "openbabel", "jpype1"]
+test = ["pytest"]
+
+[project.scripts]
+xsmarts-autoconf = "xsmarts_autoconf.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/xsmarts_autoconf"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src", "tests", "docs", "README.md", "pyproject.toml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
