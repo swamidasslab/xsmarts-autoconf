@@ -138,8 +138,9 @@ function render() {
     // One library: its worst results first; among those, where most other libraries get it right.
     rows.sort((a, b) => RANK[b.info.color] - RANK[a.info.color] || b.others.green - a.others.green || a.i - b.i);
   } else {
-    // Comparing: most distinct values first, then most red, then most orange.
-    rows.sort((a, b) => b.info.distinct - a.info.distinct || b.info.red - a.info.red || b.info.orange - a.info.orange || a.i - b.i);
+    // Comparing: most distinct values first, then severity score (red 2, orange 1, green 0), then most red.
+    const score = (x) => 2 * x.red + x.orange;
+    rows.sort((a, b) => b.info.distinct - a.info.distinct || score(b.info) - score(a.info) || b.info.red - a.info.red || a.i - b.i);
   }
   for (const { rule, info, others } of rows) {
     if (!TABS[state.tab].areas.includes(rule.area)) continue;
