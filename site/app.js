@@ -73,8 +73,7 @@ function othersInfo(rule) {
     return { id: c.id, adapter: c.adapter, value, color: color(rule.flag, value) };
   });
   const pts = { red: 2, orange: 1 };
-  const all = [...list.map((o) => o.color), rowInfo(rule).cells[0].color];
-  return { list, green: list.filter((o) => o.color === "green").length, score: all.reduce((n, c) => n + (pts[c] || 0), 0) };
+  return { list, green: list.filter((o) => o.color === "green").length, score: list.reduce((n, o) => n + (pts[o.color] || 0), 0) };
 }
 
 function matches(rule, info) {
@@ -137,10 +136,10 @@ function render() {
   const body = [];
   let rows = DATA.rules.map((rule, i) => ({ rule, i, info: rowInfo(rule), others: single ? othersInfo(rule) : null }));
   if (single) {
-    // One library: its worst results first; among those, where most other libraries get it right,
-    // then the composite severity score over all libraries (red 2, orange 1, green 0).
-    rows.sort((a, b) => RANK[b.info.color] - RANK[a.info.color] || b.others.green - a.others.green
-      || b.others.score - a.others.score || a.i - b.i);
+    // One library: its own severity first. Within a severity, rows where the other libraries
+    // comply better (lower score: red 2, orange 1, green 0) rank higher, then more of them green.
+    rows.sort((a, b) => RANK[b.info.color] - RANK[a.info.color] || a.others.score - b.others.score
+      || b.others.green - a.others.green || a.i - b.i);
   } else {
     // Comparing: most distinct values first, then severity score (red 2, orange 1, green 0), then most red.
     const score = (x) => 2 * x.red + x.orange;
