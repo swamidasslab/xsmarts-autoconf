@@ -1,8 +1,10 @@
 // SMARTS Library Parity: renders data.json (built by `xsmarts-autoconf site`).
-// State lives in the query string: ?libs=a@v,b@v&area=&q=&colors=red,orange&diff=1&open=flag
+// State lives in the query string: ?libs=a@v,b@v&tab=smarts&q=&colors=red,orange&diff=1&open=flag
 "use strict";
 
 const RANK = { red: 3, orange: 2, gray: 1, green: 0 };
+// Rule areas per tab: SMARTS (query parsing and matching) vs SMIRKS (transforms and their products).
+const TABS = { smarts: { areas: ["match", "syntax"] }, smirks: { areas: ["smirks", "products"] } };
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -13,7 +15,7 @@ function readState() {
   const ids = (p.get("libs") || "").split(",").filter((id) => BY_ID[id]);
   return {
     libs: ids.length ? ids : defaultLibs(),
-    area: p.get("area") || "",
+    tab: TABS[p.get("tab")] ? p.get("tab") : "smarts",
     q: p.get("q") || "",
     colors: new Set((p.get("colors") || "red,orange,green,gray").split(",")),
     diff: p.get("diff") === "1",
@@ -24,7 +26,7 @@ function readState() {
 function writeState() {
   const p = new URLSearchParams();
   p.set("libs", state.libs.join(","));
-  if (state.area) p.set("area", state.area);
+  p.set("tab", state.tab);
   if (state.q) p.set("q", state.q);
   const c = [...state.colors].sort((a, b) => RANK[b] - RANK[a]).join(",");
   if (c !== "red,orange,gray,green") p.set("colors", c);
@@ -62,7 +64,6 @@ function rowInfo(rule) {
 }
 
 function matches(rule, info) {
-  if (state.area && rule.area !== state.area) return false;
   if (!state.colors.has(info.color)) return false;
   if (state.diff && !info.differs) return false;
   if (state.q) {
@@ -108,7 +109,7 @@ function renderDetail(rule, info) {
 function render() {
   writeState();
   renderLibs();
-  $("#area").value = state.area;
+  document.querySelectorAll("#tabs button").forEach((b) => b.setAttribute("aria-selected", b.dataset.tab === state.tab));
   $("#q").value = state.q;
   $("#diff").checked = state.diff;
   document.querySelectorAll("#colors input").forEach((i) => (i.checked = state.colors.has(i.value)));
@@ -124,6 +125,7 @@ function render() {
   if (!single) rows = rows.map((r, i) => ({ ...r, i })).sort((a, b) =>
     b.info.distinct - a.info.distinct || b.info.red - a.info.red || b.info.orange - a.info.orange || a.i - b.i);
   for (const { rule, info } of rows) {
+    if (!TABS[state.tab].areas.includes(rule.area)) continue;
     if (!info.cells.some((c) => c.value != null)) continue;
     counts[info.color]++;
     if (!matches(rule, info)) continue;
@@ -158,7 +160,10 @@ function bind() {
     }
     render();
   });
-  $("#area").addEventListener("change", (e) => { state.area = e.target.value; render(); });
+  $("#tabs").addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (b) { state.tab = b.dataset.tab; render(); }
+  });
   let t;
   $("#q").addEventListener("input", (e) => { clearTimeout(t); t = setTimeout(() => { state.q = e.target.value.trim(); render(); }, 150); });
   $("#diff").addEventListener("change", (e) => { state.diff = e.target.checked; render(); });
@@ -179,7 +184,6 @@ function bind() {
 fetch("data.json").then((r) => r.json()).then((d) => {
   DATA = d;
   BY_ID = Object.fromEntries(d.configs.map((c) => [c.id, c]));
-  for (const a of [...new Set(d.rules.map((r) => r.area))]) $("#area").insertAdjacentHTML("beforeend", `<option>${esc(a)}</option>`);
   state = readState();
   bind();
   render();

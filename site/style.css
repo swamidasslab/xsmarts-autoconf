@@ -73,3 +73,8 @@ tr.detail td { background: var(--panel); }
 .meta { color: var(--muted); font-size: .82em; }
 footer { margin-top: 24px; color: var(--muted); font-size: .88em; }
 @media (max-width: 640px) { td.flag { min-width: 11em; } .filters input[type=search] { width: 100%; } }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+.tabs button { font: inherit; font-weight: 600; background: none; color: var(--muted); border: 0;
+  border-bottom: 3px solid transparent; padding: 6px 12px; cursor: pointer; }
+.tabs button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--fg); }
+@media (max-width: 640px) { .tabs .meta { display: none; } }

@@ -17,9 +17,12 @@
 </header>
 
 <section class="controls" aria-label="Selection">
+  <nav class="tabs" id="tabs" role="tablist">
+    <button role="tab" data-tab="smarts">SMARTS <span class="meta">matching &amp; syntax</span></button>
+    <button role="tab" data-tab="smirks">SMIRKS <span class="meta">transforms &amp; products</span></button>
+  </nav>
   <div class="libs" id="libs"></div>
   <div class="filters">
-    <label>Area <select id="area"><option value="">all</option></select></label>
     <label>Search <input id="q" type="search" placeholder="flag, value, SMARTS…"></label>
     <span class="colors" id="colors">
       <label><input type="checkbox" value="red" checked> <i class="dot red"></i>bug / silent failure</label>
