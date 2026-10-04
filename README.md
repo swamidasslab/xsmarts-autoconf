@@ -188,10 +188,14 @@ Babel dialects. It builds a typed QueryMol where dialect-dependent spellings
 ## Contributing
 
 Contributions are very welcome, especially from people who know a library's
-corners.
+corners. Fork the repository, make your change on a branch, run `pytest`, and
+**open a pull request**. Once a pull request is merged, the
+[comparison site](https://swamidasslab.github.io/xsmarts-autoconf/) is rebuilt
+with the change. Not ready to write code? [Open an issue](https://github.com/swamidasslab/xsmarts-autoconf/issues/new)
+describing the behavior: the library, version, SMARTS or SMIRKS, molecule, and what you saw.
 
 - **New flags.** Found a library doing something surprising? Add a rule file with the smallest cases that separate the behaviors, a value per behavior, provenance (library, version, where you saw it) and `fuzz.avoid` tags. Run `xsmarts-autoconf matrix` and `xsmarts-autoconf stability`, then `update` and commit the configs for the versions you have.
-- **Configs for other versions.** Install an older or newer version of a library, run `xsmarts-autoconf update <lib>`, and send the new `data/configs/<lib>/<version>.json`. This is how the version history grows.
+- **Configs for other versions.** Install an older or newer version of a library, run `xsmarts-autoconf update <lib>`, and open a pull request with the new `data/configs/<lib>/<version>.json`. This is how the version history grows.
 - **New harnesses.** Adapters for other toolkits (Indigo, OpenEye, ChemAxon, Ambit standalone, CDK from Maven, Java and JS libraries...) are a small class each; see above. Generators and feature tags in `gen.py` are welcome too.
 - **Fuzz findings.** Run `xsmarts-autoconf sweep A B` on pairs you care about. Each `NEW` finding is a candidate flag.
 

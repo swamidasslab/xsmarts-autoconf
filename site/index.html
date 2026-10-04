@@ -49,8 +49,9 @@
 <section class="contribute" id="contribute">
   <h2>Contribute</h2>
   <p>Every row here comes from a small executable test in
-    <a href="https://github.com/swamidasslab/xsmarts-autoconf">xsmarts-autoconf</a>. Pull requests are welcome,
-    especially from people who know a library's corners.</p>
+    <a href="https://github.com/swamidasslab/xsmarts-autoconf">xsmarts-autoconf</a>. To contribute, fork the repo, make
+    your change, and <b>open a pull request</b>. Merged changes appear on this page automatically. Contributions
+    are welcome, especially from people who know a library's corners.</p>
   <div class="cards">
     <div class="card">
       <h3>Add a test or behavior</h3>
@@ -58,6 +59,7 @@
         <li>Add a JSON rule in <code>src/xsmarts_autoconf/data/rules/&lt;area&gt;/</code>: the smallest cases that separate the behaviors, one value per behavior, and provenance.</li>
         <li>If a value is a bug or silent failure, list it in <code>data/site/severity.json</code> so it shows red.</li>
         <li>Run <code>xsmarts-autoconf update</code> and commit the refreshed configs for the library versions you have.</li>
+        <li>Open a pull request with the rule and configs.</li>
       </ol>
     </div>
     <div class="card">
@@ -65,7 +67,8 @@
       <ol>
         <li>Subclass <code>Adapter</code> in <code>adapters.py</code>: implement <code>version</code>, <code>parse</code>, <code>match</code>, <code>apply</code> and <code>sanitize</code>, whichever the library supports. Imports stay optional.</li>
         <li>Register it in <code>ADAPTERS</code> and run <code>xsmarts-autoconf update &lt;name&gt;</code>.</li>
-        <li>Commit <code>data/configs/&lt;name&gt;/&lt;version&gt;.json</code>; it appears here on merge.</li>
+        <li>Commit the adapter and <code>data/configs/&lt;name&gt;/&lt;version&gt;.json</code>.</li>
+        <li>Open a pull request; the library appears here once it is merged.</li>
       </ol>
     </div>
     <div class="card">
@@ -73,11 +76,12 @@
       <ol>
         <li>Install another version of a covered library.</li>
         <li>Run <code>xsmarts-autoconf check</code>, then <code>update</code>.</li>
-        <li>Send the new config file; it becomes a selectable version above.</li>
+        <li>Open a pull request with the new config file; it becomes a selectable version above once merged.</li>
       </ol>
     </div>
   </div>
-  <p><a class="button" href="https://github.com/swamidasslab/xsmarts-autoconf#contributing">Contributing guide</a>
+  <p><a class="button" href="https://github.com/swamidasslab/xsmarts-autoconf/fork">Fork and open a pull request</a>
+    <a class="button secondary" href="https://github.com/swamidasslab/xsmarts-autoconf#contributing">Contributing guide</a>
     <a class="button secondary" href="https://github.com/swamidasslab/xsmarts-autoconf/issues/new">Report a behavior</a></p>
 </section>
 
