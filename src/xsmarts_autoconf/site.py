@@ -1,6 +1,6 @@
 """Build the static comparison site from checked-in rules and configs.
 
-``xsmarts-autoconf site --out _site`` copies ``site/`` (HTML/JS/CSS) and writes
+``make site`` (``python -m xsmarts_autoconf.site --out _site``) copies ``site/`` (HTML/JS/CSS) and writes
 ``data.json``: every rule (summary, values, cases), every stored config
 (one per library version) and the per-value severities in
 ``data/site/severity.json``. Standard library only, so CI needs no chemistry.
@@ -95,10 +95,14 @@ def build(out: Path, include_reference: bool = False) -> Path:
 def main(argv=None) -> int:
     import argparse
 
-    ap = argparse.ArgumentParser(prog="xsmarts-autoconf site")
+    ap = argparse.ArgumentParser(prog="python -m xsmarts_autoconf.site")
     ap.add_argument("--out", default="_site")
     ap.add_argument("--include-reference", action="store_true")
     a = ap.parse_args(argv)
     p = build(Path(a.out), a.include_reference)
-    print(f"site written to {p}/ (open {p}/index.html via a local server, e.g. python -m http.server -d {p})")
+    print(f"site written to {p}/ (preview: make serve)")
     return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

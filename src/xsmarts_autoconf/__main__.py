@@ -12,7 +12,6 @@ Adapters default to every library that is installed and importable.
   target CONFIG --like CONFIG [--out F]  tests moving one library to another's behavior
   fuzz A B | sweep A B | flipcheck A B   differential fuzzer (see README)
   roundtrip [--blinded N]                configurable-engine round trip
-  site [--out DIR]                       build the static comparison website
 """
 
 from __future__ import annotations
@@ -45,11 +44,6 @@ def installed(names=None) -> list[str]:
 
 
 def main(argv=None) -> int:
-    argv = sys.argv[1:] if argv is None else argv
-    if argv[:1] == ["site"]:
-        from .site import main as site_main
-
-        return site_main(argv[1:])
     ap = argparse.ArgumentParser(prog="xsmarts-autoconf", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)

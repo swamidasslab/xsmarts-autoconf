@@ -159,7 +159,8 @@ Engines that can be configured from flags (`pyref`, `xenosmarts`) are checked wi
 
 ### Comparison website
 
-`xsmarts-autoconf site --out _site` builds a static page from the stored
+`make site` builds a static page into `_site/`, and `make serve` builds it
+and serves it at http://localhost:8000 (`PORT=...` to change). It is built from the stored
 configs: pick any library versions to compare side by side, or a single
 library to see which others share each behavior. The selection, filters and
 expanded rows live in the query string, so every view is a shareable link.

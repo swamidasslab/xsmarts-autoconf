@@ -3,7 +3,7 @@ name: site
 on:
   push:
     branches: [main]
-    paths: ["site/**", "src/xsmarts_autoconf/data/**", "src/xsmarts_autoconf/site.py", ".github/workflows/pages.yml"]
+    paths: ["site/**", "src/xsmarts_autoconf/data/**", "src/xsmarts_autoconf/site.py", "Makefile", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
 permissions:
@@ -25,7 +25,7 @@ jobs:
           python-version: "3.12"
       # The site builder only reads JSON; no chemistry libraries needed.
       - run: pip install -e .
-      - run: xsmarts-autoconf site --out _site
+      - run: make site PYTHON=python SITE=_site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
