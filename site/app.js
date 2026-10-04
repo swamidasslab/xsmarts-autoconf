@@ -57,7 +57,8 @@ function rowInfo(rule) {
   const present = cells.filter((c) => c.value != null);
   const worst = present.reduce((w, c) => (RANK[c.color] > RANK[w] ? c.color : w), "green");
   const distinct = new Set(present.map((c) => c.value)).size;
-  return { cells, color: present.length ? worst : "gray", differs: distinct > 1 };
+  const n = (k) => present.filter((c) => c.color === k).length;
+  return { cells, color: present.length ? worst : "gray", differs: distinct > 1, distinct, red: n("red"), orange: n("orange") };
 }
 
 function matches(rule, info) {
@@ -118,8 +119,11 @@ function render() {
   const counts = { red: 0, orange: 0, green: 0, gray: 0 };
   let shown = 0;
   const body = [];
-  for (const rule of DATA.rules) {
-    const info = rowInfo(rule);
+  // Comparing: most distinct values first, then most red, then most orange.
+  let rows = DATA.rules.map((rule) => ({ rule, info: rowInfo(rule) }));
+  if (!single) rows = rows.map((r, i) => ({ ...r, i })).sort((a, b) =>
+    b.info.distinct - a.info.distinct || b.info.red - a.info.red || b.info.orange - a.info.orange || a.i - b.i);
+  for (const { rule, info } of rows) {
     if (!info.cells.some((c) => c.value != null)) continue;
     counts[info.color]++;
     if (!matches(rule, info)) continue;
