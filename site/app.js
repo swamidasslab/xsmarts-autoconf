@@ -63,6 +63,18 @@ function rowInfo(rule) {
   return { cells, color: present.length ? worst : "gray", differs: distinct > 1, distinct, red: n("red"), orange: n("orange") };
 }
 
+// Newest config of every other library, colored for this flag.
+function othersInfo(rule) {
+  const self = BY_ID[state.libs[0]].adapter;
+  const newest = {};
+  for (const c of DATA.configs) if (c.adapter !== self && c.flags[rule.flag]) newest[c.adapter] = c;
+  const list = Object.values(newest).map((c) => {
+    const value = c.flags[rule.flag].value;
+    return { id: c.id, adapter: c.adapter, value, color: color(rule.flag, value) };
+  });
+  return { list, green: list.filter((o) => o.color === "green").length };
+}
+
 function matches(rule, info) {
   if (!state.colors.has(info.color)) return false;
   if (state.diff && !info.differs) return false;
@@ -83,7 +95,7 @@ function renderLibs() {
     + `<span class="chip" data-all="1">all newest</span>`;
 }
 
-function renderDetail(rule, info) {
+function renderDetail(rule, info, extraCols = 0) {
   const vals = Object.entries(rule.values).map(([v, d]) =>
     `<dt><span class="cell ${color(rule.flag, v)}">${esc(v)}</span></dt><dd>${esc(d)}${DATA.consensus[rule.flag] === v ? " <b>(consensus)</b>" : ""}</dd>`).join("");
   const head = info.cells.map((c) => `<th>${esc(BY_ID[c.id].adapter)}<div class="meta">${esc(BY_ID[c.id].version)}</div></th>`).join("");
@@ -99,7 +111,7 @@ function renderDetail(rule, info) {
   }).join("");
   const prov = rule.provenance ? `<p class="meta">Provenance: ${esc(rule.provenance.discovered || "")}</p>` : "";
   const proc = rule.processing ? `<p class="meta">Processing: ${esc(rule.processing)}</p>` : "";
-  return `<tr class="detail"><td colspan="${info.cells.length + 1}">
+  return `<tr class="detail"><td colspan="${info.cells.length + 1 + extraCols}">
     <h4>Values</h4><dl>${vals}</dl>
     <h4>Cases and observed outputs</h4>
     <div style="overflow-x:auto"><table class="cases"><thead><tr><th>case</th><th>op</th><th>query</th><th>molecule</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>
@@ -115,16 +127,21 @@ function render() {
   document.querySelectorAll("#colors input").forEach((i) => (i.checked = state.colors.has(i.value)));
 
   const single = state.libs.length === 1;
-  $("#grid thead").innerHTML = `<tr><th>behavior</th>${state.libs.map((id) => `<th>${esc(BY_ID[id].adapter)}<div class="meta">${esc(BY_ID[id].version)}</div></th>`).join("")}${single ? "<th>same as</th>" : ""}</tr>`;
+  $("#grid thead").innerHTML = `<tr><th>behavior</th>${state.libs.map((id) => `<th>${esc(BY_ID[id].adapter)}<div class="meta">${esc(BY_ID[id].version)}</div></th>`).join("")}${single
+    ? '<th>other libraries<div class="meta">newest version, colored by their result; underlined = same value</div></th>' : ""}</tr>`;
 
   const counts = { red: 0, orange: 0, green: 0, gray: 0 };
   let shown = 0;
   const body = [];
-  // Comparing: most distinct values first, then most red, then most orange.
-  let rows = DATA.rules.map((rule) => ({ rule, info: rowInfo(rule) }));
-  if (!single) rows = rows.map((r, i) => ({ ...r, i })).sort((a, b) =>
-    b.info.distinct - a.info.distinct || b.info.red - a.info.red || b.info.orange - a.info.orange || a.i - b.i);
-  for (const { rule, info } of rows) {
+  let rows = DATA.rules.map((rule, i) => ({ rule, i, info: rowInfo(rule), others: single ? othersInfo(rule) : null }));
+  if (single) {
+    // One library: its worst results first; among those, where most other libraries get it right.
+    rows.sort((a, b) => RANK[b.info.color] - RANK[a.info.color] || b.others.green - a.others.green || a.i - b.i);
+  } else {
+    // Comparing: most distinct values first, then most red, then most orange.
+    rows.sort((a, b) => b.info.distinct - a.info.distinct || b.info.red - a.info.red || b.info.orange - a.info.orange || a.i - b.i);
+  }
+  for (const { rule, info, others } of rows) {
     if (!TABS[state.tab].areas.includes(rule.area)) continue;
     if (!info.cells.some((c) => c.value != null)) continue;
     counts[info.color]++;
@@ -135,11 +152,11 @@ function render() {
     let extra = "";
     if (single) {
       const v = info.cells[0].value;
-      const same = DATA.configs.filter((c) => c.id !== state.libs[0] && c.flags[rule.flag] && c.flags[rule.flag].value === v).map((c) => c.adapter);
-      extra = `<td class="agree">${esc([...new Set(same)].join(", ") || "none")}</td>`;
+      const chips = others.list.map((o) => `<span class="cell ${o.color}${o.value === v ? " same" : ""}" title="${esc(o.id)}: ${esc(o.value)}">${esc(o.adapter)}</span>`).join(" ");
+      extra = `<td class="others"><b>${others.green}/${others.list.length}</b> <span class="meta">green</span><div>${chips || '<span class="meta">none tested</span>'}</div></td>`;
     }
     body.push(`<tr class="row ${info.color}" data-flag="${esc(rule.flag)}"><td class="flag"><div class="name">${esc(rule.flag)}</div><div class="sum">${esc(rule.summary)}</div></td>${cells}${extra}</tr>`);
-    if (state.open.has(rule.flag)) body.push(renderDetail(rule, info));
+    if (state.open.has(rule.flag)) body.push(renderDetail(rule, info, single ? 1 : 0));
   }
   $("#grid tbody").innerHTML = body.join("") || `<tr><td colspan="${state.libs.length + 1}">No rows match.</td></tr>`;
   $("#summary").innerHTML = `${shown} of ${Object.values(counts).reduce((a, b) => a + b, 0)} behaviors shown · ` +

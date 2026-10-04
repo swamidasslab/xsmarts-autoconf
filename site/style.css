@@ -60,7 +60,6 @@ tr.green td.flag { border-left-color: var(--green); }
 .cell.green { background: var(--green-bg); color: var(--green); }
 .cell.gray { background: var(--gray-bg); color: var(--gray); }
 .cell.none { color: var(--muted); }
-.agree { color: var(--muted); font-size: .8em; }
 
 tr.detail td { background: var(--panel); }
 .detail dl { display: grid; grid-template-columns: max-content 1fr; gap: 2px 12px; margin: 4px 0 10px; }
@@ -78,3 +77,6 @@ footer { margin-top: 24px; color: var(--muted); font-size: .88em; }
   border-bottom: 3px solid transparent; padding: 6px 12px; cursor: pointer; }
 .tabs button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--fg); }
 @media (max-width: 640px) { .tabs .meta { display: none; } }
+td.others { min-width: 14em; }
+td.others .cell { margin: 2px 2px 0 0; font-family: inherit; }
+.cell.same { text-decoration: underline; text-underline-offset: 3px; }
