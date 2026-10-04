@@ -36,3 +36,7 @@ include = ["src", "tests", "docs", "README.md", "pyproject.toml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[project.urls]
+Homepage = "https://swamidasslab.github.io/xsmarts-autoconf/"
+Source = "https://github.com/swamidasslab/xsmarts-autoconf"

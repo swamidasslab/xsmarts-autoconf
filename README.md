@@ -202,7 +202,7 @@ spelling (outputs are canonicalized).
 ## Development
 
 ```bash
-git clone <repo> && cd xsmarts-autoconf
+git clone https://github.com/swamidasslab/xsmarts-autoconf && cd xsmarts-autoconf
 pip install -e ".[all,test]"
 pytest -q                     # library-dependent tests skip when a library is missing
 ```
