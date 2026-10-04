@@ -157,6 +157,26 @@ Engines that can be configured from flags (`pyref`, `xenosmarts`) are checked wi
 - **Unblinded:** set each flag, run its rule, and expect the value back.
 - **Blinded:** draw random engine settings, run every rule, and compare. This catches coupled flags.
 
+### Comparison website
+
+`xsmarts-autoconf site --out _site` builds a static page from the stored
+configs: pick any library versions to compare side by side, or a single
+library to see which others share each behavior. The selection, filters and
+expanded rows live in the query string, so every view is a shareable link.
+`.github/workflows/pages.yml` publishes it to GitHub Pages on every push to
+`main` that touches rules, configs or the site. Enable Pages with source
+"GitHub Actions" in the repository settings. To preview locally:
+`python -m http.server -d _site`.
+
+Colors:
+
+- **Red:** an error, silent failure or corrupted product. These values are listed in `data/site/severity.json`. Relying on an arbitrary SSSR choice instead of a unique ring set counts as a bug, not a policy.
+- **Orange:** a valid but different policy or semantics (valence, filtering, output form). Users could be surprised by it.
+- **Green:** the behavior most libraries share. Each library gets one vote, bug values never win, and BioTransformer's CDK matcher votes with CDK.
+
+Mark a new bug value in `severity.json` when you add a flag. The reference
+engines (`pyref`, `xenosmarts`) are left out by default (`--include-reference`).
+
 ## XSMARTS
 
 The bundled grammar and reference engine (`xsmarts_autoconf.xsmarts`) parse

@@ -1,0 +1,140 @@
+{
+ "_doc": "Per-value severity for the comparison site. 'bug' = error, silent failure or corrupted output (red). Values not listed are colored by agreement: the consensus value across libraries is green, anything else orange (a policy/semantic difference worth knowing about). Add 'confusion' to force orange even when a value is the consensus. Policy: depending on an arbitrary SSSR choice instead of a unique ring set (symmetrized SSSR / relevant cycles) is a bug, not a policy.",
+ "values": {
+  "match.bond_stereo": {
+   "branch_direction_inverted": "bug"
+  },
+  "match.nested_recursive": {
+   "always_true": "bug"
+  },
+  "match.or_with_any_atom": {
+   "drops_any": "bug"
+  },
+  "match.substituted_aromatic_perception": {
+   "error": "bug"
+  },
+  "match.unspecified_isotope": {
+   "isotope_ignored": "bug"
+  },
+  "products.grouped_product_component": {
+   "ignored_split": "bug"
+  },
+  "products.new_double_bond_h": {
+   "h_kept_overvalent": "bug",
+   "dummies": "bug"
+  },
+  "smirks.add_atom_with_explicit_h": {
+   "empty": "bug",
+   "h_not_adjusted": "bug",
+   "untyped": "bug"
+  },
+  "smirks.add_unmapped_atom": {
+   "untyped": "bug",
+   "h_kept_overvalent": "bug"
+  },
+  "smirks.aromatic_output_form": {
+   "dearomatized": "bug"
+  },
+  "smirks.aromatic_product": {
+   "dearomatized": "bug",
+   "kekule_h_kept": "bug"
+  },
+  "smirks.bond_order_decrease_retyping": {
+   "dummies": "bug"
+  },
+  "smirks.charge_hcount": {
+   "untyped": "bug"
+  },
+  "smirks.charge_plus2_hcount": {
+   "untyped": "bug"
+  },
+  "smirks.colon_product_bond": {
+   "no_change": "bug"
+  },
+  "smirks.delete_mapped_by_omission": {
+   "deleted_no_refill": "bug"
+  },
+  "smirks.edits_with_explicit_h": {
+   "empty": "bug",
+   "h_not_adjusted": "bug",
+   "untyped": "bug",
+   "h_kept_overvalent": "bug"
+  },
+  "smirks.element_change": {
+   "corrupt": "bug",
+   "ignored": "bug"
+  },
+  "smirks.explicit_h_apply": {
+   "edits_empty": "bug",
+   "h_kept": "bug",
+   "untyped": "bug"
+  },
+  "smirks.h_atom_in_template": {
+   "explicit_only_no_refill": "bug"
+  },
+  "smirks.hcount_query_explicit_h": {
+   "empty": "bug"
+  },
+  "smirks.mapped_aromatic_nh": {
+   "h_lost_when_mapped": "bug",
+   "dearomatized": "bug"
+  },
+  "smirks.multi_site_application": {
+   "flattened_h_kept": "bug"
+  },
+  "smirks.nested_recursive": {
+   "always_true": "bug"
+  },
+  "smirks.neutralize_written_charge": {
+   "untyped": "bug",
+   "neutralized_h_kept": "bug"
+  },
+  "smirks.new_bond_query_order": {
+   "bond_dropped": "bug"
+  },
+  "smirks.product_h_atom_added": {
+   "h_dropped": "bug",
+   "untyped": "bug"
+  },
+  "smirks.product_h_pin": {
+   "rejected_empty": "bug",
+   "ignored": "bug"
+  },
+  "smirks.product_plusplus": {
+   "untyped": "bug"
+  },
+  "smirks.sanitize_policy": {
+   "untyped": "bug",
+   "h_kept_overvalent": "bug"
+  },
+  "smirks.star_on_explicit_h": {
+   "explicit_edits_empty": "bug",
+   "h_atoms_no_refill": "bug",
+   "untyped": "bug"
+  },
+  "smirks.star_retype": {
+   "corrupt": "bug"
+  },
+  "smirks.stereo_carried": {
+   "flipped_by_neighbor_order": "bug",
+   "dropped": "bug"
+  },
+  "smirks.undefined_order_both_sides": {
+   "noop_applied": "bug"
+  },
+  "smirks.unmapped_reactant_deleted": {
+   "deleted_h_orphaned": "bug",
+   "labels_h_orphaned": "bug"
+  },
+  "smirks.valence_invalid_raw": {
+   "untyped": "bug",
+   "h_kept_overvalent": "bug"
+  },
+  "syntax.hybridization": {
+   "cdk_one_based_untyped": "bug"
+  },
+  "match.ring_count_basis": {
+   "sssr": "bug"
+  }
+ }
+}

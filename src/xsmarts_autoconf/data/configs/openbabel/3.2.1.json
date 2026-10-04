@@ -4,7 +4,7 @@
  "version": "3.2.1",
  "options": {},
  "generated": "2026-10-03",
- "rules_digest": "6c530e61e71f8019",
+ "rules_digest": "b2367621cbe9c1d1",
  "flags": {
   "match.aromatic_valence": {
    "value": "kekule_total",
@@ -148,7 +148,7 @@
   },
   "match.ring_size_semantics": {
    "value": "any_ring",
-   "rule_hash": "abecb354806d",
+   "rule_hash": "dac6effceebb",
    "observed": {
     "r6_hydrindane": "match:6",
     "r5_hydrindane": "match:5",

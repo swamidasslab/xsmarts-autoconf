@@ -33,8 +33,17 @@ def jar_path() -> Path:
     return path
 
 
-def run_dir() -> Path:
+def _run_path() -> Path:
     return Path(os.environ.get("XSMARTS_BIOTRANSFORMER_RUN") or jar_path().parent).expanduser()
+
+
+def run_dir() -> Path:
+    path = _run_path()
+    # Without config.json BioTransformer fails every transform with an NPE,
+    # which would be recorded as library behavior.
+    if not (path / "config.json").is_file():
+        raise JavaUnavailable(f"no BioTransformer config.json in {path}: set XSMARTS_BIOTRANSFORMER_RUN")
+    return path
 
 
 def _jvm_path() -> str:
@@ -61,7 +70,7 @@ def start() -> object:
         raise JavaUnavailable("jpype1 not installed (pip install xsmarts-autoconf[java])") from e
     jar = jar_path()
     if not jpype.isJVMStarted():
-        jpype.startJVM(_jvm_path(), f"-Duser.dir={run_dir().resolve()}", classpath=[str(jar.resolve())])
+        jpype.startJVM(_jvm_path(), f"-Duser.dir={_run_path().resolve()}", classpath=[str(jar.resolve())])
     return jpype.JClass("org.openscience.cdk.silent.SilentChemObjectBuilder").getInstance()
 
 

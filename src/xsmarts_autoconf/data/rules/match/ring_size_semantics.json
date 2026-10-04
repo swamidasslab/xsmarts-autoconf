@@ -2,7 +2,7 @@
  "flag": "match.ring_size_semantics",
  "summary": "`r<n>`: smallest ring is n vs member of any ring of size n",
  "values": {
-  "smallest_ring": "Daylight/RDKit: SSSR smallest ring size",
+  "smallest_ring": "Daylight/RDKit: size of the smallest ring through the atom (unique, independent of which SSSR is chosen)",
   "any_ring": "member of any (relevant) ring of size n"
  },
  "cases": [

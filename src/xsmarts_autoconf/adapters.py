@@ -300,6 +300,9 @@ class BioTransformer(CDK):
     name: str = "biotransformer"
 
     def version(self) -> str:
+        from . import java
+
+        java.run_dir()  # unavailable without BioTransformer's config.json
         return super().version().replace("+ambit(bt-jar)", "+biotransformer(fat-jar)")
 
     def apply(self, smirks, smiles, explicit_h):

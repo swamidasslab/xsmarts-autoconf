@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SMARTS Library Parity</title>
+<meta name="description" content="Where cheminformatics libraries agree and disagree on SMARTS and SMIRKS, from xsmarts-autoconf results.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>SMARTS Library Parity</h1>
+  <p class="lede">Where cheminformatics libraries agree and disagree on SMARTS matching and SMIRKS
+    transforms. Each row is one behavior probed by
+    <a href="https://github.com/swamidass/xsmarts-autoconf">xsmarts-autoconf</a>; each column is a
+    stored result for one library version.</p>
+</header>
+
+<section class="controls" aria-label="Selection">
+  <div class="libs" id="libs"></div>
+  <div class="filters">
+    <label>Area <select id="area"><option value="">all</option></select></label>
+    <label>Search <input id="q" type="search" placeholder="flag, value, SMARTS…"></label>
+    <span class="colors" id="colors">
+      <label><input type="checkbox" value="red" checked> <i class="dot red"></i>bug / silent failure</label>
+      <label><input type="checkbox" value="orange" checked> <i class="dot orange"></i>confusing difference</label>
+      <label><input type="checkbox" value="green" checked> <i class="dot green"></i>aligned</label>
+      <label><input type="checkbox" value="gray" checked> <i class="dot gray"></i>unresolved</label>
+    </span>
+    <label><input type="checkbox" id="diff"> only rows where selected columns differ</label>
+  </div>
+  <p class="summary" id="summary"></p>
+</section>
+
+<main>
+  <table id="grid"><thead></thead><tbody></tbody></table>
+</main>
+
+<footer>
+  <p><b>Colors.</b> <i class="dot red"></i>red: an error, silent failure or corrupted product.
+    <i class="dot orange"></i>orange: a policy or semantic difference that differs from what most tools do.
+    <i class="dot green"></i>green: the behavior most tested libraries share. <i class="dot gray"></i>gray: no
+    known value matched. A row takes its worst cell. Click a row for its test cases and observed outputs.</p>
+  <p>Links keep your selection: share the address bar. Data: <a href="data.json">data.json</a>.</p>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>
