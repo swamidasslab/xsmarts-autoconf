@@ -1,132 +1,192 @@
-# autoconf: SMARTS / SMIRKS behavior prober
+# xsmarts-autoconf
 
-An autoconf-style prober that pins down how each cheminformatics library
-handles SMARTS matching and SMIRKS application. A differential fuzzer
-alongside it looks for divergences the catalog doesn't cover yet.
+**Find out what your cheminformatics library actually does with SMARTS and SMIRKS.**
+
+SMARTS and SMIRKS look standardized, but libraries disagree:
+- on what `r6` or `R3` means;
+- on whether `[N+:1]>>[N:1]` removes the charge;
+- on whether a cleavage returns one object or two, and whether water and formaldehyde are dropped;
+- on what explicit hydrogens do to an edit;
+- and on dozens more details.
+
+These differences also change between library versions.
+
+`xsmarts-autoconf` works like `autoconf`, but for chemistry. It runs a
+catalog of small, focused, executable examples against whichever library
+versions you have installed. It records each library's behavior as a set of
+**feature flags**, and it checks the results into a versioned config file.
+A differential **fuzzer** shares that catalog. It looks for divergences the
+catalog doesn't know about yet, while steering around the ones it already knows.
 
 ```
-new library version -> autoconf -> configs/<lib>/<version>.json (checked in)
-                    -> emulation / translation / warnings driven by the config
+new library version ─▶ xsmarts-autoconf check / update ─▶ configs/<lib>/<version>.json
+                                                       ─▶ emulation, translation, warnings, tests
 ```
 
-Uses the parent repo's `.venv` and `scripts/smarts_grammar`. Run from this
-directory: `../.venv/bin/python -m autoconf <command>`.
+The catalog currently has **83 flags** probed across RDKit, chematic, Open
+Babel, CDK, Ambit, BioTransformer and two reference engines. See
+[docs/NEW_BEHAVIORS.md](docs/NEW_BEHAVIORS.md) for the divergences found while
+building it, and [docs/REPORT.md](docs/REPORT.md) for the full per-flag report.
 
-## Layout
-
-| Path | What |
-|---|---|
-| `rules/<area>/<flag>.json` | One feature flag per file: values, executable cases, expected outcomes, provenance, pre/post-processing notes, fuzz tags. **Source of truth; edit by hand.** |
-| `configs/<adapter>/<version>[+opts].json` | Autoconf output: resolved value per flag plus every raw observation. |
-| `findings/<A>__<B>/<hash>.json` | Fuzzer findings: minimal example, observations, features, attribution. |
-| `fuzz-db/` | Hypothesis example database (replays past failures first). |
-| `NEW_BEHAVIORS.md` | Divergences found by this work that weren't documented before. |
-| `REPORT.md` | `autoconf report` output for the current configs. |
-| `autoconf/adapter.py` | `Adapter` base and observation model (all shared logic). |
-| `autoconf/adapters.py` | rdkit, chematic, openbabel, cdk (SmartsPattern + Ambit), biotransformer (Java pipeline), pyref (`smarts_grammar`), xenosmarts (Rust engine). |
-| `autoconf/rules.py`, `run.py` | Rule loading and value resolution; config writer. |
-| `autoconf/gen.py`, `fuzz.py` | Feature-tagged generators; differential fuzzer. |
-| `autoconf/roundtrip.py` | Config → configured engine → autoconf round trip. |
-| `autoconf/condense.py` | Report and targeted test cases. |
-
-## Commands
+## Install
 
 ```bash
-python -m autoconf matrix [--write]              # all adapters, flag table; --write updates configs/
-python -m autoconf run rdkit -o use_chirality=true   # one adapter, with key options
-python -m autoconf stability [-n 8]              # flakiness: repeats + systematic re-orderings
-python -m autoconf report --out REPORT.md        # condensed per-flag explanation and examples
-python -m autoconf target chematic --like rdkit  # tests that move chematic to rdkit's behavior
-python -m autoconf fuzz rdkit chematic           # one differential search; writes findings/
-python -m autoconf sweep rdkit chematic          # multi-seed baseline; must be clean before flipcheck
-python -m autoconf flipcheck rdkit chematic      # fuzzer self-test (below)
-python -m autoconf roundtrip --blinded 20        # engine round trip
-../.venv/bin/python -m pytest tests -q
+pip install xsmarts-autoconf                 # core: lark + hypothesis
+pip install "xsmarts-autoconf[rdkit]"        # plus any libraries you want probed
+pip install "xsmarts-autoconf[all]"          # rdkit, chematic, openbabel, jpype1
 ```
 
-## Adapters
+Nothing is version-pinned, on purpose: the tool probes **whatever versions
+you have installed**. Every chemistry library is an optional import. Missing
+libraries are reported and skipped, never errors. RDKit is recommended even
+when you aren't probing it, because it serves as the neutral SMILES
+normalizer and as the fuzzer's reference for derived features.
 
-An adapter overrides at most four methods and returns native results:
+| Adapter | Needs | Notes |
+|---|---|---|
+| `rdkit` | `rdkit` | option `use_chirality=true` |
+| `chematic` | `chematic` | |
+| `openbabel` | `openbabel` | |
+| `cdk` | `jpype1`, a JDK, the BioTransformer 3.0 jar | CDK `SmartsPattern` for matching, Ambit `SMIRKSManager` for apply |
+| `biotransformer` | same as `cdk` | BioTransformer's own Java metabolite pipeline |
+| `pyref` | `chematic` (for aromaticity) | bundled pure-Python XSMARTS reference engine |
+| `xenosmarts` | the `xenosmarts` Python module | installed separately; no compiled wheels ship here |
+
+Environment variables:
+
+| Variable | Purpose |
+|---|---|
+| `XSMARTS_BIOTRANSFORMER_JAR` | path to `BioTransformer3.0.jar` (bundles CDK + Ambit) |
+| `XSMARTS_BIOTRANSFORMER_RUN` | BioTransformer working directory (default: the jar's folder) |
+| `JAVA_HOME` | JDK to load (default: JPype's default JVM) |
+| `XSMARTS_XENOSMARTS_PATH` | directory containing the `xenosmarts` module, if not installed |
+| `XSMARTS_CONFIG_DIR` | where configs are read and written (default: bundled `data/configs`) |
+| `XSMARTS_FINDINGS_DIR`, `XSMARTS_FUZZ_DB` | fuzzer output and Hypothesis database |
+
+## Quick start
+
+```bash
+xsmarts-autoconf libs                   # what's installed, versions, config status
+xsmarts-autoconf check                  # installed versions vs checked-in configs
+xsmarts-autoconf update rdkit           # write/refresh the config for your installed RDKit
+xsmarts-autoconf matrix                 # all flags side by side
+xsmarts-autoconf report --out REPORT.md
+xsmarts-autoconf target chematic --like rdkit   # test cases that move chematic to rdkit's behavior
+```
+
+`check` reports one status per installed library:
+
+- **ok:** the installed version behaves exactly as its config says.
+- **changed:** a flag whose rule didn't change now gives a different result. The library's behavior changed; bump or investigate.
+- **stale:** rules were added or edited since the config was written. Run `update`.
+- **missing:** no config exists for this version yet. Run `update` and commit it.
+
+Configs are kept **per library version** (`data/configs/<adapter>/<version>.json`).
+Each flag entry stores the hash of the rule that produced it, so configs for
+older versions are flagged as stale whenever the suite grows. Refresh them
+whenever you have that version installed. The test suite
+(`pytest`) runs the same check for every installed library.
+
+## How it works
+
+### Rules: one feature flag per file
+
+`src/xsmarts_autoconf/data/rules/<area>/<flag>.json`:
+
+```json
+{
+ "flag": "match.ring_size_semantics",
+ "summary": "`r<n>`: smallest ring is n vs member of any ring of size n",
+ "values": {"smallest_ring": "Daylight/RDKit: SSSR smallest ring size",
+            "any_ring": "member of any ring of size n (Open Babel)"},
+ "cases": [
+  {"id": "r6_hydrindane", "op": "match", "query": "[r6]", "mol": "C1CCC2CCCC2C1",
+   "orderings": 6, "expect": {"smallest_ring": "match:4", "any_ring": "match:6"}}
+ ],
+ "provenance": {"discovered": "where and when it was first seen", "refs": []},
+ "processing": "pre/post-processing needed to reproduce (AddHs, sanitize, H mode)",
+ "fuzz": {"avoid": [["prim.ring_size_r", "mol.fused_ring"]]}
+}
+```
+
+- **Ops:** `parse`, `match` (unique atom-set matches) and `apply` (SMIRKS).
+- **Apply views:** `products` (raw edit), `sanitized` (the library's own sanitizer), `count` (number of outcomes) and `objects` (product objects per outcome: one disconnected object vs separate fragments).
+- **Case options:**
+  - `explicit_h` adds explicit hydrogens before the op.
+  - `orderings: N` / `spellings: [...]` observe the same molecule written in other atom orders and report the set of outcomes. This makes non-unique perception (SSSR, site choice) deterministic, and order dependence visible.
+  - `fixed_spelling` marks a case whose spelling is the point.
+- **Expectations:** an exact observation (`match:3`, `products:CC=O`, `error`, `unsupported`), `*`, `match:+`, `re:<regex>`, or a list of alternatives.
+- **Resolution:** a library gets the value whose expectations all its cases satisfy. `UNKNOWN` means new behavior (add a value). `AMBIGUOUS` means add a distinguishing case.
+
+### Adapters: a thin layer per library
 
 ```python
+from xsmarts_autoconf.adapter import Adapter
+
 class MyLib(Adapter):
     name = "mylib"
     def version(self): ...
     def parse(self, smarts): ...                          # raise on rejection
     def match(self, smarts, smiles, explicit_h) -> int:   # unique atom-set matches
     def apply(self, smirks, smiles, explicit_h):          # per outcome: [product SMILES, ...]
-    def sanitize(self, smiles) -> str | None:             # lib-native; None = rejected
+    def sanitize(self, smiles) -> str | None:             # library-native; None = rejected
 ```
 
-`Adapter.observe` handles everything else: error capture, `Unsupported`, SMILES
-normalization (RDKit canonical with sanitize off; `[C]`-style H labels are
-kept because they are chemistry), and the comparable observation string:
-`ok`, `error`, `unsupported`, `match:N`, `products:A|B`, `outcomes:N`,
-`objects:A + B`.
+Override only what the library supports; the rest reports `unsupported`.
+Error capture, SMILES normalization and the comparable observation strings
+are all handled by the base class. Register the class in `ADAPTERS`
+(`adapters.py`).
 
-Key options (`-o k=v`) are part of the config identity, e.g. RDKit
-`use_chirality=true` flips `match.atom_chirality` to `enforced`.
+### Fuzzer
 
-## Rule files
+`xsmarts-autoconf sweep A B` runs Hypothesis-based differential fuzzing between two adapters:
 
-```json
-{
- "flag": "match.ring_size_semantics",
- "summary": "`r<n>`: smallest ring is n vs member of any ring of size n",
- "values": {"smallest_ring": "...", "any_ring": "..."},
- "cases": [
-  {"id": "r6_hydrindane", "op": "match", "query": "[r6]", "mol": "C1CCC2CCCC2C1",
-   "orderings": 6,
-   "expect": {"smallest_ring": "match:4", "any_ring": "match:6"}}
- ],
- "provenance": {"discovered": "...", "refs": ["docs/..."]},
- "processing": "pre/post-processing needed to reproduce (AddHs, sanitize, ...)",
- "fuzz": {"avoid": [["prim.ring_size_r", "mol.fused_ring"]]}
-}
+- Known divergences between the two libraries are excluded while examples are being *built*, using each rule's `fuzz.avoid` feature conjunctions. Any disagreement that remains is new.
+- Three generators:
+  - feature-tagged query and edit recipes;
+  - corpus-guided (molecules the template actually hits);
+  - **molecule-first** (draw a molecule, then write a query from facts that are true about a path in it).
+- Findings are shrunk to a minimal example, written as readable JSON, and attributed to rules. An empty attribution means **NEW**.
+- `xsmarts-autoconf flipcheck A B` is the self-test. It pretends A has B's value for each divergent flag; the fuzzer must rediscover it.
+
+### Round trip
+
+Engines that can be configured from flags (`pyref`, `xenosmarts`) are checked with
+`xsmarts-autoconf roundtrip --blinded 20`:
+
+- **Unblinded:** set each flag, run its rule, and expect the value back.
+- **Blinded:** draw random engine settings, run every rule, and compare. This catches coupled flags.
+
+## XSMARTS
+
+The bundled grammar and reference engine (`xsmarts_autoconf.xsmarts`) parse
+**XSMARTS**: the superset of OpenSMARTS and the RDKit, CDK, chematic and Open
+Babel dialects. It builds a typed QueryMol where dialect-dependent spellings
+(such as hybridization `^n`) stay unbound until a dialect is chosen.
+
+## Contributing
+
+Contributions are very welcome, especially from people who know a library's
+corners.
+
+- **New flags.** Found a library doing something surprising? Add a rule file with the smallest cases that separate the behaviors, a value per behavior, provenance (library, version, where you saw it) and `fuzz.avoid` tags. Run `xsmarts-autoconf matrix` and `xsmarts-autoconf stability`, then `update` and commit the configs for the versions you have.
+- **Configs for other versions.** Install an older or newer version of a library, run `xsmarts-autoconf update <lib>`, and send the new `data/configs/<lib>/<version>.json`. This is how the version history grows.
+- **New harnesses.** Adapters for other toolkits (Indigo, OpenEye, ChemAxon, Ambit standalone, CDK from Maven, Java and JS libraries...) are a small class each; see above. Generators and feature tags in `gen.py` are welcome too.
+- **Fuzz findings.** Run `xsmarts-autoconf sweep A B` on pairs you care about. Each `NEW` finding is a candidate flag.
+
+Please keep flags about *observable behavior*: one question per flag, the
+smallest cases that answer it, and expectations that don't depend on SMILES
+spelling (outputs are canonicalized).
+
+## Development
+
+```bash
+git clone <repo> && cd xsmarts-autoconf
+pip install -e ".[all,test]"
+pytest -q                     # library-dependent tests skip when a library is missing
 ```
 
-- **Case fields:**
-  - `op`: parse | match | apply.
-  - `explicit_h`: AddHs before the op.
-  - `view` (apply only): `products` (raw edit), `sanitized` (lib-native sanitizer), `count` (number of outcomes) or `objects` (product objects per outcome, which shows one disconnected object vs separate fragments).
-  - `orderings: N`: also observe on N systematic re-orderings of the molecule (rooted at each atom, then reversed numbering) and report the outcome set `a / b`. Use it for perception with several valid answers (non-unique SSSR, site choice).
-  - `spellings: [...]`: explicit alternative spellings, for a known order dependence.
-  - `fixed_spelling`: the spelling is the point of the case; the stability check won't reorder it.
-- **Expectations:** an exact observation, `*`, `match:+`, `re:<regex>`, or a list of alternatives. A value is selected when every case satisfies it. Otherwise the result is `UNKNOWN` (new behavior; add a value) or `AMBIGUOUS:a|b` (add a distinguishing case).
-- **`fuzz.avoid`:** a list of *conjunctions* of generator features. The fuzzer excludes them when this flag is a known divergence for the pair, and uses them to attribute findings.
-
-## Fuzzer
-
-Hypothesis-based differential fuzzing between two adapters (`find`, so every
-finding is shrunk; database in `fuzz-db/`; readable JSON in `findings/`).
-
-- **Known divergences are avoided while building examples.** Flags whose configured values differ between A and B contribute their `fuzz.avoid` conjunctions. Single features drop vocabulary items before drawing; conjunctions with the op resolve up front; the rest are filtered after drawing.
-- **Three generators:**
-  - query/recipe-first (feature-tagged atoms, bonds, edit recipes);
-  - corpus-guided (the molecule is drawn mostly from those the template actually hits);
-  - **molecule-first** (draw a molecule, then build a query from primitives that are true for a path in it).
-- **Derived features** come from RDKit as a neutral reference: `sites.multiple`, `sites.ordered_multiple`, `outcome.valence_invalid`.
-- **Focus bias** toward vocabulary any rule has ever named. This is blind to which flag is under test.
-- **Attribution:** `explained_by` lists the pair's divergent flags whose conjunction the example carries. Empty means **NEW**.
-
-**`flipcheck`** is the key self-test. For each flag where A and B differ, it
-pretends A has B's value and fuzzes; the shrunk example must carry that flag's
-features. `MASKED` means another divergent flag avoids the same features.
-Run `sweep` first: residual baseline findings mask everything else.
-
-## Round trip
-
-`roundtrip.py` drives engines that are configurable from flags (`PyRef`,
-`Xenosmarts`; wiring tables `PYREF_FLAGS`, `XENOSMARTS_FLAGS` in
-`adapters.py`):
-
-- **Unblinded:** per flag and value, configure that flag, run its rule, and expect the value back.
-- **Blinded:** draw engine settings with Hypothesis, run all rules, and compare all wired flags. This finds coupled flags. Declared implications live in `roundtrip.IMPLIES`.
-
-## Workflow for a new library version
-
-1. `python -m autoconf matrix --write`: a new version writes a new config file.
-2. `UNKNOWN` / `AMBIGUOUS`: add a value or a distinguishing case to the rule.
-3. `python -m autoconf stability`: fix flaky cases (`orderings`, `spellings`, `fixed_spelling`).
-4. `sweep A B` for the pairs you care about. For each NEW finding, add a rule or extend one (and its `fuzz.avoid`), then repeat until clean.
-5. `flipcheck A B` and `pytest`.
+Layout: `src/xsmarts_autoconf/` (package; `data/rules`, `data/configs` and
+`data/findings` are package data), `tests/`, `docs/` (reports and the
+behavior log), `.xsmarts-fuzz-db/` (Hypothesis database for the checked-in
+findings).
