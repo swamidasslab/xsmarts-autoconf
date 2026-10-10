@@ -85,6 +85,73 @@ class RDKit(Adapter):
             return None
 
 
+# ------------------------------------------------------------------ COSMolKit
+
+
+@dataclass
+class COSMolKit(Adapter):
+    """Options: ``use_chirality`` (SubstructMatch), ``uniquify``.
+
+    Uses COSMolKit's native SMARTS, reaction and sanitization APIs.
+    """
+
+    name: str = "cosmolkit"
+
+    def version(self) -> str:
+        import cosmolkit
+
+        return cosmolkit.__version__
+
+    def _mol(self, smiles, explicit_h):
+        import cosmolkit
+
+        m = cosmolkit.Molecule.from_smiles(smiles)
+        return m.with_hydrogens() if explicit_h else m
+
+    def parse(self, smarts):
+        import cosmolkit
+
+        cosmolkit.parse_smarts(smarts)
+
+    def match(self, smarts, smiles, explicit_h):
+        import cosmolkit
+
+        q = cosmolkit.parse_smarts(smarts)
+        params = cosmolkit.SubstructMatchParams(
+            uniquify=self.options.get("uniquify", True),
+            use_chirality=self.options.get("use_chirality", False),
+            max_matches=100000,
+        )
+        return len(self._mol(smiles, explicit_h).substruct_matches_with_params(q, params))
+
+    def apply(self, smirks, smiles, explicit_h):
+        import cosmolkit
+
+        rxn = cosmolkit.Reaction.from_smirks(smirks)
+        m = self._mol(smiles, explicit_h)
+        out = []
+        for outcome in rxn.run([m] * rxn.num_reactant_templates()):
+            parts = []
+            for p in outcome:
+                try:
+                    p = p.without_hydrogens(sanitize=False)
+                except Exception:  # noqa: BLE001
+                    pass
+                parts.append(p.to_smiles())
+            out.append(parts)
+        return out
+
+    def sanitize(self, smiles):
+        """Native sanitize + hydrogen removal; None if COSMolKit rejects."""
+        import cosmolkit
+
+        try:
+            m = cosmolkit.Molecule.from_smiles(smiles, sanitize=False)
+            return m.sanitize().without_hydrogens().to_smiles()
+        except Exception:  # noqa: BLE001
+            return None
+
+
 # ------------------------------------------------------------------ Chematic
 
 
@@ -520,6 +587,7 @@ def _xmol_smiles(xm) -> str:
 
 ADAPTERS = {
     "rdkit": RDKit,
+    "cosmolkit": COSMolKit,
     "chematic": Chematic,
     "openbabel": OpenBabel,
     "cdk": CDK,

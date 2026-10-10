@@ -35,7 +35,8 @@ from lark.exceptions import LarkError
 from .xsmarts.parse import _GRAMMAR_DIR
 
 # Dialect grammar each adapter claims to accept.
-DIALECT = {"rdkit": "rdkit", "chematic": "chematic", "openbabel": "openbabel", "cdk": "cdk",
+DIALECT = {"rdkit": "rdkit", "cosmolkit": "rdkit", "chematic": "chematic",
+           "openbabel": "openbabel", "cdk": "cdk",
            "biotransformer": "cdk", "pyref": "xsmarts", "xenosmarts": "xsmarts"}
 
 ATOM_OPS = ("and_low", "and_high", "or", "and_not", "replace", "negate", "recursive")

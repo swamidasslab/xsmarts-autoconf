@@ -15,10 +15,11 @@ dependencies = ["lark", "hypothesis"]
 
 [project.optional-dependencies]
 rdkit = ["rdkit"]
+cosmolkit = ["cosmolkit==0.5.0"]
 chematic = ["chematic"]
 openbabel = ["openbabel"]
 java = ["jpype1"]          # CDK / Ambit / BioTransformer (also needs the jar; see README)
-all = ["rdkit", "chematic", "openbabel", "jpype1"]
+all = ["rdkit", "cosmolkit==0.5.0", "chematic", "openbabel", "jpype1"]
 test = ["pytest"]
 
 [project.scripts]
