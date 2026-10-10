@@ -23,7 +23,7 @@ new library version ─▶ xsmarts-autoconf check / update ─▶ configs/<lib>/
                                                        ─▶ emulation, translation, warnings, tests
 ```
 
-The catalog currently has **83 flags** probed across RDKit, chematic, Open
+The catalog currently has **83 flags** probed across RDKit, COSMolKit, chematic, Open
 Babel, CDK, Ambit, BioTransformer and two reference engines. See
 [docs/NEW_BEHAVIORS.md](docs/NEW_BEHAVIORS.md) for the divergences found while
 building it, and [docs/REPORT.md](docs/REPORT.md) for the full per-flag report.
@@ -33,11 +33,12 @@ building it, and [docs/REPORT.md](docs/REPORT.md) for the full per-flag report.
 ```bash
 pip install xsmarts-autoconf                 # core: lark + hypothesis
 pip install "xsmarts-autoconf[rdkit]"        # plus any libraries you want probed
-pip install "xsmarts-autoconf[all]"          # rdkit, chematic, openbabel, jpype1
+pip install "xsmarts-autoconf[cosmolkit]"    # COSMolKit
+pip install "xsmarts-autoconf[all]"          # rdkit, cosmolkit, chematic, openbabel, jpype1
 ```
 
-Nothing is version-pinned, on purpose: the tool probes **whatever versions
-you have installed**. Every chemistry library is an optional import. Missing
+The tool probes **whatever versions you have installed**. Every chemistry
+library is an optional import. Missing
 libraries are reported and skipped, never errors. RDKit is recommended even
 when you aren't probing it, because it serves as the neutral SMILES
 normalizer and as the fuzzer's reference for derived features.
@@ -45,6 +46,7 @@ normalizer and as the fuzzer's reference for derived features.
 | Adapter | Needs | Notes |
 |---|---|---|
 | `rdkit` | `rdkit` | option `use_chirality=true` |
+| `cosmolkit` | `cosmolkit==0.5.0` | native SMARTS / SMIRKS; options `use_chirality=true`, `uniquify=false` |
 | `chematic` | `chematic` | |
 | `openbabel` | `openbabel` | |
 | `cdk` | `jpype1`, a JDK, the BioTransformer 3.0 jar | CDK `SmartsPattern` for matching, Ambit `SMIRKSManager` for apply |
@@ -73,6 +75,22 @@ xsmarts-autoconf matrix                 # all flags side by side
 xsmarts-autoconf report --out REPORT.md
 xsmarts-autoconf target chematic --like rdkit   # test cases that move chematic to rdkit's behavior
 ```
+
+Probe COSMolKit with its native Python API:
+
+```bash
+xsmarts-autoconf update cosmolkit
+xsmarts-autoconf check cosmolkit
+xsmarts-autoconf run cosmolkit -o use_chirality=true
+xsmarts-autoconf fuzz cosmolkit rdkit --seed 0
+xsmarts-autoconf tweak cosmolkit rdkit --seed 0
+```
+
+The COSMolKit adapter supports SMARTS parsing and matching, SMIRKS execution
+(including multiple reactant templates), and native product sanitization.
+Explicit-hydrogen cases use `with_hydrogens()`. Matching defaults to unique
+atom-set matches with chirality disabled, as in the RDKit adapter. Grammar
+tweaks use the RDKit SMARTS grammar; acceptance is still checked by each engine.
 
 `check` reports one status per installed library:
 
